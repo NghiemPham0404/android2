@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bright_gray">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:fontFamily="@font/inter"
+            android:text="Gerne"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/gerne_flexbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:alignItems="flex_start"
+            app:flexWrap="wrap"
+            app:justifyContent="flex_start">
+
+            <Button
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="185dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/toggle_bg"
+                android:fontFamily="@font/inter"
+                android:text="Fiction"
+                android:textAllCaps="false"
+                android:textColor="@drawable/button_transaction"
+                android:textSize="18sp" />
+
+            <Button
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="185dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/toggle_bg"
+                android:fontFamily="@font/inter"
+                android:text="Action"
+                android:textAllCaps="false"
+                android:textColor="@drawable/button_transaction"
+                android:textSize="18sp" />
+
+            <Button
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="185dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/toggle_bg"
+                android:fontFamily="@font/inter"
+                android:text="Action"
+                android:textAllCaps="false"
+                android:textColor="@drawable/button_transaction"
+                android:textSize="18sp" />
+
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:fontFamily="@font/inter"
+            android:text="Publish year"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/publishYear_flexbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:alignItems="flex_start"
+            app:flexWrap="wrap"
+            app:justifyContent="flex_start">
+
+            <Button
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="185dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/toggle_bg"
+                android:fontFamily="@font/inter"
+                android:text="Fiction"
+                android:textAllCaps="false"
+                android:textColor="@drawable/button_transaction"
+                android:textSize="18sp" />
+
+            <Button
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="185dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/toggle_bg"
+                android:fontFamily="@font/inter"
+                android:text="Action"
+                android:textAllCaps="false"
+                android:textColor="@drawable/button_transaction"
+                android:textSize="18sp" />
+
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:fontFamily="@font/inter"
+            android:text="Nation"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:alignItems="flex_start"
+            app:flexWrap="wrap"
+            app:justifyContent="flex_start">
+
+            <Button
+                android:id="@+id/gerne_toggle_btn"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="185dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/toggle_bg"
+                android:fontFamily="@font/inter"
+                android:text="Fiction"
+                android:textAllCaps="false"
+                android:textColor="@drawable/button_transaction"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/gerne_toggle_btn2"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="185dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/toggle_bg"
+                android:fontFamily="@font/inter"
+                android:text="Action"
+                android:textAllCaps="false"
+                android:textColor="@drawable/button_transaction"
+                android:textSize="18sp" />
+
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/cancel_filter_popup"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/toggle_stroke"
+                android:fontFamily="@font/inter"
+                android:text="Cancel"
+                android:textColor="@color/neon_pink"
+                android:textAllCaps="false"/>
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/toggle_stroke"
+                android:backgroundTint="@color/neon_pink"
+                android:fontFamily="@font/inter"
+                android:text="Apply"
+                android:textColor="@color/white"
+                android:textAllCaps="false"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

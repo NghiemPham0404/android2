@@ -1,0 +1,22 @@
+Có sử dụng Retrofit để lấy dữ liệu API
+Sử dụng Node JS tạo backend
+
+Xây dựng RestAPI
+
+Sử dụng SQL lite
+Sử dụng SQL lite studio
+Sử dụng storage device
+Sử dụng Realm
+Sử dụng Realm Studio
+
+API key = cf32372af846ed46863011b283bdcba1
+
+Introduce basic= https://developer.themoviedb.org/docs/image-basics
+
+normal image link : https://image.tmdb.org/t/p/w500/ + {poster_link}
+
+working with pages : https://api.themoviedb.org/3/movie/{movie_list}?page=2
+
+normal searching link : https://api.themoviedb.org/3/search/movie?query= + {movie_name} + &api_key=cf32372af846ed46863011b283bdcba1
+
+query for detail : https://api.themoviedb.org/3/movie/343611?api_key=cf32372af846ed46863011b283bdcba1
