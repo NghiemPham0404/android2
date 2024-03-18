@@ -21,7 +21,7 @@ public class MovieModel implements Parcelable {
         this.poster_path = poster_path;
         this.backdrop_path = backgrop_path;
         this.adult = adult;
-        this.overriew = overriew;
+        this.overview = overriew;
         this.gerne_ids = gerne_ids;
     }
 
@@ -35,7 +35,7 @@ public class MovieModel implements Parcelable {
         poster_path = in.readString();
         backdrop_path = in.readString();
         adult = in.readByte() != 0;
-        overriew = in.readString();
+        overview = in.readString();
     }
 
     public static final Creator<MovieModel> CREATOR = new Creator<MovieModel>() {
@@ -79,7 +79,7 @@ public class MovieModel implements Parcelable {
     }
 
     public String getOverriew() {
-        return overriew;
+        return overview;
     }
 
     public List<Integer> getGerne_ids() {
@@ -101,7 +101,7 @@ public class MovieModel implements Parcelable {
 
     private boolean adult;
 
-    private String overriew;
+    private String overview;
 
     private List<Integer> gerne_ids;
 
@@ -120,6 +120,6 @@ public class MovieModel implements Parcelable {
         dest.writeString(poster_path);
         dest.writeString(backdrop_path);
         dest.writeByte((byte) (adult ? 1 : 0));
-        dest.writeString(overriew);
+        dest.writeString(overview);
     }
 }

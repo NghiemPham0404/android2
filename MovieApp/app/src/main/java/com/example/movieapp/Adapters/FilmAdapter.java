@@ -1,5 +1,6 @@
 package com.example.movieapp.Adapters;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -19,6 +20,7 @@ import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.R;
 import com.example.movieapp.View.Movie_infomation;
 import com.example.movieapp.utils.Credentials;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.io.IOException;
@@ -64,11 +66,11 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder>{
             df = new SimpleDateFormat("M.dd, yyyy");
             holder.publish_date.setText(df.format(newDate));
         } catch (ParseException e) {
-            throw new RuntimeException(e);
+            holder.publish_date.setText(this.movies.get(position).getRelease_date());
         }
 
         // set poster for a film
-        new DownloadImageTask(holder.movie_poster).execute(Credentials.BASE_IMAGE_URL + this.movies.get(position).getPoster_path());
+        new DownloadImageTask(holder.movie_poster, holder.shimmerFrameLayout).execute(Credentials.BASE_IMAGE_URL + this.movies.get(position).getPoster_path());
 
         int pos = position;
         //set action when click
@@ -91,6 +93,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder>{
     class ViewHolder extends RecyclerView.ViewHolder{
             TextView movie_rating, movie_title, publish_date;
             ShapeableImageView movie_poster;
+            ShimmerFrameLayout shimmerFrameLayout;
 
             public ViewHolder(@NonNull View itemView){
                 super(itemView);
@@ -98,20 +101,31 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder>{
                 this.movie_poster = itemView.findViewById(R.id.movie_poster);
                 this.movie_title = itemView.findViewById(R.id.title_film_item_Lbl);
                 this.publish_date = itemView.findViewById(R.id.publishYear_film_item);
+                this.shimmerFrameLayout = itemView.findViewById(R.id.shimmer_layout);
             }
     }
 
     public static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView imageView;
+        ShimmerFrameLayout shimmerFrameLayout;
 
         public DownloadImageTask(ImageView imageView) {
             this.imageView = imageView;
         }
 
+        public DownloadImageTask(ImageView imageView,  ShimmerFrameLayout shimmerFrameLayout) {
+            this.imageView = imageView; this.shimmerFrameLayout = shimmerFrameLayout;
+        }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
+            if(shimmerFrameLayout!=null){
+                shimmerFrameLayout.setDuration(1000); // Shimmer animation duration in milliseconds
+                shimmerFrameLayout.setRepeatCount(ValueAnimator.INFINITE); // Repeat animation indefinitely
+                shimmerFrameLayout.setRepeatDelay(500); // Delay between animation cycles
+                shimmerFrameLayout.startShimmerAnimation();
+            }
         }
 
         @Override
@@ -128,8 +142,13 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder>{
         }
 
         protected void onPostExecute(Bitmap result) {
-            if(result!=null)
+            if(result!=null){
+                imageView.setBackgroundResource(R.color.black);
                 imageView.setImageBitmap(result);
+                if(shimmerFrameLayout!=null) {
+                    shimmerFrameLayout.stopShimmerAnimation();
+                }
+            }
         }
     }
 }
