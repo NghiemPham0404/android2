@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.movieapp.Adapters.FilmAdapter;
 import com.example.movieapp.Adapters.MoviesGroupAdapter;
 import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.Model.MoviesGroup;
@@ -114,19 +113,19 @@ public class HomePage extends Fragment {
 
         // Gọi các danh sách film
         Call<MovieSearchResponse> NowPlayingResponseCall =
-                movieApi.searchNowPlayingMovie(Credentials.BASE_URL
+                movieApi.searchMoviesList(Credentials.BASE_URL
                         +Credentials.NOW_PLAYING, Credentials.API_KEY);
 
         Call<MovieSearchResponse>PopularResponseCall =
-                movieApi.searchNowPlayingMovie(Credentials.BASE_URL
+                movieApi.searchMoviesList(Credentials.BASE_URL
                         +Credentials.POPULAR, Credentials.API_KEY);
 
         Call<MovieSearchResponse> TopRatedResponseCall =
-                movieApi.searchNowPlayingMovie(Credentials.BASE_URL
+                movieApi.searchMoviesList(Credentials.BASE_URL
                         +Credentials.TOP_RATED, Credentials.API_KEY);
 
         Call<MovieSearchResponse>UpcomingResponseCall =
-                movieApi.searchNowPlayingMovie(Credentials.BASE_URL
+                movieApi.searchMoviesList(Credentials.BASE_URL
                         +Credentials.UPCOMING, Credentials.API_KEY);
 
         moviesGroups = new ArrayList<>();

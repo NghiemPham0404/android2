@@ -7,14 +7,23 @@
     android:layout_marginLeft="10dp"
     android:background="#000000">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/movie_poster"
-        android:layout_width="185dp"
-        android:layout_height="278dp"
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/roundedBorderPoster"
-        tools:srcCompat="@drawable/avenger_infinity_war" />
+>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/movie_poster"
+            android:layout_width="185dp"
+            android:layout_height="278dp"
+            android:background="@color/light_gray"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/roundedBorderPoster" />
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
     <include
         layout="@layout/rating_bagde"
@@ -25,6 +34,7 @@
         android:id="@+id/title_film_item_Lbl"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:layout_marginTop="4dp"
         android:singleLine="true"
         android:text="Avengers : Infinity war"
         android:textColor="@color/white"
@@ -32,12 +42,12 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/movie_poster" />
+        app:layout_constraintTop_toBottomOf="@+id/shimmer_layout" />
 
     <TextView
         android:id="@+id/publishYear_film_item"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:text="2017"
         android:textColor="@color/bright_gray"
         android:textSize="16dp"
