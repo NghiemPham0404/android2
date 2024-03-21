@@ -1,5 +1,6 @@
 package com.example.movieapp.utils;
 
+import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.Response.CastResponse;
 import com.example.movieapp.Response.MovieSearchResponse;
 import com.example.movieapp.Response.VideoResponse;
@@ -50,6 +51,12 @@ public interface MovieApi {
     @GET
     Call<VideoResponse> searchVideoByFilmID(
             @Url()  String url,
+            @Query("api_key") String key
+    );
+
+    @GET("3/movie/{movie_id}")
+    Call<MovieModel> searchMovieDetail(
+           @Path("movie_id") int movie_id,
             @Query("api_key") String key
     );
 }

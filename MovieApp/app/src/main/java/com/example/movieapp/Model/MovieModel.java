@@ -13,7 +13,20 @@ public class MovieModel implements Parcelable {
 
     private String release_date;
 
-    public MovieModel(int id, String title, String release_date, float vote_average, String poster_path, String backgrop_path, boolean adult, String overriew, List<Integer> gerne_ids) {
+    private String backdrop_path;
+
+    private boolean adult;
+
+    private String overview;
+
+    private float vote_average;
+
+    private String poster_path;
+    private List<Genre> genres;
+
+    public int runtime;
+
+    public MovieModel(int id, String title, String release_date, float vote_average, String poster_path, String backgrop_path, boolean adult, String overriew) {
         this.id = id;
         this.title = title;
         this.release_date = release_date;
@@ -22,10 +35,20 @@ public class MovieModel implements Parcelable {
         this.backdrop_path = backgrop_path;
         this.adult = adult;
         this.overview = overriew;
-        this.gerne_ids = gerne_ids;
     }
 
-    private float vote_average;
+    public MovieModel(int id, String title, String release_date, float vote_average, String poster_path, String backgrop_path, boolean adult, String overriew, List<Genre> genres, int runtime) {
+        this.id = id;
+        this.title = title;
+        this.release_date = release_date;
+        this.vote_average = vote_average;
+        this.poster_path = poster_path;
+        this.backdrop_path = backgrop_path;
+        this.adult = adult;
+        this.overview = overriew;
+        this.genres = genres;
+        this.runtime = runtime;
+    }
 
     protected MovieModel(Parcel in) {
         id = in.readInt();
@@ -82,28 +105,44 @@ public class MovieModel implements Parcelable {
         return overview;
     }
 
-    public List<Integer> getGerne_ids() {
-        return gerne_ids;
+    public List<Genre> getGenres() {
+        return genres;
     }
 
-    private String poster_path;
-
-    public MovieModel(int id, String title, String release_date, float vote_average, String poster_path, String backgrop_path) {
-        this.id = id;
-        this.title = title;
-        this.release_date = release_date;
-        this.vote_average = vote_average;
-        this.poster_path = poster_path;
-        this.backdrop_path = backgrop_path;
+    public int getRuntime() {
+        return runtime;
     }
 
-    private String backdrop_path;
+    public String getMaxDurationTime(){
+        if(getRuntime() > 60){
+            int hour = getRuntime()/60;
+            int min_less = getRuntime()%60;
+            return hour+"  hrs " + min_less + "mins";
+        }else
+            return this.runtime+"";
+    }
 
-    private boolean adult;
+    public String getGenresString(){
+        String genres_str = "";
+        for(Genre genre : genres){
+           if(genres_str.equalsIgnoreCase("")){
+                genres_str+=genre.getName();
+           }else{
+                genres_str+=", "+genre.getName();
+           }
+        }
+        return genres_str;
+    }
 
-    private String overview;
 
-    private List<Integer> gerne_ids;
+//    public MovieModel(int id, String title, String release_date, float vote_average, String poster_path, String backgrop_path) {
+//        this.id = id;
+//        this.title = title;
+//        this.release_date = release_date;
+//        this.vote_average = vote_average;
+//        this.poster_path = poster_path;
+//        this.backdrop_path = backgrop_path;
+//    }
 
 
     @Override
@@ -121,5 +160,53 @@ public class MovieModel implements Parcelable {
         dest.writeString(backdrop_path);
         dest.writeByte((byte) (adult ? 1 : 0));
         dest.writeString(overview);
+        dest.writeParcelableList(genres, flags);
+        dest.writeInt(runtime);
+    }
+
+    public class Genre implements  Parcelable{
+        private int id;
+        private String name;
+
+        protected Genre(Parcel in) {
+            id = in.readInt();
+            name = in.readString();
+        }
+
+        public final Creator<Genre> CREATOR = new Creator<Genre>() {
+            @Override
+            public Genre createFromParcel(Parcel in) {
+                return new Genre(in);
+            }
+
+            @Override
+            public Genre[] newArray(int size) {
+                return new Genre[size];
+            }
+        };
+
+        public int getId() {
+            return id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Genre(int id, String name){
+            this.id = id;
+            this.name = name;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(@NonNull Parcel dest, int flags) {
+                dest.writeInt(id);
+                dest.writeString(name);
+        }
     }
 }

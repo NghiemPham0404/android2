@@ -15,6 +15,8 @@ public class Credentials {
     public static final String SEARCH_MOVIE_URL = "https://api.themoviedb.org/3/search/movie";
     public static final String BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
 
+
+    public static final String BASE_MOVIE_URL = "https://api.themoviedb.org/3/movie/";
     // youtube link for embeded youtube trailer (if exist)
     public static final String embed_pattern = "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/%s\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen></iframe>";
 
