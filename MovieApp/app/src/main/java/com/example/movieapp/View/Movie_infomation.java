@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -33,7 +34,7 @@ import retrofit2.Response;
 
 public class Movie_infomation extends AppCompatActivity {
 
-    TextView film_title, film_overview;
+    TextView film_title, film_overview, rating, genres_info, time_info, date_info;
     private ImageView poster_image;
     ImageButton backBtn;
 
@@ -67,6 +68,10 @@ public class Movie_infomation extends AppCompatActivity {
         film_overview = findViewById(R.id.film_overview);
         castRecyclerView = findViewById(R.id.castRecyclerView);
         trailer_webView = findViewById(R.id.trailer_webview);
+        rating = findViewById(R.id.movie_rating);
+        date_info = findViewById(R.id.publish_date_info);
+        time_info = findViewById(R.id.time_info);
+        genres_info = findViewById(R.id.genre_info);
         initComponent();
     }
 
@@ -81,7 +86,7 @@ public class Movie_infomation extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        
+        movieApi = MyService.getMovieApi();
         initDetails();
         initCast();
         initTrailers();
@@ -89,7 +94,7 @@ public class Movie_infomation extends AppCompatActivity {
 
     private void initTrailers() {
         Call<VideoResponse> videoResponseCall = movieApi.searchVideoByFilmID(
-                "https://api.themoviedb.org/3/movie/"+movie.getId()+"/videos",
+                Credentials.BASE_MOVIE_URL+movie.getId()+"/videos",
                 Credentials.API_KEY
         );
         videoResponseCall.enqueue(new Callback<VideoResponse>() {
@@ -104,7 +109,6 @@ public class Movie_infomation extends AppCompatActivity {
                         for(int i = 0; i<videoModels.size(); i++){
                             if(videoModels.get(i).getType().equalsIgnoreCase("Trailer")){
                                 String video = "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/"+videoModels.get(i).getKey()+"\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen=\"true\"></iframe>";
-//                                String video = "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/V2KCAfHjySQ?si=g_u_dyntOUg64ANT\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen></iframe>";
                                 trailer_webView.loadData(video, "text/html","utf-8");
                                 trailer_webView.getSettings().setJavaScriptEnabled(true);
                                 trailer_webView.setWebChromeClient(new WebChromeClient());
@@ -126,9 +130,8 @@ public class Movie_infomation extends AppCompatActivity {
     }
 
     private void initCast() {
-        movieApi = MyService.getMovieApi();
         Call<CastResponse> castResponseCall = movieApi.searchCastByFilmID(
-               "https://api.themoviedb.org/3/movie/"+movie.getId()+"/credits",
+               Credentials.BASE_MOVIE_URL +movie.getId()+"/credits",
                 Credentials.API_KEY
         );
         castResponseCall.enqueue(new Callback<CastResponse>() {
@@ -149,6 +152,33 @@ public class Movie_infomation extends AppCompatActivity {
     }
 
     private void initDetails() {
+        Call<MovieModel> detailsResponseCall = movieApi.searchMovieDetail(
+                            movie.getId(),
+                        Credentials.API_KEY
+        );
+
+        detailsResponseCall.enqueue(new Callback<MovieModel>() {
+            @Override
+            public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
+                if(response.code() == 200){
+                        movie = response.body();
+//                        Log.i("TAG DETAIL", movie.getGenres().get(0).getName());
+
+                    float rate = Math.round(movie.getVote_average()*100)*1.0f/100;
+                    rating.setText(rate+"");
+                    date_info.setText(movie.getRelease_date() + "");
+                    time_info.setText(movie.getMaxDurationTime());
+                    genres_info.setText(movie.getGenresString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieModel> call, Throwable t) {
+                Toast.makeText(getBaseContext(), "Failure Details", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
     }
 
 
