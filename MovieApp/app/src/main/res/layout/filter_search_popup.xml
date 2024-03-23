@@ -1,126 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/bright_gray">
+    android:background="#DD000000"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:fontFamily="@font/inter"
+        android:text="Filter"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="10dp">
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:fontFamily="@font/inter"
-            android:text="Gerne"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/gerne_flexbox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:alignItems="flex_start"
-            app:flexWrap="wrap"
-            app:justifyContent="flex_start">
-
-            <Button
-                style="@style/Widget.AppCompat.Button"
-                android:layout_width="185dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/toggle_bg"
-                android:fontFamily="@font/inter"
-                android:text="Fiction"
-                android:textAllCaps="false"
-                android:textColor="@drawable/button_transaction"
-                android:textSize="18sp" />
-
-            <Button
-                style="@style/Widget.AppCompat.Button"
-                android:layout_width="185dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/toggle_bg"
-                android:fontFamily="@font/inter"
-                android:text="Action"
-                android:textAllCaps="false"
-                android:textColor="@drawable/button_transaction"
-                android:textSize="18sp" />
-
-            <Button
-                style="@style/Widget.AppCompat.Button"
-                android:layout_width="185dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/toggle_bg"
-                android:fontFamily="@font/inter"
-                android:text="Action"
-                android:textAllCaps="false"
-                android:textColor="@drawable/button_transaction"
-                android:textSize="18sp" />
-
-
-        </com.google.android.flexbox.FlexboxLayout>
-
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:fontFamily="@font/inter"
-            android:text="Publish year"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/publishYear_flexbox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:alignItems="flex_start"
-            app:flexWrap="wrap"
-            app:justifyContent="flex_start">
-
-            <Button
-                style="@style/Widget.AppCompat.Button"
-                android:layout_width="185dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/toggle_bg"
-                android:fontFamily="@font/inter"
-                android:text="Fiction"
-                android:textAllCaps="false"
-                android:textColor="@drawable/button_transaction"
-                android:textSize="18sp" />
-
-            <Button
-                style="@style/Widget.AppCompat.Button"
-                android:layout_width="185dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/toggle_bg"
-                android:fontFamily="@font/inter"
-                android:text="Action"
-                android:textAllCaps="false"
-                android:textColor="@drawable/button_transaction"
-                android:textSize="18sp" />
-
-
-        </com.google.android.flexbox.FlexboxLayout>
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:fontFamily="@font/inter"
+            android:text="Genre"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/genre_flexbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:alignContent="space_between"
+            app:flexWrap="wrap"
+            app:justifyContent="flex_start">
+
+            <ToggleButton
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="185dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/toggle_bg"
+                android:fontFamily="@font/inter"
+                android:text="Fiction"
+                android:textAllCaps="false"
+                android:textColor="@drawable/button_transaction"
+                android:textOff="Fiction"
+                android:textOn="Fiction"
+                android:textSize="18sp" />
+
+            <ToggleButton
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="185dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/toggle_bg"
+                android:fontFamily="@font/inter"
+                android:text="Fiction"
+                android:textAllCaps="false"
+                android:textColor="@drawable/button_transaction"
+                android:textOff="Fiction"
+                android:textOn="Fiction"
+                android:textSize="18sp" />
+
+            <ToggleButton
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="185dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/toggle_bg"
+                android:fontFamily="@font/inter"
+                android:text="Fiction"
+                android:textAllCaps="false"
+                android:textColor="@drawable/button_transaction"
+                android:textOff="Fiction"
+                android:textOn="Fiction"
+                android:textSize="18sp" />
+
+            <ToggleButton
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="185dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/toggle_bg"
+                android:fontFamily="@font/inter"
+                android:text="Fiction"
+                android:textAllCaps="false"
+                android:textColor="@drawable/button_transaction"
+                android:textOff="Fiction"
+                android:textOn="Fiction"
+                android:textSize="18sp" />
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:fontFamily="@font/inter"
@@ -130,75 +114,187 @@
             android:textStyle="bold" />
 
         <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/nation_flexbox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:alignItems="flex_start"
+            app:alignContent="space_between"
             app:flexWrap="wrap"
             app:justifyContent="flex_start">
 
-            <Button
-                android:id="@+id/gerne_toggle_btn"
+            <ToggleButton
                 style="@style/Widget.AppCompat.Button"
                 android:layout_width="185dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:layout_weight="1"
                 android:background="@drawable/toggle_bg"
                 android:fontFamily="@font/inter"
                 android:text="Fiction"
                 android:textAllCaps="false"
                 android:textColor="@drawable/button_transaction"
+                android:textOff="Fiction"
+                android:textOn="Fiction"
                 android:textSize="18sp" />
 
-            <Button
-                android:id="@+id/gerne_toggle_btn2"
+            <ToggleButton
                 style="@style/Widget.AppCompat.Button"
                 android:layout_width="185dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:layout_weight="1"
                 android:background="@drawable/toggle_bg"
                 android:fontFamily="@font/inter"
-                android:text="Action"
+                android:text="Fiction"
                 android:textAllCaps="false"
                 android:textColor="@drawable/button_transaction"
+                android:textOff="Fiction"
+                android:textOn="Fiction"
                 android:textSize="18sp" />
 
+            <ToggleButton
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="185dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/toggle_bg"
+                android:fontFamily="@font/inter"
+                android:text="Fiction"
+                android:textAllCaps="false"
+                android:textColor="@drawable/button_transaction"
+                android:textOff="Fiction"
+                android:textOn="Fiction"
+                android:textSize="18sp" />
+
+            <ToggleButton
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="185dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/toggle_bg"
+                android:fontFamily="@font/inter"
+                android:text="Fiction"
+                android:textAllCaps="false"
+                android:textColor="@drawable/button_transaction"
+                android:textOff="Fiction"
+                android:textOn="Fiction"
+                android:textSize="18sp" />
 
         </com.google.android.flexbox.FlexboxLayout>
 
-        <LinearLayout
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="35dp"
+            android:fontFamily="@font/inter"
+            android:text="Publish year"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/cancel_filter_popup"
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/publish_year_flexbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:alignContent="space_between"
+            app:flexWrap="wrap"
+            app:justifyContent="flex_start">
+
+            <ToggleButton
                 style="@style/Widget.AppCompat.Button"
-                android:layout_width="wrap_content"
+                android:layout_width="185dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/toggle_stroke"
+                android:background="@drawable/toggle_bg"
                 android:fontFamily="@font/inter"
-                android:text="Cancel"
-                android:textColor="@color/neon_pink"
-                android:textAllCaps="false"/>
+                android:text="Fiction"
+                android:textAllCaps="false"
+                android:textColor="@drawable/button_transaction"
+                android:textOff="Fiction"
+                android:textOn="Fiction"
+                android:textSize="18sp" />
 
-            <Button
-                android:id="@+id/button"
-                android:layout_width="wrap_content"
+            <ToggleButton
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="185dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/toggle_stroke"
-                android:backgroundTint="@color/neon_pink"
+                android:background="@drawable/toggle_bg"
                 android:fontFamily="@font/inter"
-                android:text="Apply"
-                android:textColor="@color/white"
-                android:textAllCaps="false"/>
+                android:text="Fiction"
+                android:textAllCaps="false"
+                android:textColor="@drawable/button_transaction"
+                android:textOff="Fiction"
+                android:textOn="Fiction"
+                android:textSize="18sp" />
 
-        </LinearLayout>
+            <ToggleButton
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="185dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/toggle_bg"
+                android:fontFamily="@font/inter"
+                android:text="Fiction"
+                android:textAllCaps="false"
+                android:textColor="@drawable/button_transaction"
+                android:textOff="Fiction"
+                android:textOn="Fiction"
+                android:textSize="18sp" />
+
+            <ToggleButton
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="185dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/toggle_bg"
+                android:fontFamily="@font/inter"
+                android:text="Fiction"
+                android:textAllCaps="false"
+                android:textColor="@drawable/button_transaction"
+                android:textOff="Fiction"
+                android:textOn="Fiction"
+                android:textSize="18sp" />
+
+        </com.google.android.flexbox.FlexboxLayout>
 
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cancel_filter_popup"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/toggle_stroke"
+            android:fontFamily="@font/inter"
+            android:text="Reset"
+            android:textAllCaps="false"
+            android:textColor="@color/neon_pink"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/gradient_corner_bg"
+            android:fontFamily="@font/inter"
+            android:text="Apply"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

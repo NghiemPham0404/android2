@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.movieapp.Interfaces.Fragment_Interface;
 import com.example.movieapp.R;
 
 /**
@@ -15,7 +16,7 @@ import com.example.movieapp.R;
  * Use the {@link HistoryPage#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HistoryPage extends Fragment {
+public class HistoryPage extends Fragment implements Fragment_Interface {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -62,5 +63,30 @@ public class HistoryPage extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_history_page, container, false);
+    }
+
+    @Override
+    public void initFilterBar() {
+
+    }
+
+    @Override
+    public void initFilterPopup() {
+
+    }
+
+    @Override
+    public void initRatingPopup() {
+
+    }
+
+    @Override
+    public void initSort() {
+
+    }
+
+    @Override
+    public void sortBtnChange(int n_sort) {
+
     }
 }
