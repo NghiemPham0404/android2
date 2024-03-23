@@ -4,6 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Paint;
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -56,7 +64,6 @@ public class Movie_infomation extends AppCompatActivity {
             // Use the retrieved object
             movie = passMovie;
         }
-
         init();
 
     }
@@ -76,7 +83,7 @@ public class Movie_infomation extends AppCompatActivity {
     }
 
     public void initComponent(){
-
+        findViewById(R.id.info_layout).setBackground(createBackgroundWithGradient(1));
         new FilmAdapter.DownloadImageTask(poster_image).execute(Credentials.BASE_IMAGE_URL + movie.getPoster_path());
         this.film_title.setText(this.movie.getTitle());
         this.film_overview.setText(this.movie.getOverriew());
@@ -177,9 +184,26 @@ public class Movie_infomation extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "Failure Details", Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
 
+    private Drawable createBackgroundWithGradient(int color) {
+        int[] colors = {Color.BLACK, Color.RED}; // Black gradient to the obtained color
+        float[] positions = {0.0f, 1.0f}; // Start from black (0.0) to the obtained color (1.0)
+
+        // Create a LinearGradient
+        LinearGradient gradient = new LinearGradient(
+                0, 0, 0, getResources().getDisplayMetrics().heightPixels, colors, positions, Shader.TileMode.CLAMP);
+
+        Paint paint = new Paint();
+        paint.setShader(gradient);
+
+        // Create a Bitmap and draw the gradient on it
+        Bitmap bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawRect(0, 0, 1, 1, paint);
+
+        // Return a BitmapDrawable with the gradient
+        return new BitmapDrawable(getResources(), bitmap);
+    }
 
 }

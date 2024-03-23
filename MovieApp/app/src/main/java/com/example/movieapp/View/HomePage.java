@@ -7,14 +7,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.movieapp.Adapters.MoviesGroupAdapter;
+import com.example.movieapp.Interfaces.Fragment_Interface;
 import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.Model.MoviesGroup;
 import com.example.movieapp.R;
@@ -36,7 +39,7 @@ import retrofit2.Response;
  * Use the {@link HomePage#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomePage extends Fragment {
+public class HomePage extends Fragment implements Fragment_Interface {
 
     RecyclerView moviesGroupsRecyclerView;
     Button searchBtn;
@@ -44,6 +47,8 @@ public class HomePage extends Fragment {
 
     List<MoviesGroup> moviesGroups;
     MoviesGroupAdapter moviesGroupAdapter;
+
+    LinearLayout divSearch, filter_bar;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -94,16 +99,33 @@ public class HomePage extends Fragment {
         moviesGroupsRecyclerView = view.findViewById(R.id.movie_groups_recycleview);
         searchBox = view.findViewById(R.id.searchBox);
         searchBtn = view.findViewById(R.id.searchBtn);
+        divSearch = view.findViewById(R.id.searchDiv);
+        filter_bar = view.findViewById(R.id.filter_bar);
+
+        searchBox.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    divSearch.setBackgroundResource(R.drawable.text_input_onfocus);
+                }else{
+                    divSearch.setBackgroundResource(R.drawable.text_input);
+                }
+            }
+        });
+
         init();
         return view;
     }
 
     public void init (){
         initComponents();
+
+
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 searchMovie();
+                divSearch.setBackgroundResource(R.drawable.text_input);
             }
         });
     }
@@ -176,19 +198,48 @@ public class HomePage extends Fragment {
     }
 
     public void searchMovie(){
-        MovieApi movieApi = MyService.getMovieApi();
-        Call<MovieSearchResponse> searchCall = movieApi.searchMovie(Credentials.SEARCH_MOVIE_URL,
-                Credentials.API_KEY,
-                this.searchBox.getText().toString(),
-                "1");
-        moviesGroups = new ArrayList<>();
-        onResponseMovieList(searchCall, "search");
+        if(!this.searchBox.getText().toString().trim().equalsIgnoreCase("")){
+            MovieApi movieApi = MyService.getMovieApi();
+            Call<MovieSearchResponse> searchCall = movieApi.searchMovie(Credentials.SEARCH_MOVIE_URL,
+                    Credentials.API_KEY,
+                    this.searchBox.getText().toString(),
+                    "1");
+            moviesGroups = new ArrayList<>();
+            onResponseMovieList(searchCall, "search");
 
-        moviesGroupAdapter = new MoviesGroupAdapter(getContext(), moviesGroups);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        moviesGroupsRecyclerView.setLayoutManager(linearLayoutManager);
-        moviesGroupsRecyclerView.setAdapter(moviesGroupAdapter);
+            moviesGroupAdapter = new MoviesGroupAdapter(getContext(), moviesGroups);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+            moviesGroupsRecyclerView.setLayoutManager(linearLayoutManager);
+            moviesGroupsRecyclerView.setAdapter(moviesGroupAdapter);
+            filter_bar.setVisibility(View.VISIBLE);
+        }else{
+            Toast.makeText(getContext(), "Please input searching text", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
+    @Override
+    public void initFilterBar() {
+
+    }
+
+    @Override
+    public void initFilterPopup() {
+
+    }
+
+    @Override
+    public void initRatingPopup() {
+
+    }
+
+    @Override
+    public void initSort() {
+
+    }
+
+    @Override
+    public void sortBtnChange(int n_sort) {
+
+    }
 }

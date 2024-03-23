@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/info_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
@@ -41,7 +42,7 @@
                 android:paddingLeft="10dp"
                 android:text="Avengers : Endgame"
                 android:textColor="@color/white"
-                android:textSize="20sp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -62,6 +63,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal"
                 android:paddingLeft="85dp"
                 android:paddingRight="85dp">
@@ -71,7 +73,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:backgroundTint="@color/neon_pink"
+                    android:background="@drawable/gradient_corner_bg"
                     android:drawableRight="@drawable/play_icon"
                     android:padding="10dp"
                     android:text="Play"
@@ -261,8 +263,8 @@
 
             <WebView
                 android:id="@+id/trailer_webview"
-                android:layout_width="320dp"
-                android:layout_height="180dp" />
+                android:layout_width="360dp"
+                android:layout_height="202dp" />
 
             <TextView
                 android:id="@+id/textView13"

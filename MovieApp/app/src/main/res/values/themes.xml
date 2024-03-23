@@ -16,4 +16,9 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">5%</item>
     </style>
+
+    <style name="PopupAnimation">
+        <item name="android:windowEnterAnimation">@anim/popup_animation</item>
+        <!-- Define exit animation if needed -->
+    </style>
 </resources>

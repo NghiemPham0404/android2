@@ -6,6 +6,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.PopupWindow;
 
 import com.example.movieapp.R;
 import com.example.movieapp.View.FavorPage;
@@ -14,8 +18,9 @@ import com.example.movieapp.View.HomePage;
 import com.example.movieapp.View.UserPage;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class HomeActivity extends AppCompatActivity {
+import java.util.zip.Inflater;
 
+public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +52,7 @@ public class HomeActivity extends AppCompatActivity {
         ft.replace(R.id.frameLayout, f);
         ft.commit();
     }
+
 
 
 }
