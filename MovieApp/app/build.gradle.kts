@@ -51,4 +51,18 @@ dependencies {
 
     //shimmer
     implementation ("com.facebook.shimmer:shimmer:0.1.0")
+
+    // media player
+    implementation ("androidx.media3:media3-exoplayer:1.3.0")
+    implementation ("androidx.media3:media3-ui:1.3.0")
+    implementation ("androidx.media3:media3-common:1.3.0")
+
+    //login with google
+    implementation("com.google.android.gms:play-services-auth:20.0.0")
+
+    implementation ("androidx.credentials:credentials:1.2.1")
+    implementation ("androidx.credentials:credentials-play-services-auth:1.2.1")
+    implementation ("com.google.android.libraries.identity.googleid:googleid:1.1.0")
+
+
 }

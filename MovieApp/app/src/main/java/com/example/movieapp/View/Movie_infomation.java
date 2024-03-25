@@ -4,19 +4,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.RenderEffect;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -45,13 +49,14 @@ public class Movie_infomation extends AppCompatActivity {
     TextView film_title, film_overview, rating, genres_info, time_info, date_info;
     private ImageView poster_image;
     ImageButton backBtn;
-
+    Button playButton;
     MovieModel movie;
 
     RecyclerView castRecyclerView;
     private MovieApi movieApi;
 
     private WebView trailer_webView;
+    private ImageView imageView2;
 
 
     @Override
@@ -79,12 +84,20 @@ public class Movie_infomation extends AppCompatActivity {
         date_info = findViewById(R.id.publish_date_info);
         time_info = findViewById(R.id.time_info);
         genres_info = findViewById(R.id.genre_info);
+        imageView2 = findViewById(R.id.imageView2);
+        playButton = findViewById(R.id.playBtn_info);
         initComponent();
     }
 
     public void initComponent(){
-        findViewById(R.id.info_layout).setBackground(createBackgroundWithGradient(1));
         new FilmAdapter.DownloadImageTask(poster_image).execute(Credentials.BASE_IMAGE_URL + movie.getPoster_path());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            imageView2.setRenderEffect(RenderEffect.createBlurEffect(100,100, Shader.TileMode.MIRROR));
+            new FilmAdapter.DownloadImageTask(imageView2).execute(Credentials.BASE_IMAGE_URL + movie.getPoster_path());
+        }else{
+            imageView2.setVisibility(View.GONE);
+        }
         this.film_title.setText(this.movie.getTitle());
         this.film_overview.setText(this.movie.getOverriew());
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -93,6 +106,16 @@ public class Movie_infomation extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Movie_infomation.this, PlayingFilm.class);
+                intent.putExtra("film id", movie.getId());
+                startActivity(intent);
+            }
+        });
+
         movieApi = MyService.getMovieApi();
         initDetails();
         initCast();
@@ -185,25 +208,4 @@ public class Movie_infomation extends AppCompatActivity {
             }
         });
     }
-
-    private Drawable createBackgroundWithGradient(int color) {
-        int[] colors = {Color.BLACK, Color.RED}; // Black gradient to the obtained color
-        float[] positions = {0.0f, 1.0f}; // Start from black (0.0) to the obtained color (1.0)
-
-        // Create a LinearGradient
-        LinearGradient gradient = new LinearGradient(
-                0, 0, 0, getResources().getDisplayMetrics().heightPixels, colors, positions, Shader.TileMode.CLAMP);
-
-        Paint paint = new Paint();
-        paint.setShader(gradient);
-
-        // Create a Bitmap and draw the gradient on it
-        Bitmap bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        canvas.drawRect(0, 0, 1, 1, paint);
-
-        // Return a BitmapDrawable with the gradient
-        return new BitmapDrawable(getResources(), bitmap);
-    }
-
 }

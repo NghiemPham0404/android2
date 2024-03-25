@@ -10,18 +10,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import com.example.movieapp.R;
 import com.example.movieapp.View.FavorPage;
 import com.example.movieapp.View.HistoryPage;
 import com.example.movieapp.View.HomePage;
 import com.example.movieapp.View.UserPage;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.zip.Inflater;
 
 public class HomeActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +35,12 @@ public class HomeActivity extends AppCompatActivity {
         navigationView.setItemIconTintList(null);
 
         replaceFragment(new HomePage());
+
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+        if(acct!=null){
+            String display_name = acct.getDisplayName();
+            Toast.makeText(this, display_name, Toast.LENGTH_SHORT).show();
+        }
 
         navigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.home) {
