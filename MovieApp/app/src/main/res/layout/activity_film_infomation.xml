@@ -4,9 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/info_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/black"
     tools:context=".View.Movie_infomation">
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="540dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/avenger_infinity_war" />
+
 
     <ImageButton
         android:id="@+id/backBtn_info"
