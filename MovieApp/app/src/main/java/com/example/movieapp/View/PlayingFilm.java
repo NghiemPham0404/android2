@@ -30,7 +30,7 @@ public class PlayingFilm extends AppCompatActivity {
     public void initVideo(){
         styledPlayerView.setPlayer(player);
 
-        String videoUrl ="https://www.dropbox.com/scl/fi/g2skprihuaw2h6p50zvgf/Kore-Nani-Neko.mp4";
+        String videoUrl ="https://ia902901.us.archive.org/7/items/kore-nani-neko/Kore%20Nani%20Neko.mp4";
         MediaItem mediaItem = MediaItem.fromUri(videoUrl);
 
         player.setMediaItem(mediaItem);

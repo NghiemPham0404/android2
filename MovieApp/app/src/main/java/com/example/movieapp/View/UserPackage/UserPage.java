@@ -1,4 +1,4 @@
-package com.example.movieapp.View;
+package com.example.movieapp.View.UserPackage;
 
 import android.os.Bundle;
 

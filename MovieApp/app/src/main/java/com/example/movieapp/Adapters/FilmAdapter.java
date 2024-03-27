@@ -114,7 +114,8 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder>{
         }
 
         public DownloadImageTask(ImageView imageView,  ShimmerFrameLayout shimmerFrameLayout) {
-            this.imageView = imageView; this.shimmerFrameLayout = shimmerFrameLayout;
+            this.imageView = imageView;
+            this.shimmerFrameLayout = shimmerFrameLayout;
         }
 
         @Override
