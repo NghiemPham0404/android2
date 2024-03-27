@@ -17,12 +17,30 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="30">
         <activity
-            android:name=".View.LoginViewActivity"
+            android:name=".View.UserPackage.Settings.ModeSetting"
             android:exported="false" />
         <activity
+            android:name=".View.UserPackage.Settings.SettingsView"
+            android:exported="false" />
+        <activity
+            android:name=".View.RegisterView"
+            android:exported="false" />
+        <activity
+            android:name=".View.UserPackage.UserInfomation.UpdateUser_Information"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".View.UserPackage.UserInfomation.User_Infomation"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".View.LoginViewActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".View.PlayingFilm"
-            android:exported="true"
-            android:configChanges="orientation|screenSize"/>
+            android:configChanges="orientation|screenSize"
+            android:exported="true" />
         <activity
             android:name=".View.Movie_infomation"
             android:exported="false" />

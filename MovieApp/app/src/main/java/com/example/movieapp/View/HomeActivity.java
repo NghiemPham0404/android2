@@ -6,24 +6,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.example.movieapp.R;
-import com.example.movieapp.View.FavorPage;
-import com.example.movieapp.View.HistoryPage;
-import com.example.movieapp.View.HomePage;
-import com.example.movieapp.View.UserPage;
+import com.example.movieapp.View.UserPackage.UserPage;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import java.util.zip.Inflater;
 
 public class HomeActivity extends AppCompatActivity {
     @Override

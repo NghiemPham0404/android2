@@ -115,13 +115,12 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:layout_weight="1"
-            android:background="@drawable/toggle_stroke"
-            android:backgroundTint="@color/neon_pink"
+            android:background="@drawable/gradient_corner_bg"
             android:fontFamily="@font/inter"
             android:text="Apply"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="20dp" />
+            android:textSize="18dp" />
 
     </LinearLayout>
 
