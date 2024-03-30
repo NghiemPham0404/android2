@@ -8,13 +8,15 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.R;
 import com.example.movieapp.View.UserPackage.UserPage;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomeActivity extends AppCompatActivity {
+
+
+    private AccountModel loginAccount;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,12 +25,13 @@ public class HomeActivity extends AppCompatActivity {
         BottomNavigationView navigationView = findViewById(R.id.bottomNavigationView);
         navigationView.setItemIconTintList(null);
 
+        loginAccount = (AccountModel) getIntent().getParcelableExtra("loginAccount");
+
         replaceFragment(new HomePage());
 
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-        if(acct!=null){
-            String display_name = acct.getDisplayName();
-            Toast.makeText(this, display_name, Toast.LENGTH_SHORT).show();
+        String username = getIntent().getStringExtra("username");
+        if(username !=null){
+            Toast.makeText(this, username, Toast.LENGTH_SHORT).show();
         }
 
         navigationView.setOnItemSelectedListener(item -> {

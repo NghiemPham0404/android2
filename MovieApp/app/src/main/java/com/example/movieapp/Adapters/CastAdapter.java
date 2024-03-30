@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.movieapp.AsyncTasks.DownloadImageTask;
 import com.example.movieapp.Model.CastModel;
 import com.example.movieapp.R;
 import com.example.movieapp.utils.Credentials;
@@ -39,7 +40,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder>{
     public void onBindViewHolder(@NonNull CastAdapter.ViewHolder holder, int position) {
         holder.charater_cast.setText(castModels.get(position).getCharacter());
         holder.name_cast.setText(castModels.get(position).getName());
-        new FilmAdapter.DownloadImageTask(holder.image_cast, holder.shimmer_cast).execute(Credentials.BASE_IMAGE_URL + castModels.get(position).getProfile_path());
+        new DownloadImageTask(holder.image_cast, holder.shimmer_cast).execute(Credentials.BASE_IMAGE_URL + castModels.get(position).getProfile_path());
     }
 
     @Override

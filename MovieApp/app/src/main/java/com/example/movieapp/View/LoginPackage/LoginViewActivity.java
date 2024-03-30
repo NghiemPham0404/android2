@@ -1,43 +1,36 @@
-package com.example.movieapp.View;
+package com.example.movieapp.View.LoginPackage;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.movieapp.MainActivity;
+import com.example.movieapp.AsyncTasks.LoginAsyncTask;
+import com.example.movieapp.Interfaces.Form_validate;
 import com.example.movieapp.R;
+import com.example.movieapp.View.HomeActivity;
+import com.example.movieapp.utils.Credentials;
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.auth.api.identity.BeginSignInResult;
 import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.json.JSONObject;
 
-import java.io.*;
-import java.net.*;
-
-
-public class LoginViewActivity extends AppCompatActivity {
-    Button loginBtn, loginBtn_gg, loginBtn_face, forgot_passBtn, loginBtn_sms;
+public class LoginViewActivity extends AppCompatActivity implements Form_validate {
+    TextInputEditText email_txt, password_txt;
+    Button loginBtn, loginBtn_gg, loginBtn_face, forgot_passBtn, loginBtn_sms, signupBtn;
+    ConstraintLayout loadingScreen;
 
     private SignInClient onTapClient;
     private BeginSignInRequest signInRequest;
@@ -55,8 +48,13 @@ public class LoginViewActivity extends AppCompatActivity {
     }
 
     public void initComponents(){
-        loginBtn = findViewById(R.id.loginBtn);
+        email_txt = findViewById(R.id.username_login_txt);
+        password_txt = findViewById(R.id.password_login_txt);
+
+        loginBtn = findViewById(R.id.sign_in_btn);
         loginBtn_gg = findViewById(R.id.login_google);
+        signupBtn = findViewById(R.id.sign_up_btn_login);
+        loadingScreen = findViewById(R.id.loadingLayout);
     }
 
     public void initFeature(){
@@ -73,14 +71,22 @@ public class LoginViewActivity extends AppCompatActivity {
             }
         });
 
+        signupBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent sign_upIntent = new Intent(LoginViewActivity.this, RegisterView.class);
+                startActivity(sign_upIntent);
+            }
+        });
+
     }
 
     public void signInDefault() {
-        String login_string = "https://script.google.com/macros/s/AKfycbxLJe1OSmnLSKY_v40woVDCWhHgI7KRTGl6NLl7BUazg2307dSMp-97ufAuvXzt4V2y/exec";
-        String username = ((TextInputEditText)findViewById(R.id.username_login_txt)).getText().toString().trim();
-        String password = ((TextInputEditText)findViewById(R.id.password_login_txt)).getText().toString().trim();
+        String login_string = Credentials.login_link;
+        String username = email_txt.getText().toString().trim();
+        String password = password_txt.getText().toString().trim();
 
-        new LoginAsyncTask(login_string, username, password).execute();
+        new LoginAsyncTask(this ,login_string, username, password, loadingScreen).execute();
     }
 
     public void signInWithGoogle(){
@@ -144,81 +150,14 @@ public class LoginViewActivity extends AppCompatActivity {
                 break;
         }
     }
-    public class  LoginAsyncTask extends AsyncTask<Void, Void, String> {
-        private static final String TAG = "LOGIN TASK";
 
-        private String url;
-        private String username;
-        private String password;
+    @Override
+    public boolean validate() {
+        return false;
+    }
 
-        public LoginAsyncTask(String url, String username, String password) {
-            this.url = url;
-            this.username = username;
-            this.password = password;
-        }
+    @Override
+    public void turnOffValidateViews() {
 
-        @Override
-        protected String doInBackground(Void... params) {
-            try {
-                return postToUrl(url, username, password);
-            } catch (IOException e) {
-                Log.e(TAG, "Error posting data", e);
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            // Handle the result here
-            if (result != null) {
-                Log.d(TAG, "Response: " + result);
-
-                try {
-                    // Convert the response into a JSON object.
-                    JSONObject jsonObject = new JSONObject(result);
-                    String login_result =  jsonObject.getString("success");
-                    if(login_result.equalsIgnoreCase("true")){
-                        Intent intent = new Intent(LoginViewActivity.this, HomeActivity.class);
-                        startActivity(intent);
-                    }else{
-
-                    }
-                }catch (Exception e){
-
-                    }
-
-            } else {
-                Log.e(TAG, "Failed to get response");
-            }
-        }
-
-        private String postToUrl(String urlString, String username, String password) throws IOException {
-            URL url = new URL(urlString);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setDoOutput(true);
-
-            // Construct data to send
-            String data = "username=" + URLEncoder.encode(username, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8");
-
-            // Send data
-            try (OutputStream os = conn.getOutputStream()) {
-                byte[] input = data.getBytes("UTF-8");
-                os.write(input, 0, input.length);
-            }
-
-            // Get the response
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"))) {
-                StringBuilder response = new StringBuilder();
-                String responseLine;
-                while ((responseLine = br.readLine()) != null) {
-                    response.append(responseLine.trim());
-                }
-
-                return response.toString();
-            } finally {
-                conn.disconnect();
-            }
-        }
     }
 }

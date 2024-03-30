@@ -40,23 +40,56 @@
             app:hintTextColor="@color/white">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/username_txt_signup"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@null"
-                android:hint="username"
+                android:hint="user name"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/username_err_signup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="TextView"
             android:textColor="@color/neon_pink"
             android:textSize="16dp"
-            android:textStyle="italic" />
+            android:textStyle="italic"
+            android:visibility="gone" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/text_input_bg"
+            android:padding="5dp"
+            android:textColorHint="@color/white"
+            app:hintTextColor="@color/white">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/email_txt_signup"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@null"
+                android:hint="email"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/email_err_signup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="TextView"
+            android:textColor="@color/neon_pink"
+            android:textSize="16dp"
+            android:textStyle="italic"
+            android:visibility="gone" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -69,23 +102,26 @@
             app:hintTextColor="@color/white">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password_txt_signup"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@null"
                 android:hint="password"
+                android:inputType="textPassword"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:id="@+id/textView15"
+            android:id="@+id/password_err_signup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="TextView"
             android:textColor="@color/neon_pink"
             android:textSize="16dp"
-            android:textStyle="italic" />
+            android:textStyle="italic"
+            android:visibility="gone" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -98,55 +134,29 @@
             app:hintTextColor="@color/white">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password_verify_signup"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@null"
-                android:hint="verify password"
+                android:hint="verified password"
+                android:inputType="textPassword"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:id="@+id/textView16"
+            android:id="@+id/password_verify_err_signup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="TextView"
             android:textColor="@color/neon_pink"
             android:textSize="16dp"
-            android:textStyle="italic" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:layout_weight="1"
-            android:background="@drawable/text_input_bg"
-            android:padding="5dp"
-            android:textColorHint="@color/white"
-            app:hintTextColor="@color/white">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:background="@null"
-                android:hint="email"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:id="@+id/textView18"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="TextView"
-            android:textColor="@color/neon_pink"
-            android:textSize="16dp"
-            android:textStyle="italic" />
+            android:textStyle="italic"
+            android:visibility="gone" />
 
         <Button
-            android:id="@+id/loginBtn"
+            android:id="@+id/sign_up_btn"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_margin="10dp"
@@ -158,5 +168,11 @@
             android:textColor="@color/white" />
 
     </LinearLayout>
+
+    <include
+        layout="@layout/loading_layout"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
