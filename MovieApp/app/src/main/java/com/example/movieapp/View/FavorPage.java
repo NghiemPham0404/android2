@@ -27,7 +27,8 @@ public class FavorPage extends Fragment implements Fragment_Interface {
     private Button filter_btn, star_btn, sort_btn;
     int c_sort = 0;
 
-    private PopupWindow filter_popup, rating_popup;
+    PopupWindow filter_popup, rating_popup;
+
     FrameLayout layout;
 
     // TODO: Rename parameter arguments, choose names that match

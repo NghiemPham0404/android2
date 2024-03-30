@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -28,6 +29,8 @@ import android.widget.Toast;
 
 import com.example.movieapp.Adapters.CastAdapter;
 import com.example.movieapp.Adapters.FilmAdapter;
+import com.example.movieapp.AsyncTasks.DownloadImageTask;
+import com.example.movieapp.Interfaces.Form_validate;
 import com.example.movieapp.Model.CastModel;
 import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.Model.VideoModel;
@@ -44,7 +47,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Movie_infomation extends AppCompatActivity {
+public class Movie_infomation extends AppCompatActivity{
 
     TextView film_title, film_overview, rating, genres_info, time_info, date_info;
     private ImageView poster_image;
@@ -86,15 +89,22 @@ public class Movie_infomation extends AppCompatActivity {
         genres_info = findViewById(R.id.genre_info);
         imageView2 = findViewById(R.id.imageView2);
         playButton = findViewById(R.id.playBtn_info);
-        initComponent();
+
+        int orientation = getResources().getConfiguration().orientation;
+        if(orientation == Configuration.ORIENTATION_PORTRAIT){
+            initComponent();
+        }else{
+            initTrailers();
+        }
+
     }
 
     public void initComponent(){
-        new FilmAdapter.DownloadImageTask(poster_image).execute(Credentials.BASE_IMAGE_URL + movie.getPoster_path());
+        new DownloadImageTask(poster_image).execute(Credentials.BASE_IMAGE_URL + movie.getPoster_path());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             imageView2.setRenderEffect(RenderEffect.createBlurEffect(100,100, Shader.TileMode.MIRROR));
-            new FilmAdapter.DownloadImageTask(imageView2).execute(Credentials.BASE_IMAGE_URL + movie.getPoster_path());
+            new DownloadImageTask(imageView2).execute(Credentials.BASE_IMAGE_URL + movie.getPoster_path());
         }else{
             imageView2.setVisibility(View.GONE);
         }
@@ -124,7 +134,7 @@ public class Movie_infomation extends AppCompatActivity {
 
     private void initTrailers() {
         Call<VideoResponse> videoResponseCall = movieApi.searchVideoByFilmID(
-                Credentials.BASE_MOVIE_URL+movie.getId()+"/videos",
+                movie.getId(),
                 Credentials.API_KEY
         );
         videoResponseCall.enqueue(new Callback<VideoResponse>() {
@@ -161,7 +171,7 @@ public class Movie_infomation extends AppCompatActivity {
 
     private void initCast() {
         Call<CastResponse> castResponseCall = movieApi.searchCastByFilmID(
-               Credentials.BASE_MOVIE_URL +movie.getId()+"/credits",
+                movie.getId(),
                 Credentials.API_KEY
         );
         castResponseCall.enqueue(new Callback<CastResponse>() {

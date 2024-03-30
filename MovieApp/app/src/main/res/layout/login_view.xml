@@ -44,9 +44,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@null"
-                android:hint="username"
+                android:hint="email"
                 android:textColor="@color/white"
-                android:textColorHint="@color/white" />
+                android:textColorHint="@color/white"
+                android:singleLine="true"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -77,7 +78,8 @@
                 android:background="@null"
                 android:hint="password"
                 android:textColor="@color/white"
-                android:textColorHint="@color/white" />
+                android:textColorHint="@color/white"
+                android:singleLine="true"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -92,7 +94,7 @@
             android:visibility="gone" />
 
         <Button
-            android:id="@+id/loginBtn"
+            android:id="@+id/sign_in_btn"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_margin="10dp"
@@ -233,7 +235,7 @@
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/signUpBtn"
+                android:id="@+id/sign_up_btn_login"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="158dp"
                 android:layout_height="wrap_content"
@@ -248,5 +250,11 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <include
+        layout="@layout/loading_layout"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

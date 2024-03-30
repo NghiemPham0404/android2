@@ -16,12 +16,11 @@ public interface MovieApi {
 
     //tìm kiếm phim
     //normal searching link : https://api.themoviedb.org/3/search/movie?query= + {movie_name} + &api_key=cf32372af846ed46863011b283bdcba1
-    @GET
+    @GET(Credentials.SEARCH_MOVIE_URL)
     Call<MovieSearchResponse> searchMovie(
-            @Url() String url,
         @Query("api_key") String key,
         @Query("query") String query,
-        @Query("page") String page
+        @Query("page") int page
         );
 
 
@@ -41,16 +40,16 @@ public interface MovieApi {
 
 
     //https://api.themoviedb.org/3/movie/299536/credits?api_key=cf32372af846ed46863011b283bdcba1
-    @GET
+    @GET("3/movie/{movie_id}/credits")
     Call<CastResponse> searchCastByFilmID(
-            @Url()  String url,
+            @Path("movie_id") int movie_id,
             @Query("api_key") String key
     );
 
     //https://api.themoviedb.org/3/movie/6/videos?api_key=cf32372af846ed46863011b283bdcba1
-    @GET
+    @GET("3/movie/{movie_id}/videos")
     Call<VideoResponse> searchVideoByFilmID(
-            @Url()  String url,
+            @Path("movie_id") int movie_id,
             @Query("api_key") String key
     );
 

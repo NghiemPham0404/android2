@@ -23,4 +23,10 @@ public class Credentials {
     public  static final String us_language = "en-US";
     public static final String vn_language = "vi";
     public static final String es_language = "es";
+
+
+    // TODO : SIGNIN, SIGNUP
+
+    public static final String login_link = "https://script.google.com/macros/s/AKfycbxLJe1OSmnLSKY_v40woVDCWhHgI7KRTGl6NLl7BUazg2307dSMp-97ufAuvXzt4V2y/exec";
+    public static final String signup_link = "https://script.google.com/macros/s/AKfycbztDFqDQ27AEJtc7HR5PQa_Jtj1sTYum8yyP94FOqhRzT_nPiu5ySlHsQ3c3oll77cA/exec";
 }

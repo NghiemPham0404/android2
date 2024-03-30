@@ -64,5 +64,8 @@ dependencies {
     implementation ("androidx.credentials:credentials-play-services-auth:1.2.1")
     implementation ("com.google.android.libraries.identity.googleid:googleid:1.1.0")
 
+    // View Model
+    implementation("androidx.lifecycle:lifecycle-viewmodel:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-livedata:2.7.0")
 
 }

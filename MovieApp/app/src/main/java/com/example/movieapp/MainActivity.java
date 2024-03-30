@@ -9,7 +9,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.example.movieapp.View.LoginViewActivity;
+import com.example.movieapp.View.LoginPackage.LoginViewActivity;
 
 public class MainActivity extends AppCompatActivity {
 

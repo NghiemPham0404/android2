@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.movieapp.AsyncTasks.DownloadImageTask;
 import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.R;
 import com.example.movieapp.View.Movie_infomation;
@@ -105,51 +106,4 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder>{
             }
     }
 
-    public static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView imageView;
-        ShimmerFrameLayout shimmerFrameLayout;
-
-        public DownloadImageTask(ImageView imageView) {
-            this.imageView = imageView;
-        }
-
-        public DownloadImageTask(ImageView imageView,  ShimmerFrameLayout shimmerFrameLayout) {
-            this.imageView = imageView;
-            this.shimmerFrameLayout = shimmerFrameLayout;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            if(shimmerFrameLayout!=null){
-                shimmerFrameLayout.setDuration(1000); // Shimmer animation duration in milliseconds
-                shimmerFrameLayout.setRepeatCount(ValueAnimator.INFINITE); // Repeat animation indefinitely
-                shimmerFrameLayout.setRepeatDelay(500); // Delay between animation cycles
-                shimmerFrameLayout.startShimmerAnimation();
-            }
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... urls) {
-            String url = urls[0];
-            Bitmap bitmap = null;
-            try {
-                InputStream in = new java.net.URL(url).openStream();
-                bitmap = BitmapFactory.decodeStream(in);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return bitmap;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            if(result!=null){
-                imageView.setBackgroundResource(R.color.black);
-                imageView.setImageBitmap(result);
-                if(shimmerFrameLayout!=null) {
-                    shimmerFrameLayout.stopShimmerAnimation();
-                }
-            }
-        }
-    }
 }

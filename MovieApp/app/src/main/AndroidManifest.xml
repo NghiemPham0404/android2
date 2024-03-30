@@ -17,14 +17,24 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="30">
         <activity
-            android:name=".View.UserPackage.Settings.ModeSetting"
+            android:name=".View.UserPackage.Settings.LanguageSettingView"
             android:exported="false" />
+        <activity
+            android:name=".View.LoginPackage.PreLoginView"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".View.UserPackage.Settings.ModeSettingView"
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".View.UserPackage.Settings.SettingsView"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".View.RegisterView"
-            android:exported="false" />
+            android:name=".View.LoginPackage.RegisterView"
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".View.UserPackage.UserInfomation.UpdateUser_Information"
             android:exported="false"
@@ -34,7 +44,7 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.LoginViewActivity"
+            android:name=".View.LoginPackage.LoginViewActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
