@@ -1,6 +1,7 @@
 package com.example.movieapp.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.movieapp.AsyncTasks.DownloadImageTask;
 import com.example.movieapp.Model.CastModel;
 import com.example.movieapp.R;
+import com.example.movieapp.View.PersonActivity;
 import com.example.movieapp.utils.Credentials;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -41,6 +43,14 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder>{
         holder.charater_cast.setText(castModels.get(position).getCharacter());
         holder.name_cast.setText(castModels.get(position).getName());
         new DownloadImageTask(holder.image_cast, holder.shimmer_cast).execute(Credentials.BASE_IMAGE_URL + castModels.get(position).getProfile_path());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent castIntent = new Intent(context, PersonActivity.class);
+                castIntent.putExtra("cast_id", castModels.get(position).getId());
+                context.startActivity(castIntent);
+            }
+        });
     }
 
     @Override

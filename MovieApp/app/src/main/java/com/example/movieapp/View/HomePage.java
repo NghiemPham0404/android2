@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +55,10 @@ public class HomePage extends Fragment implements Fragment_Interface {
     LinearLayout divSearch, filter_bar;
 
     // LIVE data
-    MovieListViewModel movieListViewModel;
+    MovieListViewModel movieList_search_ViewModel, movieList_popular_ViewModel, movieList_nowPlaying_ViewModel, movieList_topRated_ViewModel,
+    movieList_upcoming_ViewModel;
+
+    int page = 1;
 
     // Filter
     private Button filter_btn, star_btn, sort_btn;
@@ -105,16 +107,42 @@ public class HomePage extends Fragment implements Fragment_Interface {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        movieListViewModel =new ViewModelProvider(this).get(MovieListViewModel.class);
+        movieList_search_ViewModel =new ViewModelProvider(this).get(MovieListViewModel.class);
+
+        ObserveAnyChanges();
     }
 
     public void ObserveAnyChanges(){
-        movieListViewModel.getMovies().observe(this, new Observer<List<MovieModel>>() {
-            @Override
-            public void onChanged(List<MovieModel> movieModels) {
+        if(movieList_search_ViewModel.getMovies() == null){
+            Log.e("TAG", "ERROR");
+        }
+        if(movieList_search_ViewModel !=null){
+            movieList_search_ViewModel.getMovies().observe(this, new Observer<List<MovieModel>>() {
+                @Override
+                public void onChanged(List<MovieModel> movieModels) {
+                    if(movieModels!=null){
+                        moviesGroups = new ArrayList<>();
+                        List<MovieModel> movies = movieList_search_ViewModel.getMovies().getValue();
 
-            }
-        });
+                        String search_title = (movies.size()> 1)? movies.size()+" results has been found" :
+                                                            0 + " result has been found";
+
+                        MoviesGroup  movieGroup = new MoviesGroup(movies, search_title);
+                        moviesGroups.add(movieGroup);
+
+                        moviesGroupAdapter = new MoviesGroupAdapter(getContext(), moviesGroups);
+                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                        moviesGroupsRecyclerView.setLayoutManager(linearLayoutManager);
+                        moviesGroupsRecyclerView.setAdapter(moviesGroupAdapter);
+                        filter_bar.setVisibility(View.VISIBLE);
+
+                        for(MovieModel movieModel : movieModels){
+                            Log.v("Tagv", "On change" + movieModel.getTitle());
+                        }
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -154,7 +182,7 @@ public class HomePage extends Fragment implements Fragment_Interface {
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchMovie();
+                searchMovie(searchBox.getText().toString().trim(), page);
                 divSearch.setBackgroundResource(R.drawable.text_input);
             }
         });
@@ -164,19 +192,19 @@ public class HomePage extends Fragment implements Fragment_Interface {
         // Gọi các danh sách film
         Call<MovieSearchResponse> NowPlayingResponseCall =
                 movieApi.searchMoviesList(Credentials.BASE_URL
-                        +Credentials.NOW_PLAYING, Credentials.API_KEY);
+                        +Credentials.NOW_PLAYING, Credentials.API_KEY, 1);
 
         Call<MovieSearchResponse>PopularResponseCall =
                 movieApi.searchMoviesList(Credentials.BASE_URL
-                        +Credentials.POPULAR, Credentials.API_KEY);
+                        +Credentials.POPULAR, Credentials.API_KEY, 1);
 
         Call<MovieSearchResponse> TopRatedResponseCall =
                 movieApi.searchMoviesList(Credentials.BASE_URL
-                        +Credentials.TOP_RATED, Credentials.API_KEY);
+                        +Credentials.TOP_RATED, Credentials.API_KEY, 1);
 
         Call<MovieSearchResponse>UpcomingResponseCall =
                 movieApi.searchMoviesList(Credentials.BASE_URL
-                        +Credentials.UPCOMING, Credentials.API_KEY);
+                        +Credentials.UPCOMING, Credentials.API_KEY, 1);
 
         moviesGroups = new ArrayList<>();
 
@@ -244,6 +272,13 @@ public class HomePage extends Fragment implements Fragment_Interface {
         }
     }
 
+    public void searchMovie(String query, int page){
+        movieList_search_ViewModel.searchMovieApi(query, page);
+    }
+
+    public void configureSearchRecycleView(){
+
+    }
 
     @Override
     public void initFilterBar(){
@@ -269,8 +304,8 @@ public class HomePage extends Fragment implements Fragment_Interface {
             LayoutInflater inflater = (LayoutInflater)   this.getContext().getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
             View popUpFilter = inflater.inflate(R.layout.filter_search_popup, null);
 
-            int width = ViewGroup.LayoutParams.MATCH_PARENT;
-            int height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            int width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
             boolean focusable = true;
             filter_popup= new PopupWindow(popUpFilter, width, height, focusable);
             filter_popup.setAnimationStyle(R.style.PopupAnimation);
@@ -278,7 +313,7 @@ public class HomePage extends Fragment implements Fragment_Interface {
         layout.post(new Runnable() {
             @Override
             public void run() {
-                filter_popup.showAtLocation(layout, Gravity.TOP, 0,450);
+                filter_popup.showAtLocation(layout, Gravity.RIGHT, 0,0);
             }
         });
     }
@@ -288,8 +323,8 @@ public class HomePage extends Fragment implements Fragment_Interface {
         if(rating_popup == null){
             LayoutInflater inflater = (LayoutInflater)   this.getContext().getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
             View popUpFilter = inflater.inflate(R.layout.filter_starbar, null);
-            int width = ViewGroup.LayoutParams.MATCH_PARENT;
-            int height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            int width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
             boolean focusable = true;
             rating_popup= new PopupWindow(popUpFilter, width, height, focusable);
             rating_popup.setAnimationStyle(R.style.PopupAnimation);
@@ -297,7 +332,7 @@ public class HomePage extends Fragment implements Fragment_Interface {
         layout.post(new Runnable() {
             @Override
             public void run() {
-                rating_popup.showAtLocation(layout, Gravity.TOP, 0,450);
+                rating_popup.showAtLocation(layout, Gravity.RIGHT, 0,0);
             }
         });
     }

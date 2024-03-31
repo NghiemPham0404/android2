@@ -23,28 +23,44 @@ public class MovieApiClient {
     private static MovieApiClient instance;
     private MutableLiveData<List<MovieModel>> mMovies;
 
-    RetrieveMoviesRunnable retrieveMoviesRunnable;
+    private RetrieveMoviesRunnable retrieveMoviesRunnable;
 
-    public static MovieApiClient getInstance(){
-            if(instance == null){
-                instance = new MovieApiClient();
-            }
-            return instance;
+    public static MovieApiClient getInstance() {
+        if (instance == null) {
+            instance = new MovieApiClient();
+        }
+        return instance;
     }
 
-    public MovieApiClient(){
+    public MovieApiClient() {
         mMovies = new MutableLiveData<>();
     }
 
-    public MutableLiveData<List<MovieModel>> getMovies(){
+    public MutableLiveData<List<MovieModel>> getMovies() {
         return mMovies;
     }
 
-    public void searchMovieApi(String query, int page){
-        if(retrieveMoviesRunnable!=null){
+    public void searchMovieApi(String query, int page) {
+        if (retrieveMoviesRunnable != null) {
             retrieveMoviesRunnable = null;
         }
-        retrieveMoviesRunnable = new RetrieveMoviesRunnable(query,page);
+        retrieveMoviesRunnable = new RetrieveMoviesRunnable(query, page);
+        final Future myHandler = AppExecutors.getInstance().networkIO().submit(retrieveMoviesRunnable);
+
+        AppExecutors.getInstance().networkIO().schedule(new Runnable() {
+            @Override
+            public void run() {
+                // Hủy lời gọi Retrofit
+                myHandler.cancel(true);
+            }
+        }, 10, TimeUnit.SECONDS);
+    }
+
+    public void searchMovieApi(int list_type, int page) {
+        if (retrieveMoviesRunnable != null) {
+            retrieveMoviesRunnable = null;
+        }
+        retrieveMoviesRunnable = new RetrieveMoviesRunnable(list_type, page);
         final Future myHandler = AppExecutors.getInstance().networkIO().submit(new Runnable() {
             @Override
             public void run() {
@@ -58,56 +74,86 @@ public class MovieApiClient {
                 // Hủy lời gọi Retrofit
                 myHandler.cancel(true);
             }
-        }, 10, TimeUnit.SECONDS );
-
-
-
+        }, 10, TimeUnit.SECONDS);
     }
+
     // Lấy dữ liệu từ Retrofit bằng class Runnable
     // cần 2 loại truy vấn, theo ID và tiềm kiếm
-    private class RetrieveMoviesRunnable implements Runnable{
+    private class RetrieveMoviesRunnable implements Runnable {
 
         private String query;
         private int pageNumber;
         boolean cancelRequest;
 
-        public RetrieveMoviesRunnable(String query, int pageNumber){
+        private int list_type = 0;
+
+        public RetrieveMoviesRunnable(String query, int pageNumber) {
             this.query = query;
             this.pageNumber = pageNumber;
             this.cancelRequest = false;
         }
 
+        public RetrieveMoviesRunnable(int list_type, int pageNumber) {
+            this.list_type = list_type;
+            this.pageNumber = pageNumber;
+            this.cancelRequest = false;
+        }
+
+
         @Override
         public void run() {
+            Response response;
             try {
-                Response response = getMovies(query, pageNumber).execute();
-                if(cancelRequest){
+                if (list_type == 0) {
+                    response = getMovies(query, pageNumber).execute();
+                } else {
+                    response = getMovies(list_type, pageNumber).execute();
+                }
+
+                if (cancelRequest) {
+                    cancelRequest();
                     return;
                 }
 
-                if(response.code() == 200){
+                if (response.code() == 200) {
                     List<MovieModel> list = new ArrayList<>(((MovieSearchResponse) response.body()).getMovies());
-                    if(pageNumber == 1){
+                    if (pageNumber == 1) {
                         mMovies.postValue(list);
-                    }else{
+                    } else {
                         List currentList = mMovies.getValue();
                         currentList.addAll(list);
                         mMovies.postValue(currentList);
                     }
-                }else{
+                } else {
                     String error = response.errorBody().string();
                     Log.v("Tag", error);
                     mMovies.postValue(null);
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        private Call<MovieSearchResponse> getMovies(String query, int pageNumber){
-            return MyService.getMovieApi().searchMovie(Credentials.API_KEY, query, pageNumber );
+
+        private Call<MovieSearchResponse> getMovies(String query, int pageNumber) {
+            return MyService.getMovieApi().searchMovie(Credentials.API_KEY, query, pageNumber);
         }
 
-        private void cancelRequest(){
+        private Call<MovieSearchResponse> getMovies(int list_type, int pageNumber) {
+            switch (list_type) {
+                case 1:
+                    return MyService.getMovieApi().searchMoviesList(Credentials.BASE_URL + Credentials.NOW_PLAYING, Credentials.API_KEY, pageNumber);
+                case 2:
+                    return MyService.getMovieApi().searchMoviesList(Credentials.BASE_URL + Credentials.POPULAR, Credentials.API_KEY, pageNumber);
+                case 3:
+                    return MyService.getMovieApi().searchMoviesList(Credentials.BASE_URL + Credentials.TOP_RATED, Credentials.API_KEY, pageNumber);
+                case 4:
+                    return MyService.getMovieApi().searchMoviesList(Credentials.BASE_URL + Credentials.UPCOMING, Credentials.API_KEY, pageNumber);
+                default:
+                    return MyService.getMovieApi().searchMoviesList(Credentials.BASE_URL + Credentials.NOW_PLAYING, Credentials.API_KEY, pageNumber);
+            }
+        }
+
+        private void cancelRequest() {
             Log.v("QUERY TASK", "Canceled request");
 
         }

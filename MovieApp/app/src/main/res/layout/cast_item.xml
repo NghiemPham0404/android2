@@ -16,8 +16,8 @@
             android:id="@+id/image_cast"
             android:layout_width="100dp"
             android:layout_height="150dp"
-            app:shapeAppearanceOverlay="@style/roundedBorderPoster"
-            tools:srcCompat="@tools:sample/avatars" />
+            android:background="@color/bright_gray"
+            app:shapeAppearanceOverlay="@style/roundedBorderPoster" />
     </com.facebook.shimmer.ShimmerFrameLayout>
 
 

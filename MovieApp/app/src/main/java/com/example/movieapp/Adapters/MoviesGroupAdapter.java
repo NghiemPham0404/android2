@@ -39,7 +39,12 @@ public class MoviesGroupAdapter extends RecyclerView.Adapter<MoviesGroupAdapter.
     @Override
     public void onBindViewHolder(@NonNull MoviesGroupAdapter.ViewHolder holder, int position) {
         holder.groupTitle.setText(moviesGroups.get(position).getTitle());
-        initMovieGroupMovie(holder.moviesGroupRecycler, moviesGroups.get(position).getMovies());
+        if(moviesGroups.get(position).getTitle().equals("Popular")){
+            initMovieGroupMovie(holder.moviesGroupRecycler, moviesGroups.get(position).getMovies(), 1);
+        }else{
+            initMovieGroupMovie(holder.moviesGroupRecycler, moviesGroups.get(position).getMovies());
+        }
+
     }
 
     @Override
@@ -68,6 +73,19 @@ public class MoviesGroupAdapter extends RecyclerView.Adapter<MoviesGroupAdapter.
 
 
         FilmAdapter filmAdapter = new FilmAdapter(movies, context);
+        moviesRecyclerView.setAdapter(filmAdapter);
+    }
+
+    private void initMovieGroupMovie(RecyclerView moviesRecyclerView, List<MovieModel> movies, int view_type){
+        if(this.moviesGroups.size() > 1){
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.context , RecyclerView.HORIZONTAL, false);
+            moviesRecyclerView.setLayoutManager(linearLayoutManager);
+        }else{
+            moviesRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        }
+
+
+        FilmAdapter filmAdapter = new FilmAdapter(movies, context, view_type);
         moviesRecyclerView.setAdapter(filmAdapter);
     }
 }
