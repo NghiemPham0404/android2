@@ -5,18 +5,17 @@
     android:layout_height="wrap_content">
 
     <Button
-        android:id="@+id/filter_btn"
+        android:id="@+id/sort_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_weight="1"
         android:background="@drawable/text_input"
-        android:drawableRight="@drawable/filter"
+        android:drawableRight="@drawable/sort_icon"
         android:fontFamily="@font/inter"
         android:paddingRight="20sp"
-        android:text="filter"
-        android:textAlignment="center"
+        android:text="Sort"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="20sp"
@@ -40,17 +39,18 @@
         android:textStyle="bold" />
 
     <Button
-        android:id="@+id/sort_btn"
+        android:id="@+id/filter_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_weight="1"
         android:background="@drawable/text_input"
-        android:drawableRight="@drawable/sort_icon"
+        android:drawableRight="@drawable/filter"
         android:fontFamily="@font/inter"
         android:paddingRight="20sp"
-        android:text="Sort"
+        android:text="filter"
+        android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="20sp"

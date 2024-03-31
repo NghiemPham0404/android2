@@ -77,26 +77,25 @@ public class Movie_infomation extends AppCompatActivity{
     }
 
     public void init(){
-        poster_image = findViewById(R.id.filmImage);
-        backBtn = findViewById(R.id.backBtn_info);
-        film_title = findViewById(R.id.film_title_info);
-        film_overview = findViewById(R.id.film_overview);
-        castRecyclerView = findViewById(R.id.castRecyclerView);
-        trailer_webView = findViewById(R.id.trailer_webview);
-        rating = findViewById(R.id.movie_rating);
-        date_info = findViewById(R.id.publish_date_info);
-        time_info = findViewById(R.id.time_info);
-        genres_info = findViewById(R.id.genre_info);
-        imageView2 = findViewById(R.id.imageView2);
-        playButton = findViewById(R.id.playBtn_info);
-
         int orientation = getResources().getConfiguration().orientation;
+        Log.i("IS LANDCAPSE ", ""+ (orientation == Configuration.ORIENTATION_PORTRAIT));
         if(orientation == Configuration.ORIENTATION_PORTRAIT){
-            initComponent();
-        }else{
-            initTrailers();
-        }
+            poster_image = findViewById(R.id.filmImage);
+            backBtn = findViewById(R.id.backBtn_info);
+            film_title = findViewById(R.id.film_title_info);
+            film_overview = findViewById(R.id.film_overview);
+            castRecyclerView = findViewById(R.id.castRecyclerView);
 
+            rating = findViewById(R.id.movie_rating);
+            date_info = findViewById(R.id.publish_date_info);
+            time_info = findViewById(R.id.time_info);
+            genres_info = findViewById(R.id.genre_info);
+            imageView2 = findViewById(R.id.imageView2);
+            playButton = findViewById(R.id.playBtn_info);
+            initComponent();
+        }
+        trailer_webView = findViewById(R.id.trailer_webview);
+        initTrailers();
     }
 
     public void initComponent(){
@@ -106,7 +105,7 @@ public class Movie_infomation extends AppCompatActivity{
             imageView2.setRenderEffect(RenderEffect.createBlurEffect(100,100, Shader.TileMode.MIRROR));
             new DownloadImageTask(imageView2).execute(Credentials.BASE_IMAGE_URL + movie.getPoster_path());
         }else{
-            imageView2.setVisibility(View.GONE);
+            new DownloadImageTask(imageView2).execute(Credentials.BASE_IMAGE_URL + movie.getPoster_path());
         }
         this.film_title.setText(this.movie.getTitle());
         this.film_overview.setText(this.movie.getOverriew());

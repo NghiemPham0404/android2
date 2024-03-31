@@ -28,7 +28,8 @@ public interface MovieApi {
     @GET
     Call<MovieSearchResponse> searchMoviesList(
             @Url()  String url,
-            @Query("api_key") String key
+            @Query("api_key") String key,
+            @Query("page") int page
     );
 
     @GET
@@ -38,6 +39,8 @@ public interface MovieApi {
             @Query("language") String language
     );
 
+    //https://api.themoviedb.org/3/genre/movie/list
+    //https://api.themoviedb.org/3/discover/movie
 
     //https://api.themoviedb.org/3/movie/299536/credits?api_key=cf32372af846ed46863011b283bdcba1
     @GET("3/movie/{movie_id}/credits")

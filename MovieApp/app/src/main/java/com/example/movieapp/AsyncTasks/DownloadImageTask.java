@@ -60,6 +60,7 @@ public  class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
             if(shimmerFrameLayout!=null) {
                 shimmerFrameLayout.stopShimmerAnimation();
             }
+            imageView.setBackgroundResource(R.color.bright_gray);
         }
     }
 }

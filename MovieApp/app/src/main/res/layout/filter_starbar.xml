@@ -1,127 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#DD000000"
-    android:orientation="vertical"
-    android:padding="10dp">
-
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:fontFamily="@font/inter"
-        android:text="Rating filter"
-        android:textColor="@color/white"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
-    <RadioGroup
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <RadioButton
-            android:id="@+id/radioButton5"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            android:background="@drawable/toggle_bg"
-            android:buttonTint="@color/neon_pink"
-            android:fontFamily="@font/inter"
-            android:text="5 stars"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="normal" />
-
-        <RadioButton
-            android:id="@+id/radioButton"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            android:background="@drawable/toggle_bg"
-            android:buttonTint="@color/neon_pink"
-            android:fontFamily="@font/inter"
-            android:text="above 4 stars"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="normal" />
-
-        <RadioButton
-            android:id="@+id/radioButton2"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            android:background="@drawable/toggle_bg"
-            android:buttonTint="@color/neon_pink"
-            android:fontFamily="@font/inter"
-            android:text="above 3 stars"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="normal" />
-
-        <RadioButton
-            android:id="@+id/radioButton3"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            android:background="@drawable/toggle_bg"
-            android:buttonTint="@color/neon_pink"
-            android:fontFamily="@font/inter"
-            android:text="above 2 starts"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="normal" />
-
-        <RadioButton
-            android:id="@+id/radioButton4"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            android:background="@drawable/toggle_bg"
-            android:buttonTint="@color/neon_pink"
-            android:fontFamily="@font/inter"
-            android:text="above 1 star"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="normal" />
-    </RadioGroup>
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="#EE000000">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:background="@color/black"
+        android:orientation="vertical"
+        android:padding="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-            android:id="@+id/cancel_filter_popup"
-            style="@style/Widget.AppCompat.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/toggle_stroke"
-            android:fontFamily="@font/inter"
-            android:text="Reset"
-            android:textAllCaps="false"
-            android:textColor="@color/neon_pink"
-            android:textSize="20dp" />
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/gradient_corner_bg"
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
             android:fontFamily="@font/inter"
-            android:text="Apply"
-            android:textAllCaps="false"
+            android:text="Rating filter"
             android:textColor="@color/white"
-            android:textSize="18dp" />
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RadioButton
+                android:id="@+id/radioButton5"
+                android:layout_width="250dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/toggle_bg"
+                android:buttonTint="@color/neon_pink"
+                android:fontFamily="@font/inter"
+                android:text="5 stars"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="normal" />
+
+            <RadioButton
+                android:id="@+id/radioButton"
+                android:layout_width="250dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/toggle_bg"
+                android:buttonTint="@color/neon_pink"
+                android:fontFamily="@font/inter"
+                android:text="above 4 stars"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="normal" />
+
+            <RadioButton
+                android:id="@+id/radioButton2"
+                android:layout_width="250dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/toggle_bg"
+                android:buttonTint="@color/neon_pink"
+                android:fontFamily="@font/inter"
+                android:text="above 3 stars"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="normal" />
+
+            <RadioButton
+                android:id="@+id/radioButton3"
+                android:layout_width="250dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/toggle_bg"
+                android:buttonTint="@color/neon_pink"
+                android:fontFamily="@font/inter"
+                android:text="above 2 starts"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="normal" />
+
+            <RadioButton
+                android:id="@+id/radioButton4"
+                android:layout_width="250dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/toggle_bg"
+                android:buttonTint="@color/neon_pink"
+                android:fontFamily="@font/inter"
+                android:text="above 1 star"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="normal" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/cancel_filter_popup"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/toggle_stroke"
+                android:fontFamily="@font/inter"
+                android:text="Reset"
+                android:textAllCaps="false"
+                android:textColor="@color/neon_pink"
+                android:textSize="20dp" />
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/gradient_corner_bg"
+                android:fontFamily="@font/inter"
+                android:text="Apply"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="18dp" />
+
+        </LinearLayout>
 
     </LinearLayout>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

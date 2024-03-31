@@ -33,45 +33,79 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder>{
+public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private List<MovieModel> movies;
     private Context context;
+    int view_type = 0;
 
     public FilmAdapter(List<MovieModel> movies, Context context) {
         this.movies = movies;
         this.context = context;
     }
 
-    @NonNull
-    @Override
-    public FilmAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.film_item, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+    public FilmAdapter(List<MovieModel> movies, Context context, int view_type) {
+        this.movies = movies;
+        this.context = context;
+        this.view_type = view_type;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.movie_title.setText(this.movies.get(position).getTitle());
-
-        // set rating number
-        float rate = this.movies.get(position).getVote_average();
-        float format_rate = (float) (Math.round(rate*100)*1.0/100);
-        holder.movie_rating.setText(format_rate+"");
-
-        //set date
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-        try {
-            Date newDate = df.parse(this.movies.get(position).getRelease_date());
-            df = new SimpleDateFormat("M.dd, yyyy");
-            holder.publish_date.setText(df.format(newDate));
-        } catch (ParseException e) {
-            holder.publish_date.setText(this.movies.get(position).getRelease_date());
+    public int getItemViewType(int position) {
+        return view_type;
+    }
+    @NonNull
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view;
+        if(viewType == 0){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.film_item, parent, false);
+            return new FilmAdapter.ViewHolder(view);
+        }else{
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.film_item_2, parent, false);
+           return new  ImageSliderItem(view);
         }
 
-        // set poster for a film
-        new DownloadImageTask(holder.movie_poster, holder.shimmerFrameLayout).execute(Credentials.BASE_IMAGE_URL + this.movies.get(position).getPoster_path());
+    }
+
+    @NonNull
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if(view_type == 0){
+            FilmAdapter.ViewHolder viewHolder = (FilmAdapter.ViewHolder) holder;
+            viewHolder.movie_title.setText(this.movies.get(position).getTitle());
+
+            // set rating number
+            float rate = this.movies.get(position).getVote_average();
+            float format_rate = (float) (Math.round(rate*100)*1.0/100);
+            viewHolder.movie_rating.setText(format_rate+"");
+
+            //set date
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+            try {
+                Date newDate = df.parse(this.movies.get(position).getRelease_date());
+                df = new SimpleDateFormat("M.dd, yyyy");
+                viewHolder.publish_date.setText(df.format(newDate));
+            } catch (ParseException e) {
+                viewHolder.publish_date.setText(this.movies.get(position).getRelease_date());
+            }
+
+            // set poster for a film
+            new DownloadImageTask(viewHolder.movie_poster, viewHolder.shimmerFrameLayout).execute(Credentials.BASE_IMAGE_URL + this.movies.get(position).getPoster_path());
+        }else{
+            ImageSliderItem s_holder = (ImageSliderItem) holder;
+            s_holder.movie_title.setText(this.movies.get(position).getTitle());
+
+            // set rating number
+            float rate = this.movies.get(position).getVote_average();
+            float format_rate = (float) (Math.round(rate*100)*1.0/100);
+            s_holder.movie_rating.setText(format_rate+"");
+
+            s_holder.status.setText(null);
+
+            new DownloadImageTask(s_holder.movie_backdrop, s_holder.shimmerFrameLayout).execute(Credentials.BASE_IMAGE_URL + this.movies.get(position).getBackgrop_path());
+        }
+
 
         int pos = position;
         //set action when click
@@ -104,6 +138,22 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder>{
                 this.publish_date = itemView.findViewById(R.id.publishYear_film_item);
                 this.shimmerFrameLayout = itemView.findViewById(R.id.shimmer_layout);
             }
+    }
+
+    class ImageSliderItem extends RecyclerView.ViewHolder{
+        TextView movie_rating, movie_title, status;
+        ShapeableImageView movie_backdrop;
+        ShimmerFrameLayout shimmerFrameLayout;
+
+        public ImageSliderItem (@NonNull View itemView){
+            super(itemView);
+            this.movie_rating = itemView.findViewById(R.id.movie_rating);
+            this.movie_title = itemView.findViewById(R.id.title_film_item_Lbl2);
+            this.status = itemView.findViewById(R.id.status_movie_lbl);
+            this.movie_backdrop = itemView.findViewById(R.id.movie_backdrop);
+            this.shimmerFrameLayout = itemView.findViewById(R.id.shimmer_layout);
+        }
+
     }
 
 }

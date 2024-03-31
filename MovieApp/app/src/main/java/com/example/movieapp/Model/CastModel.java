@@ -1,11 +1,25 @@
 package com.example.movieapp.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 public class CastModel {
 
     private int id;
     private String name;
     private String profile_path;
     private String character;
+
+    protected CastModel(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        profile_path = in.readString();
+        character = in.readString();
+    }
+
+
 
     public int getId() {
         return id;

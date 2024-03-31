@@ -10,12 +10,24 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="match_parent"
-        android:layout_height="540dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/avenger_infinity_war" />
+        app:layout_constraintTop_toTopOf="parent" />
 
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#DD000000"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/backBtn_info"
@@ -28,31 +40,37 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ScrollView
-        android:layout_width="360dp"
+    <TextView
+        android:id="@+id/film_title_info"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="2dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="15dp"
+        android:fontFamily="@font/inter"
+        android:paddingLeft="10dp"
+        android:text="Avengers : Endgame"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/film_title_info">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_height="match_parent"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/film_title_info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter"
-                android:paddingLeft="10dp"
-                android:text="Avengers : Endgame"
-                android:textColor="@color/white"
-                android:textSize="24sp"
-                android:textStyle="bold" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -73,14 +91,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                android:paddingLeft="85dp"
-                android:paddingRight="85dp">
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/playBtn_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/gradient_corner_bg"
                     android:drawableRight="@drawable/play_icon"
@@ -91,25 +108,19 @@
                     android:textColor="@color/white"
                     android:textSize="20sp" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="90dp"
+                <ToggleButton
+                    android:id="@+id/favorBtn"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="1"
-                    android:background="@drawable/neon_blue_corner">
-
-                    <ToggleButton
-                        android:id="@+id/favorBtn"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/favor_toggle_btn_bg"
-                        android:paddingLeft="10dp"
-                        android:textOff=" "
-                        android:textOn=" "
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:background="@drawable/neon_blue_corner"
+                    android:drawableRight="@drawable/favor_toggle_btn_bg"
+                    android:paddingLeft="10dp"
+                    android:textColor="@color/neon_blue"
+                    android:textOff="add to favor"
+                    android:textOn="add to favor" />
 
             </LinearLayout>
 
@@ -272,8 +283,8 @@
 
             <WebView
                 android:id="@+id/trailer_webview"
-                android:layout_width="360dp"
-                android:layout_height="202dp" />
+                android:layout_width="match_parent"
+                android:layout_height="217dp" />
 
             <TextView
                 android:id="@+id/textView13"
