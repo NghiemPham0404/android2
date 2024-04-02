@@ -42,7 +42,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder>{
     public void onBindViewHolder(@NonNull CastAdapter.ViewHolder holder, int position) {
         holder.charater_cast.setText(castModels.get(position).getCharacter());
         holder.name_cast.setText(castModels.get(position).getName());
-        new DownloadImageTask(holder.image_cast, holder.shimmer_cast).execute(Credentials.BASE_IMAGE_URL + castModels.get(position).getProfile_path());
+        new DownloadImageTask(holder.image_cast, holder.shimmer_cast, Credentials.BASE_IMAGE_URL + castModels.get(position).getProfile_path()).execute();
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

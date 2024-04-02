@@ -37,7 +37,9 @@ public class HomeActivity extends AppCompatActivity {
         navigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.home) {
                 replaceFragment(new HomePage());
-            } else if (item.getItemId() == R.id.favor) {
+            } else if (item.getItemId() == R.id.discover) {
+                replaceFragment(new DiscoverPage());
+            }  else if (item.getItemId() == R.id.favor) {
                 replaceFragment(new FavorPage());
             } else if (item.getItemId() == R.id.history) {
                 replaceFragment(new HistoryPage());

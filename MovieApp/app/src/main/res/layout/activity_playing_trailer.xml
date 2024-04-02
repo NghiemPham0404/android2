@@ -2,17 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/info_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
-    tools:context=".View.Movie_infomation">
-
+    tools:context=".View.PlayingTrailer">
 
     <WebView
-        android:id="@+id/trailer_webview"
+        android:id="@+id/trailer_window"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="185dp"
-        tools:layout_editor_absoluteY="26dp" />
+        android:layout_height="match_parent" />
 </RelativeLayout>

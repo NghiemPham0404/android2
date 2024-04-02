@@ -24,6 +24,11 @@ public class Credentials {
     public static final String vn_language = "vi";
     public static final String es_language = "es";
 
+    //todo: TÌM KIẾM NGƯỜI HOẠT ĐỘNG NGHỆ THUẬT
+    //https://api.themoviedb.org/3/person/{person_id}
+    public static final String search_person = "3/search/person";
+
+
 
     // TODO : SIGNIN, SIGNUP
 

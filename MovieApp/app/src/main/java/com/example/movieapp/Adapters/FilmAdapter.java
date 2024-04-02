@@ -91,7 +91,7 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             }
 
             // set poster for a film
-            new DownloadImageTask(viewHolder.movie_poster, viewHolder.shimmerFrameLayout).execute(Credentials.BASE_IMAGE_URL + this.movies.get(position).getPoster_path());
+            new DownloadImageTask(viewHolder.movie_poster, viewHolder.shimmerFrameLayout, Credentials.BASE_IMAGE_URL + this.movies.get(position).getPoster_path()).execute();
         }else{
             ImageSliderItem s_holder = (ImageSliderItem) holder;
             s_holder.movie_title.setText(this.movies.get(position).getTitle());
@@ -103,7 +103,7 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
             s_holder.status.setText(null);
 
-            new DownloadImageTask(s_holder.movie_backdrop, s_holder.shimmerFrameLayout).execute(Credentials.BASE_IMAGE_URL + this.movies.get(position).getBackgrop_path());
+            new DownloadImageTask(s_holder.movie_backdrop, s_holder.shimmerFrameLayout, Credentials.BASE_IMAGE_URL + this.movies.get(position).getBackgrop_path()).execute();
         }
 
 
@@ -113,7 +113,7 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, Movie_infomation.class);
-                intent.putExtra("movie", movies.get(pos));
+                intent.putExtra("film_id", movies.get(pos).getId());
                 context.startActivity(intent);
             }
         });

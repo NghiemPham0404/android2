@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.movieapp.AsyncTasks.LoginAsyncTask;
@@ -29,6 +30,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 public class LoginViewActivity extends AppCompatActivity implements Form_validate {
     TextInputEditText email_txt, password_txt;
+    TextView email_err_signin, password_err_signin;
     Button loginBtn, loginBtn_gg, loginBtn_face, forgot_passBtn, loginBtn_sms, signupBtn;
     ConstraintLayout loadingScreen;
 
@@ -50,6 +52,9 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
     public void initComponents(){
         email_txt = findViewById(R.id.username_login_txt);
         password_txt = findViewById(R.id.password_login_txt);
+        email_err_signin = findViewById(R.id.email_err_signin);
+        password_err_signin = findViewById(R.id.password_err_signin);
+
 
         loginBtn = findViewById(R.id.sign_in_btn);
         loginBtn_gg = findViewById(R.id.login_google);
@@ -86,7 +91,7 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
         String username = email_txt.getText().toString().trim();
         String password = password_txt.getText().toString().trim();
 
-        new LoginAsyncTask(this ,login_string, username, password, loadingScreen).execute();
+        new LoginAsyncTask(this ,login_string, username, password, loadingScreen, email_err_signin, password_err_signin).execute();
     }
 
     public void signInWithGoogle(){
