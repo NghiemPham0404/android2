@@ -117,9 +117,10 @@ public class MovieModel implements Parcelable {
         if(getRuntime() > 60){
             int hour = getRuntime()/60;
             int min_less = getRuntime()%60;
-            return hour+"  hrs " + min_less + "mins";
+            String hour_str = (hour > 0)? hour + "h " : null;
+            return hour_str + min_less + "m";
         }else
-            return this.runtime+"";
+            return this.runtime+"m";
     }
 
     public String getGenresString(){

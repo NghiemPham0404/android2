@@ -8,6 +8,14 @@
         android:title="Home"
         
         />
+
+    <item
+        android:id="@+id/discover"
+        android:icon="@drawable/nav_item_discover"
+        android:title="Discover"
+
+        />
+
     <item
         android:id="@+id/favor"
         android:title="Favor"

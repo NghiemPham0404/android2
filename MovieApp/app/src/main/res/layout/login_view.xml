@@ -51,7 +51,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:id="@+id/textView22"
+            android:id="@+id/email_err_signin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -83,7 +83,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:id="@+id/textView23"
+            android:id="@+id/password_err_signin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"

@@ -29,7 +29,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="@color/black"
                 android:ems="10"
-                android:hint="movie name, tv series, actors.."
+                android:hint="movie name |  actors.."
                 android:inputType="text"
                 android:textColor="@color/white"
                 android:textColorHighlight="@color/black"
@@ -38,11 +38,18 @@
 
             <Button
                 android:id="@+id/searchBtn"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:background="@null"
                 android:drawableTop="@drawable/search_icon"
+                android:paddingTop="20dp" />
+
+            <Button
+                android:id="@+id/mirco_btn"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:drawableTop="@drawable/mic"
                 android:paddingTop="20dp" />
         </LinearLayout>
 

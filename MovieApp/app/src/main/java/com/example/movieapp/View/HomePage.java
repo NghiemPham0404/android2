@@ -29,6 +29,7 @@ import com.example.movieapp.Response.MovieSearchResponse;
 import com.example.movieapp.ViewModel.MovieListViewModel;
 import com.example.movieapp.utils.Credentials;
 import com.example.movieapp.utils.MovieApi;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +44,7 @@ import retrofit2.Response;
  * Use the {@link HomePage#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomePage extends Fragment implements Fragment_Interface {
+public class HomePage extends Fragment{
 
     RecyclerView moviesGroupsRecyclerView;
     Button searchBtn;
@@ -52,11 +53,12 @@ public class HomePage extends Fragment implements Fragment_Interface {
     List<MoviesGroup> moviesGroups;
     MoviesGroupAdapter moviesGroupAdapter;
 
-    LinearLayout divSearch, filter_bar;
+    LinearLayout divSearch;
 
     // LIVE data
     MovieListViewModel movieList_search_ViewModel, movieList_popular_ViewModel, movieList_nowPlaying_ViewModel, movieList_topRated_ViewModel,
     movieList_upcoming_ViewModel;
+
 
     int page = 1;
 
@@ -131,10 +133,7 @@ public class HomePage extends Fragment implements Fragment_Interface {
                         moviesGroups.add(movieGroup);
 
                         moviesGroupAdapter = new MoviesGroupAdapter(getContext(), moviesGroups);
-                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-                        moviesGroupsRecyclerView.setLayoutManager(linearLayoutManager);
                         moviesGroupsRecyclerView.setAdapter(moviesGroupAdapter);
-                        filter_bar.setVisibility(View.VISIBLE);
 
                         for(MovieModel movieModel : movieModels){
                             Log.v("Tagv", "On change" + movieModel.getTitle());
@@ -150,6 +149,7 @@ public class HomePage extends Fragment implements Fragment_Interface {
                              Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_home_page, container, false);
         initComponents(view);
+        configureSearchRecycleView();
         searchBox.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -170,18 +170,17 @@ public class HomePage extends Fragment implements Fragment_Interface {
         searchBox = view.findViewById(R.id.searchBox);
         searchBtn = view.findViewById(R.id.searchBtn);
         divSearch = view.findViewById(R.id.searchDiv);
-        filter_bar = view.findViewById(R.id.filter_bar);
         filter_btn = view.findViewById(R.id.filter_btn);
         star_btn = view.findViewById(R.id.rating_filter_btn);
         sort_btn = view.findViewById(R.id.sort_btn);
         layout = view.findViewById(R.id.home_layout);;
-        initFilterBar();
     }
 
     public void initFeatures(){
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                searchBox.clearFocus();
                 searchMovie(searchBox.getText().toString().trim(), page);
                 divSearch.setBackgroundResource(R.drawable.text_input);
             }
@@ -252,113 +251,14 @@ public class HomePage extends Fragment implements Fragment_Interface {
         });
     }
 
-    public void searchMovie(){
-        if(!this.searchBox.getText().toString().trim().equalsIgnoreCase("")){
-            MovieApi movieApi = MyService.getMovieApi();
-            Call<MovieSearchResponse> searchCall = movieApi.searchMovie(
-                    Credentials.API_KEY,
-                    this.searchBox.getText().toString(),
-                    1);
-            moviesGroups = new ArrayList<>();
-            onResponseMovieList(searchCall, "search");
-
-            moviesGroupAdapter = new MoviesGroupAdapter(getContext(), moviesGroups);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-            moviesGroupsRecyclerView.setLayoutManager(linearLayoutManager);
-            moviesGroupsRecyclerView.setAdapter(moviesGroupAdapter);
-            filter_bar.setVisibility(View.VISIBLE);
-        }else{
-            Toast.makeText(getContext(), "Please input searching text", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     public void searchMovie(String query, int page){
         movieList_search_ViewModel.searchMovieApi(query, page);
     }
 
     public void configureSearchRecycleView(){
-
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        moviesGroupsRecyclerView.setLayoutManager(linearLayoutManager);
     }
 
-    @Override
-    public void initFilterBar(){
 
-        filter_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                initFilterPopup();
-            }
-        });
-
-        star_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                initRatingPopup();
-            }
-        });
-    }
-
-    @Override
-    public void initFilterPopup(){
-        if(filter_popup == null){
-            LayoutInflater inflater = (LayoutInflater)   this.getContext().getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
-            View popUpFilter = inflater.inflate(R.layout.filter_search_popup, null);
-
-            int width = ViewGroup.LayoutParams.WRAP_CONTENT;
-            int height = ViewGroup.LayoutParams.MATCH_PARENT;
-            boolean focusable = true;
-            filter_popup= new PopupWindow(popUpFilter, width, height, focusable);
-            filter_popup.setAnimationStyle(R.style.PopupAnimation);
-        }
-        layout.post(new Runnable() {
-            @Override
-            public void run() {
-                filter_popup.showAtLocation(layout, Gravity.RIGHT, 0,0);
-            }
-        });
-    }
-
-    @Override
-    public void initRatingPopup(){
-        if(rating_popup == null){
-            LayoutInflater inflater = (LayoutInflater)   this.getContext().getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
-            View popUpFilter = inflater.inflate(R.layout.filter_starbar, null);
-            int width = ViewGroup.LayoutParams.WRAP_CONTENT;
-            int height = ViewGroup.LayoutParams.MATCH_PARENT;
-            boolean focusable = true;
-            rating_popup= new PopupWindow(popUpFilter, width, height, focusable);
-            rating_popup.setAnimationStyle(R.style.PopupAnimation);
-        }
-        layout.post(new Runnable() {
-            @Override
-            public void run() {
-                rating_popup.showAtLocation(layout, Gravity.RIGHT, 0,0);
-            }
-        });
-    }
-
-    @Override
-    public void initSort(){
-        sort_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-    }
-
-    @Override
-    public void sortBtnChange(int n_sort) {
-        if(c_sort == 0){
-            c_sort = 1;
-            sort_btn.setBackgroundResource(R.drawable.toggle_stroke);
-        }else if(c_sort == 1){
-            c_sort = 2;
-            sort_btn.setBackgroundResource(R.drawable.neon_blue_corner);
-        }else{
-            c_sort =0;
-            sort_btn.setBackgroundResource(R.drawable.nomal_stroke);
-        }
-    }
 }

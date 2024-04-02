@@ -15,6 +15,7 @@ import android.graphics.RenderEffect;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 import com.example.movieapp.Adapters.CastAdapter;
 import com.example.movieapp.Adapters.FilmAdapter;
 import com.example.movieapp.AsyncTasks.DownloadImageTask;
+import com.example.movieapp.AsyncTasks.GetMovieVideo;
 import com.example.movieapp.Interfaces.Form_validate;
 import com.example.movieapp.Model.CastModel;
 import com.example.movieapp.Model.MovieModel;
@@ -42,6 +44,8 @@ import com.example.movieapp.utils.Credentials;
 import com.example.movieapp.utils.MovieApi;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,11 +58,11 @@ public class Movie_infomation extends AppCompatActivity{
     ImageButton backBtn;
     Button playButton;
     MovieModel movie;
+    int id;
 
     RecyclerView castRecyclerView;
     private MovieApi movieApi;
 
-    private WebView trailer_webView;
     private ImageView imageView2;
 
 
@@ -66,17 +70,13 @@ public class Movie_infomation extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_film_infomation);
-        MovieModel passMovie = getIntent().getParcelableExtra("movie");
-
-        if (passMovie != null) {
-            // Use the retrieved object
-            movie = passMovie;
-        }
-        init();
+       id = getIntent().getIntExtra("film_id",-1);
+       init();
 
     }
 
     public void init(){
+        movieApi = MyService.getMovieApi();
         int orientation = getResources().getConfiguration().orientation;
         Log.i("IS LANDCAPSE ", ""+ (orientation == Configuration.ORIENTATION_PORTRAIT));
         if(orientation == Configuration.ORIENTATION_PORTRAIT){
@@ -94,83 +94,16 @@ public class Movie_infomation extends AppCompatActivity{
             playButton = findViewById(R.id.playBtn_info);
             initComponent();
         }
-        trailer_webView = findViewById(R.id.trailer_webview);
-        initTrailers();
     }
 
     public void initComponent(){
-        new DownloadImageTask(poster_image).execute(Credentials.BASE_IMAGE_URL + movie.getPoster_path());
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            imageView2.setRenderEffect(RenderEffect.createBlurEffect(100,100, Shader.TileMode.MIRROR));
-            new DownloadImageTask(imageView2).execute(Credentials.BASE_IMAGE_URL + movie.getPoster_path());
-        }else{
-            new DownloadImageTask(imageView2).execute(Credentials.BASE_IMAGE_URL + movie.getPoster_path());
-        }
-        this.film_title.setText(this.movie.getTitle());
-        this.film_overview.setText(this.movie.getOverriew());
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Movie_infomation.this, PlayingFilm.class);
-                intent.putExtra("film id", movie.getId());
-                startActivity(intent);
-            }
-        });
-
-        movieApi = MyService.getMovieApi();
         initDetails();
         initCast();
-        initTrailers();
-    }
-
-    private void initTrailers() {
-        Call<VideoResponse> videoResponseCall = movieApi.searchVideoByFilmID(
-                movie.getId(),
-                Credentials.API_KEY
-        );
-        videoResponseCall.enqueue(new Callback<VideoResponse>() {
-            @Override
-            public void onResponse(Call<VideoResponse> call, Response<VideoResponse> response) {
-                if(response.code() == 200){
-                    List<VideoModel> videoModels = response.body().getVideoModels();
-                    if(videoModels.size() == 0){
-                        trailer_webView.setVisibility(View.GONE);
-                    }else{
-                        boolean found = false;
-                        for(int i = 0; i<videoModels.size(); i++){
-                            if(videoModels.get(i).getType().equalsIgnoreCase("Trailer")){
-                                String video = "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/"+videoModels.get(i).getKey()+"\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen=\"true\"></iframe>";
-                                trailer_webView.loadData(video, "text/html","utf-8");
-                                trailer_webView.getSettings().setJavaScriptEnabled(true);
-                                trailer_webView.setWebChromeClient(new WebChromeClient());
-                            }
-                        }
-                        if(found == false){
-
-                        }
-                    }
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<VideoResponse> call, Throwable t) {
-                Toast.makeText(Movie_infomation.this, "failure trailers", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void initCast() {
         Call<CastResponse> castResponseCall = movieApi.searchCastByFilmID(
-                movie.getId(),
+                id,
                 Credentials.API_KEY
         );
         castResponseCall.enqueue(new Callback<CastResponse>() {
@@ -191,8 +124,10 @@ public class Movie_infomation extends AppCompatActivity{
     }
 
     private void initDetails() {
+
+
         Call<MovieModel> detailsResponseCall = movieApi.searchMovieDetail(
-                            movie.getId(),
+                            id,
                         Credentials.API_KEY
         );
 
@@ -208,6 +143,37 @@ public class Movie_infomation extends AppCompatActivity{
                     date_info.setText(movie.getRelease_date() + "");
                     time_info.setText(movie.getMaxDurationTime());
                     genres_info.setText(movie.getGenresString());
+                    new DownloadImageTask(poster_image, findViewById(R.id.shimmerLayout_info), Credentials.BASE_IMAGE_URL + movie.getPoster_path()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        imageView2.setRenderEffect(RenderEffect.createBlurEffect(100,100, Shader.TileMode.MIRROR));
+                        new DownloadImageTask(imageView2, Credentials.BASE_IMAGE_URL + movie.getPoster_path()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        findViewById(R.id.darken_screen).setVisibility(View.GONE);
+                    }else{
+                        new DownloadImageTask(imageView2, Credentials.BASE_IMAGE_URL + movie.getPoster_path()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    }
+
+                    new GetMovieVideo("https://script.google.com/macros/s/AKfycbwb6OpcqdD1yJifVIZMeR5x2Ae1R5Ak-V04ASpXUNnkF1IjzbClCW8ZAdC0hoCE6QRp/exec",id, (Button) findViewById(R.id.playBtn_info), Movie_infomation.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
+                    film_title.setText(movie.getTitle());
+                    film_overview.setText(movie.getOverriew());
+                    backBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onBackPressed();
+                        }
+                    });
+                    playButton.setEnabled(false);
+                    playButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(Movie_infomation.this, PlayingFilm.class);
+                            intent.putExtra("film_id", movie.getId());
+                            intent.putExtra("movie_name", movie.getTitle());
+                            startActivity(intent);
+                        }
+                    });
                 }
             }
 

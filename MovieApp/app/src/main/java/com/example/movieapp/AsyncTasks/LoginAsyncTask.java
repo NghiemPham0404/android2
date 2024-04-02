@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -31,6 +32,8 @@ public class  LoginAsyncTask extends AsyncTask<Void, Void, String> {
 
     private ConstraintLayout loadinglayout;
 
+    TextView email_err, password_err;
+
     public LoginAsyncTask(Context context, String url, String username, String password) {
         this.url = url;
         this.username = username;
@@ -44,6 +47,16 @@ public class  LoginAsyncTask extends AsyncTask<Void, Void, String> {
         this.password = password;
         this.context = context;
         this.loadinglayout = loadingLayout;
+    }
+
+    public LoginAsyncTask(Context context, String url, String username, String password, ConstraintLayout loadingLayout, TextView email_err, TextView password_err) {
+        this.url = url;
+        this.username = username;
+        this.password = password;
+        this.context = context;
+        this.loadinglayout = loadingLayout;
+        this.email_err = email_err;
+        this.password_err = password_err;
     }
 
     @Override
@@ -85,18 +98,25 @@ public class  LoginAsyncTask extends AsyncTask<Void, Void, String> {
                     String ẹmail = jsonObject.getString("email");
                     String password = jsonObject.getString("password");
 
-
-
                     Intent intent = new Intent(context, HomeActivity.class);
                     intent.putExtra("user_id", user_id);
                     intent.putExtra("username", username);
                     context.startActivity(intent);
                 }else{
+                    String error = jsonObject.getString("error");
+                    if(error.equalsIgnoreCase("Wrong Password") && password_err != null){
+                            password_err.setText(error);
+                        password_err.setVisibility(View.VISIBLE);
+                        email_err.setVisibility(View.GONE);
+                    }else if(email_err != null){
+                            email_err.setText(error);
+                        password_err.setVisibility(View.GONE);
+                        email_err.setVisibility(View.VISIBLE);
+                    }
                     Log.e(TAG, "Failed to Login");
                 }
             }catch (Exception e){
                 Log.e(TAG, "Failed to get JSON");
-
             }
 
         } else {

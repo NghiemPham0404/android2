@@ -18,11 +18,16 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="30">
         <activity
-            android:name=".View.PersonActivity"
+            android:name=".View.PlayingTrailer"
             android:exported="false" />
         <activity
+            android:name=".View.PersonActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".View.UserPackage.Settings.LanguageSettingView"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".View.LoginPackage.PreLoginView"
             android:exported="false"

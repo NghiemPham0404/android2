@@ -12,17 +12,33 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import java.io.IOException;
 import java.io.InputStream;
 
-public  class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+public  class DownloadImageTask extends AsyncTask<Void, Void, Bitmap> {
     ImageView imageView;
     ShimmerFrameLayout shimmerFrameLayout;
 
-    public DownloadImageTask(ImageView imageView) {
+    String url;
+
+    public DownloadImageTask(ImageView imageView, String image_url) {
         this.imageView = imageView;
+        this.url = image_url;
     }
 
-    public DownloadImageTask(ImageView imageView,  ShimmerFrameLayout shimmerFrameLayout) {
+    public DownloadImageTask(ImageView imageView,  ShimmerFrameLayout shimmerFrameLayout, String image_url) {
         this.imageView = imageView;
         this.shimmerFrameLayout = shimmerFrameLayout;
+        this.url = image_url;
+    }
+
+    @Override
+    protected Bitmap doInBackground(Void... voids) {
+        Bitmap bitmap = null;
+        try {
+            InputStream in = new java.net.URL(url).openStream();
+            bitmap = BitmapFactory.decodeStream(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
     }
 
     @Override
@@ -36,18 +52,7 @@ public  class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         }
     }
 
-    @Override
-    protected Bitmap doInBackground(String... urls) {
-        String url = urls[0];
-        Bitmap bitmap = null;
-        try {
-            InputStream in = new java.net.URL(url).openStream();
-            bitmap = BitmapFactory.decodeStream(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return bitmap;
-    }
+
 
     protected void onPostExecute(Bitmap result) {
         if(result!=null){
