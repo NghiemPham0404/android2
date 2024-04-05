@@ -15,9 +15,13 @@ import android.widget.Toast;
 
 import com.example.movieapp.AsyncTasks.LoginAsyncTask;
 import com.example.movieapp.Interfaces.Form_validate;
+import com.example.movieapp.Model.AccountModel;
+import com.example.movieapp.Model.LoginModel;
 import com.example.movieapp.R;
+import com.example.movieapp.Request.MyService2;
 import com.example.movieapp.View.HomeActivity;
 import com.example.movieapp.utils.Credentials;
+import com.example.movieapp.utils.ManagerApi;
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.auth.api.identity.BeginSignInResult;
 import com.google.android.gms.auth.api.identity.Identity;
@@ -26,6 +30,10 @@ import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class LoginViewActivity extends AppCompatActivity implements Form_validate {
@@ -38,6 +46,8 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
     private BeginSignInRequest signInRequest;
 
     private static final int REQ_ONE_TAP = 100;
+    private static final String TAG = "LOGIN TASK";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +59,7 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
         initFeature();
     }
 
-    public void initComponents(){
+    public void initComponents() {
         email_txt = findViewById(R.id.username_login_txt);
         password_txt = findViewById(R.id.password_login_txt);
         email_err_signin = findViewById(R.id.email_err_signin);
@@ -62,11 +72,11 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
         loadingScreen = findViewById(R.id.loadingLayout);
     }
 
-    public void initFeature(){
+    public void initFeature() {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               signInDefault();
+                signInDefault();
             }
         });
         loginBtn_gg.setOnClickListener(new View.OnClickListener() {
@@ -87,35 +97,77 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
     }
 
     public void signInDefault() {
-        String login_string = Credentials.login_link;
-        String username = email_txt.getText().toString().trim();
-        String password = password_txt.getText().toString().trim();
 
-        new LoginAsyncTask(this ,login_string, username, password, loadingScreen, email_err_signin, password_err_signin).execute();
+        String email = email_txt.getText().toString().trim();
+        String password = password_txt.getText().toString().trim();
+        loadingScreen.setVisibility(View.VISIBLE);
+        try {
+            ManagerApi managerApi = MyService2.getApi();
+            Call<LoginModel> loginModelCall = managerApi.loginWithAccount(email, password);
+            loginModelCall.enqueue(new Callback<LoginModel>() {
+                @Override
+                public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
+                   if(response.code() == 200){
+                       LoginModel result = response.body();
+                       if(result!=null){
+                           if (result.getSuccess().equalsIgnoreCase("true")) {
+                               Intent intent = new Intent(LoginViewActivity.this, HomeActivity.class);
+                               AccountModel accountModel = (AccountModel) result;
+                               intent.putExtra("loginAccount",accountModel);
+                               LoginViewActivity.this.startActivity(intent);
+                           } else {
+                               String error = result.getError();
+                               if (error.equalsIgnoreCase("Wrong Password") && password_err_signin != null) {
+                                   password_err_signin.setText(error);
+                                   password_err_signin.setVisibility(View.VISIBLE);
+                                   email_err_signin.setVisibility(View.GONE);
+                               } else if (email_err_signin != null) {
+                                   email_err_signin.setText(error);
+                                   password_err_signin.setVisibility(View.GONE);
+                                   email_err_signin.setVisibility(View.VISIBLE);
+                               }
+                           }
+                       }
+                       loadingScreen.setVisibility(View.GONE);
+                   }
+
+                }
+
+                @Override
+                public void onFailure(Call<LoginModel> call, Throwable t) {
+                    Log.i(TAG, "Fail");
+                    if(loadingScreen!=null){
+                        loadingScreen.setVisibility(View.GONE);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error posting data", e);
+        }
     }
 
-    public void signInWithGoogle(){
+    public void signInWithGoogle() {
 
         onTapClient = Identity.getSignInClient(this);
         signInRequest = BeginSignInRequest.builder().setPasswordRequestOptions(BeginSignInRequest.PasswordRequestOptions.builder()
-                .setSupported(true)
-                .build())
-                        .setGoogleIdTokenRequestOptions(BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                                .setSupported(true)
-                                .setServerClientId("354165537912-u39fre4fugtrjdavbjked9fhvp5et0e5.apps.googleusercontent.com")
-                                .setFilterByAuthorizedAccounts(false)
-                                .build())
-                        .setAutoSelectEnabled(true)
-                        .build();
+                        .setSupported(true)
+                        .build())
+                .setGoogleIdTokenRequestOptions(BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                        .setSupported(true)
+                        .setServerClientId("354165537912-u39fre4fugtrjdavbjked9fhvp5et0e5.apps.googleusercontent.com")
+                        .setFilterByAuthorizedAccounts(false)
+                        .build())
+                .setAutoSelectEnabled(true)
+                .build();
 
         onTapClient.beginSignIn(signInRequest).addOnSuccessListener(this, new OnSuccessListener<BeginSignInResult>() {
             @Override
             public void onSuccess(BeginSignInResult beginSignInResult) {
                 try {
-                    startIntentSenderForResult(beginSignInResult.getPendingIntent().getIntentSender(), REQ_ONE_TAP, null, 0,0,0);
+                    startIntentSenderForResult(beginSignInResult.getPendingIntent().getIntentSender(), REQ_ONE_TAP, null, 0, 0, 0);
 
-                }catch (Exception e){
-                    Log.e("TAG", "COULD NOT START ONE TAP UI"+e.getLocalizedMessage());
+                } catch (Exception e) {
+                    Log.e("TAG", "COULD NOT START ONE TAP UI" + e.getLocalizedMessage());
                 }
             }
         }).addOnFailureListener(this, new OnFailureListener() {
@@ -128,30 +180,43 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
     }
 
     @Override
-    protected  void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode){
+        switch (requestCode) {
             case REQ_ONE_TAP:
-                    try {
-                        SignInCredential credential = onTapClient.getSignInCredentialFromIntent(data);
-                        String idToken = credential.getGoogleIdToken();
-                        String username = credential.getId();
-                        String password = credential.getPassword();
+                try {
+                    SignInCredential credential = onTapClient.getSignInCredentialFromIntent(data);
+                    String google_id = credential.getId();
 
-                        Toast.makeText(this, username, Toast.LENGTH_SHORT).show();
-                        if(idToken != null){
-                            Log.d("TAG", "Got ID token");
-                        }else if(password != null){
-                            Log.d("TAG", "Got Password");
-                        }
+                    if (google_id != null) {
+                        Call<LoginModel> loginModelCall = MyService2.getApi().loginWithGoogle(google_id);
+                        loginModelCall.enqueue(new Callback<LoginModel>() {
+                            @Override
+                            public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
+                                if(response.code() == 200){
+                                    LoginModel loginModel = response.body();
+                                    if(loginModel.getSuccess().equalsIgnoreCase("true")){
+                                        AccountModel loginAccount = (AccountModel) loginModel;
+                                        Intent loginSuccessIntent = new Intent(LoginViewActivity.this, HomeActivity.class);
+                                        loginSuccessIntent.putExtra("loginAccount", loginAccount);
+                                        startActivity(loginSuccessIntent);
+                                    }else{
+                                        Toast.makeText(LoginViewActivity.this, loginModel.getError(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
 
-                        Intent loginSuccessIntent = new Intent(LoginViewActivity.this, HomeActivity.class);
-                        startActivity(loginSuccessIntent);
-                    }catch (Exception e){
-                        Toast.makeText(this, "FALUIRE", Toast.LENGTH_SHORT).show();
+                            @Override
+                            public void onFailure(Call<LoginModel> call, Throwable t) {
+                                Log.e("LOGIN TASK", "Fail to login with google");
+                            }
+                        });
                     }
+                } catch (Exception e) {
+                    Toast.makeText(this, "FALUIRE", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }

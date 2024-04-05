@@ -21,11 +21,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
-        android:layout_width="407dp"
-        android:layout_height="wrap_content"
+        android:id="@+id/scrollView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="50dp"
-        android:layout_marginEnd="4dp"
         android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -59,7 +60,13 @@
 
             <include layout="@layout/film_group"></include>
 
-            <include layout="@layout/comment_rating_box"></include>
+            <include
+                android:id="@+id/comment_box"
+                layout="@layout/comment_rating_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"></include>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
@@ -67,5 +74,14 @@
 
         </LinearLayout>
     </ScrollView>
+
+    <include
+        android:id="@+id/comment_box_focus"
+        layout="@layout/comment_rating_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"></include>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

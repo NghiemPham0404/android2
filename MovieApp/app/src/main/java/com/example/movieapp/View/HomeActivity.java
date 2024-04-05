@@ -15,7 +15,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomeActivity extends AppCompatActivity {
 
-
     private AccountModel loginAccount;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,20 +26,15 @@ public class HomeActivity extends AppCompatActivity {
 
         loginAccount = (AccountModel) getIntent().getParcelableExtra("loginAccount");
 
-        replaceFragment(new HomePage());
-
-        String username = getIntent().getStringExtra("username");
-        if(username !=null){
-            Toast.makeText(this, username, Toast.LENGTH_SHORT).show();
-        }
+        replaceFragment(HomePage.newInstance(loginAccount));
 
         navigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.home) {
-                replaceFragment(new HomePage());
+                replaceFragment(HomePage.newInstance(loginAccount));
             } else if (item.getItemId() == R.id.discover) {
                 replaceFragment(new DiscoverPage());
             }  else if (item.getItemId() == R.id.favor) {
-                replaceFragment(new FavorPage());
+                replaceFragment(FavorPage.newInstance(loginAccount));
             } else if (item.getItemId() == R.id.history) {
                 replaceFragment(new HistoryPage());
             } else if (item.getItemId() == R.id.user) {

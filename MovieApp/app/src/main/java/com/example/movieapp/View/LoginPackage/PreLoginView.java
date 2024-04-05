@@ -3,15 +3,23 @@ package com.example.movieapp.View.LoginPackage;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.movieapp.AsyncTasks.LoginAsyncTask;
+import com.example.movieapp.Model.LoginModel;
 import com.example.movieapp.R;
-import com.example.movieapp.utils.Credentials;
+import com.example.movieapp.Request.MyService2;
+import com.example.movieapp.View.HomeActivity;
+import com.example.movieapp.utils.ManagerApi;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PreLoginView extends AppCompatActivity {
 
@@ -19,8 +27,8 @@ public class PreLoginView extends AppCompatActivity {
     private TextView welcomeTextView;
 
     private String username, password, email;
-
-    private ConstraintLayout layout;
+    private ConstraintLayout loadingScreen;
+    private String TAG = "LOGIN TASK";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +51,7 @@ public class PreLoginView extends AppCompatActivity {
     private void initComponents() {
         welcomeTextView = findViewById(R.id.welcome_pre_login);
         welcomeTextView.setText("Welcome " + username);
-        layout = findViewById(R.id.loadingLayout);
+        loadingScreen = findViewById(R.id.loadingLayout);
 
         signInBtn = findViewById(R.id.signin_presignin_btn);
     }
@@ -53,9 +61,48 @@ public class PreLoginView extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(PreLoginView.this, "Loading", Toast.LENGTH_SHORT).show();
-                new LoginAsyncTask(PreLoginView.this, Credentials.login_link, email, password, layout).execute();
+               signIn(email, password);
             }
         });
+    }
+
+    public void signIn(String email, String password){
+        loadingScreen.setVisibility(View.VISIBLE);
+        try {
+            ManagerApi managerApi = MyService2.getApi();
+            Call<LoginModel> loginModelCall = managerApi.loginWithAccount(email, password);
+            loginModelCall.enqueue(new Callback<LoginModel>() {
+                @Override
+                public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
+                    if(response.code() == 200){
+                        LoginModel result = response.body();
+                        if(result!=null){
+                            if (result.getSuccess().equalsIgnoreCase("true")) {
+                                Intent intent = new Intent(PreLoginView.this, HomeActivity.class);
+                                intent.putExtra("user_id", result.getUser_id());
+                                intent.putExtra("username", result.getUsername());
+                                startActivity(intent);
+                            } else {
+                                String error = result.getError();
+                                Log.i(TAG, "error");
+                            }
+                        }
+                        loadingScreen.setVisibility(View.GONE);
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<LoginModel> call, Throwable t) {
+                    Log.i(TAG, "Fail");
+                    if(loadingScreen!=null){
+                        loadingScreen.setVisibility(View.GONE);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error posting data", e);
+        }
     }
 
 }

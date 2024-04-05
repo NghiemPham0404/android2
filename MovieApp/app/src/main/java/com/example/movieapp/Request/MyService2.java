@@ -1,22 +1,21 @@
 package com.example.movieapp.Request;
 
 import com.example.movieapp.utils.Credentials;
+import com.example.movieapp.utils.ManagerApi;
 import com.example.movieapp.utils.MovieApi;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MyService {
-    // the Retrofit class generates an implementation of the above interface
+public class MyService2 {
     private static Retrofit.Builder retrofitBuilder =  new Retrofit.Builder()
-            .baseUrl(Credentials.BASE_URL)
+            .baseUrl(Credentials.BASE_MANAGE_URL)
             .addConverterFactory(GsonConverterFactory.create());
     private static Retrofit retrofit = retrofitBuilder.build();
 
-    private static MovieApi movieApi = retrofit.create(MovieApi.class);
+    private static ManagerApi managerApi = retrofit.create(ManagerApi.class);
 
-    public static MovieApi getMovieApi(){
-        return movieApi;
+    public static ManagerApi getApi(){
+        return managerApi;
     }
-
 }

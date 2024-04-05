@@ -16,9 +16,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.movieapp.AsyncTasks.DownloadImageTask;
 import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.R;
+import com.example.movieapp.Request.ImageLoader;
 import com.example.movieapp.View.Movie_infomation;
 import com.example.movieapp.utils.Credentials;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -38,6 +38,7 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private List<MovieModel> movies;
     private Context context;
     int view_type = 0;
+    private String userId;
 
     public FilmAdapter(List<MovieModel> movies, Context context) {
         this.movies = movies;
@@ -86,12 +87,17 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 Date newDate = df.parse(this.movies.get(position).getRelease_date());
                 df = new SimpleDateFormat("M.dd, yyyy");
                 viewHolder.publish_date.setText(df.format(newDate));
-            } catch (ParseException e) {
-                viewHolder.publish_date.setText(this.movies.get(position).getRelease_date());
+            } catch (Exception e) {
+                try {
+                    int year = Integer.parseInt(this.movies.get(position).getRelease_date().split("-")[0]);
+                    viewHolder.publish_date.setText(year);
+                }catch (Exception ex){
+                    viewHolder.publish_date.setText(this.movies.get(position).getRelease_date());
+                }
             }
 
             // set poster for a film
-            new DownloadImageTask(viewHolder.movie_poster, viewHolder.shimmerFrameLayout, Credentials.BASE_IMAGE_URL + this.movies.get(position).getPoster_path()).execute();
+            new ImageLoader().loadImageIntoImageView(context, Credentials.BASE_IMAGE_URL + this.movies.get(position).getPoster_path(), viewHolder.movie_poster, viewHolder.shimmerFrameLayout);
         }else{
             ImageSliderItem s_holder = (ImageSliderItem) holder;
             s_holder.movie_title.setText(this.movies.get(position).getTitle());
@@ -103,7 +109,7 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
             s_holder.status.setText(null);
 
-            new DownloadImageTask(s_holder.movie_backdrop, s_holder.shimmerFrameLayout, Credentials.BASE_IMAGE_URL + this.movies.get(position).getBackgrop_path()).execute();
+            new ImageLoader().loadImageIntoImageView(context, Credentials.BASE_IMAGE_URL + this.movies.get(position).getBackgrop_path(),  s_holder.movie_backdrop, s_holder.shimmerFrameLayout);
         }
 
 
@@ -114,6 +120,7 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             public void onClick(View v) {
                 Intent intent = new Intent(context, Movie_infomation.class);
                 intent.putExtra("film_id", movies.get(pos).getId());
+                intent.putExtra("userId", userId);
                 context.startActivity(intent);
             }
         });
@@ -123,6 +130,10 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     @Override
     public int getItemCount() {
         return movies.size();
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
