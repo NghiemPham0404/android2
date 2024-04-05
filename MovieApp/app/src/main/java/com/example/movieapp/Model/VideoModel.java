@@ -5,6 +5,12 @@ public class VideoModel {
     private String id;
     private String key;
 
+    public String getUrl() {
+        return url;
+    }
+
+    private String url;
+
     public String getId() {
         return id;
     }
@@ -23,6 +29,10 @@ public class VideoModel {
         this.id = id;
         this.key = key;
         this.type = type;
+    }
+
+    public VideoModel(String url){
+        this.url = url;
     }
 
 }

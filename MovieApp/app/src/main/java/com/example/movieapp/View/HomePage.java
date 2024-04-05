@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.movieapp.Adapters.MoviesGroupAdapter;
 import com.example.movieapp.Interfaces.Fragment_Interface;
+import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.Model.MoviesGroup;
 import com.example.movieapp.R;
@@ -59,44 +60,19 @@ public class HomePage extends Fragment{
     MovieListViewModel movieList_search_ViewModel, movieList_popular_ViewModel, movieList_nowPlaying_ViewModel, movieList_topRated_ViewModel,
     movieList_upcoming_ViewModel;
 
-
+    AccountModel loginAccount;
     int page = 1;
 
-    // Filter
-    private Button filter_btn, star_btn, sort_btn;
-    int c_sort = 0;
-    PopupWindow filter_popup, rating_popup;
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private LinearLayout layout;
 
     public HomePage() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomePage.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HomePage newInstance(String param1, String param2) {
+    public static HomePage newInstance(AccountModel loginAccount) {
         HomePage fragment = new HomePage();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putParcelable("loginAccount", loginAccount);
         fragment.setArguments(args);
         return fragment;
     }
@@ -105,12 +81,12 @@ public class HomePage extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            loginAccount = (AccountModel) getArguments().get("loginAccount");
+            Toast.makeText(getContext(), loginAccount.getUser_id(), Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(getContext(), "Agrs is null", Toast.LENGTH_SHORT).show();
         }
-
         movieList_search_ViewModel =new ViewModelProvider(this).get(MovieListViewModel.class);
-
         ObserveAnyChanges();
     }
 
@@ -133,6 +109,7 @@ public class HomePage extends Fragment{
                         moviesGroups.add(movieGroup);
 
                         moviesGroupAdapter = new MoviesGroupAdapter(getContext(), moviesGroups);
+                        moviesGroupAdapter.setUserId(loginAccount.getUser_id());
                         moviesGroupsRecyclerView.setAdapter(moviesGroupAdapter);
 
                         for(MovieModel movieModel : movieModels){
@@ -170,9 +147,6 @@ public class HomePage extends Fragment{
         searchBox = view.findViewById(R.id.searchBox);
         searchBtn = view.findViewById(R.id.searchBtn);
         divSearch = view.findViewById(R.id.searchDiv);
-        filter_btn = view.findViewById(R.id.filter_btn);
-        star_btn = view.findViewById(R.id.rating_filter_btn);
-        sort_btn = view.findViewById(R.id.sort_btn);
         layout = view.findViewById(R.id.home_layout);;
     }
 
@@ -214,6 +188,7 @@ public class HomePage extends Fragment{
 
 
         moviesGroupAdapter = new MoviesGroupAdapter(getContext(), moviesGroups);
+        moviesGroupAdapter.setUserId(loginAccount.getUser_id());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         moviesGroupsRecyclerView.setLayoutManager(linearLayoutManager);
         moviesGroupsRecyclerView.setAdapter(moviesGroupAdapter);

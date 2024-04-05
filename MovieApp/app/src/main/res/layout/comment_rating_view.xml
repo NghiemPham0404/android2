@@ -9,86 +9,65 @@
     android:padding="5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="5dp">
+        android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+        <ImageView
+            android:id="@+id/avater_border"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginTop="15dp"
             android:layout_weight="1"
+            android:scaleType="centerInside"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/circle" />
 
-            <ImageView
-                android:id="@+id/avater_border"
-                android:layout_width="63dp"
-                android:layout_height="63dp"
-                android:layout_weight="1"
-                android:scaleType="centerInside"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/circle" />
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imageAvatar"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:layout_constraintBottom_toBottomOf="@+id/avater_border"
+            app:layout_constraintEnd_toEndOf="@+id/avater_border"
+            app:layout_constraintStart_toStartOf="@+id/avater_border"
+            app:layout_constraintTop_toTopOf="@+id/avater_border"
+            app:shapeAppearanceOverlay="@style/roundedImageRounded"
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imageAvatar"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                app:layout_constraintBottom_toBottomOf="@+id/avater_border"
-                app:layout_constraintEnd_toEndOf="@+id/avater_border"
-                app:layout_constraintStart_toStartOf="@+id/avater_border"
-                app:layout_constraintTop_toTopOf="@+id/avater_border"
-                app:shapeAppearanceOverlay="@style/roundedImageRounded"
-
-                app:srcCompat="@drawable/alexis_the_nerf"></com.google.android.material.imageview.ShapeableImageView>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
+            app:srcCompat="@drawable/alexis_the_nerf"></com.google.android.material.imageview.ShapeableImageView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="5dp"
         tools:layout_editor_absoluteX="1dp"
         tools:layout_editor_absoluteY="1dp">
 
-        <TextView
-            android:id="@+id/commentBox4"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:ems="10"
-            android:fontFamily="@font/inter"
-            android:gravity="top"
-            android:inputType="text"
-            android:padding="5dp"
-            android:text="username"
-            android:textColor="#FFFFFF"
-            android:textColorHint="@color/light_gray"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/commentBox3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:ems="10"
-            android:fontFamily="@font/inter"
-            android:gravity="top"
-            android:inputType="text"
-            android:padding="5dp"
-            android:text="date"
-            android:textColor="#FFFFFF"
-            android:textColorHint="@color/light_gray"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/user_name_cm_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:fontFamily="@font/inter"
+                android:gravity="top"
+                android:hint="your comments here"
+                android:inputType="text"
+                android:padding="5dp"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="comment" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -96,7 +75,7 @@
             android:orientation="horizontal">
 
             <RatingBar
-                android:id="@+id/ratingBar3"
+                android:id="@+id/ratingBar_comment_box"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:progressBackgroundTint="@color/bright_gray"
@@ -105,19 +84,38 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/commentBox"
+            android:id="@+id/user_comment_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
+            android:layout_weight="1"
             android:ems="10"
             android:fontFamily="@font/inter"
             android:gravity="top"
+            android:hint="your comments here"
             android:inputType="text"
             android:padding="5dp"
-            android:text="comment"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:text="comment" />
+
+        <TextView
+            android:id="@+id/date_comment_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:fontFamily="@font/inter"
+            android:gravity="top"
+            android:hint="your comments here"
+            android:inputType="text"
+            android:padding="5dp"
             android:textColor="@color/light_gray"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:text="comment" />
 
     </LinearLayout>
 </LinearLayout>

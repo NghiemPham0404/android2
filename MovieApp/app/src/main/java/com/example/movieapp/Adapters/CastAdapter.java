@@ -11,9 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.movieapp.AsyncTasks.DownloadImageTask;
 import com.example.movieapp.Model.CastModel;
 import com.example.movieapp.R;
+import com.example.movieapp.Request.ImageLoader;
 import com.example.movieapp.View.PersonActivity;
 import com.example.movieapp.utils.Credentials;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -21,15 +21,16 @@ import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.List;
 
-public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder>{
+public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder> {
 
     List<CastModel> castModels;
     Context context;
 
-    public CastAdapter(Context context, List<CastModel> castModels){
+    public CastAdapter(Context context, List<CastModel> castModels) {
         this.context = context;
         this.castModels = castModels;
     }
+
     @NonNull
     @Override
     public CastAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -40,14 +41,22 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull CastAdapter.ViewHolder holder, int position) {
-        holder.charater_cast.setText(castModels.get(position).getCharacter());
-        holder.name_cast.setText(castModels.get(position).getName());
-        new DownloadImageTask(holder.image_cast, holder.shimmer_cast, Credentials.BASE_IMAGE_URL + castModels.get(position).getProfile_path()).execute();
+        CastModel castModel = castModels.get(position);
+        if (castModel.getCharacter() != null) {
+            holder.charater_cast.setText(castModel.getCharacter());
+        } else if (castModel.getKnown_for_department() != null) {
+            holder.charater_cast.setText(castModel.getKnown_for_department());
+        }
+
+        holder.name_cast.setText(castModel.getName());
+        holder.shimmer_cast.startShimmerAnimation();
+        new ImageLoader().loadImageIntoImageView(context, Credentials.BASE_IMAGE_URL + castModel.getProfile_path(), holder.image_cast, holder.shimmer_cast);
+//        new DownloadImageTask(holder.image_cast, holder.shimmer_cast, Credentials.BASE_IMAGE_URL + castModel.getProfile_path()).execute();
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent castIntent = new Intent(context, PersonActivity.class);
-                castIntent.putExtra("cast_id", castModels.get(position).getId());
+                castIntent.putExtra("cast_id", castModel.getId());
                 context.startActivity(castIntent);
             }
         });
@@ -58,17 +67,17 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder>{
         return castModels.size();
     }
 
-    class ViewHolder extends  RecyclerView.ViewHolder{
+    class ViewHolder extends RecyclerView.ViewHolder {
         ShapeableImageView image_cast;
         ShimmerFrameLayout shimmer_cast;
         TextView name_cast, charater_cast;
 
-        public ViewHolder(@NonNull View ItemView){
+        public ViewHolder(@NonNull View ItemView) {
             super(ItemView);
             image_cast = itemView.findViewById(R.id.image_cast);
             name_cast = itemView.findViewById(R.id.name_cast);
             charater_cast = itemView.findViewById(R.id.charater_cast);
-            shimmer_cast = itemView.findViewById(R.id.shimmer_layout);
+            shimmer_cast = itemView.findViewById(R.id.shimmer_cast);
         }
 
     }

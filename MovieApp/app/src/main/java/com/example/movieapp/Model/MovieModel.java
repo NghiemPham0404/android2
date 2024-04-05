@@ -24,7 +24,18 @@ public class MovieModel implements Parcelable {
     private String poster_path;
     private List<Genre> genres;
 
+    private Videos videos;
+    private Credits credits;
+
     public int runtime;
+
+    public String getDuration() {
+        return duration;
+    }
+    public void setDuration(String duration){
+        this.duration = duration;
+    }
+    private String duration;
 
     public MovieModel(int id, String title, String release_date, float vote_average, String poster_path, String backgrop_path, boolean adult, String overriew) {
         this.id = id;
@@ -48,6 +59,35 @@ public class MovieModel implements Parcelable {
         this.overview = overriew;
         this.genres = genres;
         this.runtime = runtime;
+    }
+
+    public MovieModel(int id, String title, String release_date, float vote_average, String poster_path, String backgrop_path, boolean adult, String overriew, List<Genre> genres, int runtime, Videos videos, Credits credits) {
+        this.id = id;
+        this.title = title;
+        this.release_date = release_date;
+        this.vote_average = vote_average;
+        this.poster_path = poster_path;
+        this.backdrop_path = backgrop_path;
+        this.adult = adult;
+        this.overview = overriew;
+        this.genres = genres;
+        this.runtime = runtime;
+        this.videos =videos;
+        this.credits = credits;
+    }
+
+    public MovieModel(int id, String title, String release_date, float vote_average, String poster_path, String backgrop_path, boolean adult, String overriew, List<Genre> genres, int runtime, Videos videos) {
+        this.id = id;
+        this.title = title;
+        this.release_date = release_date;
+        this.vote_average = vote_average;
+        this.poster_path = poster_path;
+        this.backdrop_path = backgrop_path;
+        this.adult = adult;
+        this.overview = overriew;
+        this.genres = genres;
+        this.runtime = runtime;
+        this.videos = videos;
     }
 
     protected MovieModel(Parcel in) {
@@ -136,14 +176,38 @@ public class MovieModel implements Parcelable {
     }
 
 
-//    public MovieModel(int id, String title, String release_date, float vote_average, String poster_path, String backgrop_path) {
-//        this.id = id;
-//        this.title = title;
-//        this.release_date = release_date;
-//        this.vote_average = vote_average;
-//        this.poster_path = poster_path;
-//        this.backdrop_path = backgrop_path;
-//    }
+    public String getBackdrop_path() {
+        return backdrop_path;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public Videos getVideos() {
+        return videos;
+    }
+
+    public String getTrailer(){
+        if(getVideos()==null)
+            return null;
+        else {
+            if (getVideos().getResults().size() > 0) {
+                for (int i = 0; i < getVideos().getResults().size(); i++) {
+                    if (getVideos().getResults().get(i).getType().equalsIgnoreCase("Trailer")) {
+                        return "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/" + getVideos().getResults().get(i).getKey() + "\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen=\"true\"></iframe>";
+                    }
+                }
+                return "<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/" + getVideos().getResults().get(0).getKey() + "\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen=\"true\"></iframe>";
+            }else{
+                return null;
+            }
+        }
+    }
+
+    public Credits getCredits() {
+        return credits;
+    }
 
 
     @Override
@@ -208,6 +272,36 @@ public class MovieModel implements Parcelable {
         public void writeToParcel(@NonNull Parcel dest, int flags) {
                 dest.writeInt(id);
                 dest.writeString(name);
+        }
+    }
+
+    public class Videos{
+        public List<VideoModel> getResults() {
+            return results;
+        }
+
+        List<VideoModel> results;
+
+        public Videos(List<VideoModel> results){
+            this.results = results;
+        }
+    }
+
+    public class Credits{
+        public List<CastModel> cast;
+
+        public Credits(List<CastModel> cast, List<CastModel> crew) {
+            this.cast = cast;
+            this.crew = crew;
+        }
+
+        public List<CastModel> crew;
+        public List<CastModel> getCast() {
+            return cast;
+        }
+
+        public List<CastModel> getCrew() {
+            return crew;
         }
     }
 }

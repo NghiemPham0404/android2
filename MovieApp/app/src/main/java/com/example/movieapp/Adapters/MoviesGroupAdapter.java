@@ -23,9 +23,16 @@ public class MoviesGroupAdapter extends RecyclerView.Adapter<MoviesGroupAdapter.
     Context context;
     List<MoviesGroup> moviesGroups;
 
+    String userId;
+
+
     public MoviesGroupAdapter(Context context, List<MoviesGroup> moviesGroups) {
         this.context = context;
         this.moviesGroups= moviesGroups;
+    }
+
+    public void setUserId(String userId){
+        this.userId = userId;
     }
 
     @NonNull
@@ -70,9 +77,8 @@ public class MoviesGroupAdapter extends RecyclerView.Adapter<MoviesGroupAdapter.
         }else{
             moviesRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         }
-
-
         FilmAdapter filmAdapter = new FilmAdapter(movies, context);
+        filmAdapter.setUserId(userId);
         moviesRecyclerView.setAdapter(filmAdapter);
     }
 
@@ -84,8 +90,8 @@ public class MoviesGroupAdapter extends RecyclerView.Adapter<MoviesGroupAdapter.
             moviesRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         }
 
-
         FilmAdapter filmAdapter = new FilmAdapter(movies, context, view_type);
+        filmAdapter.setUserId(userId);
         moviesRecyclerView.setAdapter(filmAdapter);
     }
 }

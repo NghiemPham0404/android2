@@ -15,11 +15,11 @@ import android.widget.TextView;
 
 import com.example.movieapp.Adapters.CareerAdapter;
 import com.example.movieapp.Adapters.CastAdapter;
-import com.example.movieapp.AsyncTasks.DownloadImageTask;
 import com.example.movieapp.Model.CastModel;
 import com.example.movieapp.Model.CreditModel;
 import com.example.movieapp.Model.ExternalLinkModel;
 import com.example.movieapp.R;
+import com.example.movieapp.Request.ImageLoader;
 import com.example.movieapp.Request.MyService;
 import com.example.movieapp.Response.CreditResponse;
 import com.example.movieapp.utils.Credentials;
@@ -88,7 +88,7 @@ public class PersonActivity extends AppCompatActivity {
                     date_of_birth.setText(cast.getBirthday());
                     place_of_birth.setText(cast.getPlace_of_birth());
                     biography.setText(cast.getBiography());
-                    new DownloadImageTask(avatar, Credentials.BASE_IMAGE_URL + cast.getProfile_path()).execute();
+                    new ImageLoader().loadImageIntoImageView(PersonActivity.this ,Credentials.BASE_IMAGE_URL + cast.getProfile_path(), avatar);
             }
 
             @Override

@@ -22,7 +22,7 @@ public class RegisterView extends AppCompatActivity implements Form_validate {
     TextInputEditText username_txt, password_txt, psswrd_verify_txt, email_txt;
     TextView username_err_signup, password_err_signup, verify_psswrd_err_signup, email_err_signup;
     Button signup_btn;
-    ConstraintLayout constraintLayout;
+    ConstraintLayout loadingScreen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class RegisterView extends AppCompatActivity implements Form_validate {
     }
 
     public void initComponent() {
-        constraintLayout = findViewById(R.id.loadingLayout);
+        loadingScreen = findViewById(R.id.loadingLayout);
 
         username_txt = findViewById(R.id.username_txt_signup);
         password_txt = findViewById(R.id.password_txt_signup);
@@ -154,11 +154,14 @@ public class RegisterView extends AppCompatActivity implements Form_validate {
                     String email = email_txt.getText().toString().trim();
                     String password = password_txt.getText().toString().trim();
                     new SignUpTask( RegisterView.this, Credentials.signup_link,
-                            username, password, email, constraintLayout).execute();
+                            username, password, email, loadingScreen).execute();
                 }
             }
         });
     }
+    public void signUp(String username, String email, String password){
+        loadingScreen.setVisibility(View.VISIBLE);
 
+    }
 
 }

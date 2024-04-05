@@ -1,10 +1,15 @@
 package com.example.movieapp.View;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,51 +18,115 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
+import com.example.movieapp.Adapters.FavorAdapter;
 import com.example.movieapp.Interfaces.Fragment_Interface;
+import com.example.movieapp.Model.AccountModel;
+import com.example.movieapp.Model.DetailModel;
+import com.example.movieapp.Model.MovieModel;
+import com.example.movieapp.Model.VideoModel;
 import com.example.movieapp.R;
+import com.example.movieapp.Request.MyService;
+import com.example.movieapp.Request.MyService2;
+import com.example.movieapp.utils.Credentials;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FavorPage#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FavorPage extends Fragment implements Fragment_Interface {
+public class FavorPage extends Fragment{
 
     private Button filter_btn, star_btn, sort_btn;
     int c_sort = 0;
+
+    AccountModel loginAccount;
 
     PopupWindow filter_popup, rating_popup;
 
     FrameLayout layout;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    RecyclerView favorRecyclerView;
+    ConstraintLayout loadingScreen;
+    FavorAdapter favorAdapter;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    List<MovieModel> fav_movies;
+
+
+    FavorAdapter.favor_interface favor_click = new FavorAdapter.favor_interface() {
+        @Override
+        public void openMovie(int movieId) {
+            Intent openMovieIntent = new Intent(getContext(), Movie_infomation.class);
+            openMovieIntent.putExtra("film_id", movieId);
+            openMovieIntent.putExtra("userId", loginAccount.getUser_id());
+            startActivity(openMovieIntent);
+        }
+
+        @Override
+        public void playMovie(MovieModel movie) {
+            Call<VideoModel> getVideoCall = MyService2.getApi().getMovieVideo(Credentials.functionname_video, movie.getId());
+            getVideoCall.enqueue(new Callback<VideoModel>() {
+                @Override
+                public void onResponse(Call<VideoModel> call, Response<VideoModel> response) {
+                        String video_link = response.body().getUrl();
+                        if(!video_link.equalsIgnoreCase("")){
+                            Intent intent = new Intent(getContext(), PlayingFilm.class);
+                            intent.putExtra("videoUrl",video_link);
+                            intent.putExtra("film_id", movie.getId());
+                            intent.putExtra("movie_name", movie.getTitle());
+                            intent.putExtra("duration", movie.getDuration());
+                            startActivity(intent);
+                        }else{
+                            Intent intent = new Intent(getContext(), PlayingTrailer.class);
+                            intent.putExtra("video_string", movie.getTrailer());
+                            startActivity(intent);
+                        }
+                }
+
+                @Override
+                public void onFailure(Call<VideoModel> call, Throwable t) {
+                    Log.e("GET VIDEO IN FAVOR ", " : failure");
+                }
+            });
+        }
+        @Override
+        public void changeFavorite(int movieId) {
+            Call<DetailModel> detailModelCall = MyService2.getApi().addToFavor("detail",  loginAccount.getUser_id(), movieId);
+            detailModelCall.enqueue(new Callback<DetailModel>() {
+                @Override
+                public void onResponse(Call<DetailModel> call, Response<DetailModel> response) {
+                    if (response.code() == 200) {
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<DetailModel> call, Throwable t) {
+                    Log.e("FAVOR TASK", "change favor fail");
+                }
+            });
+        }
+    };
 
     public FavorPage() {
-        // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FavorPage.
-     */
     // TODO: Rename and change types and number of parameters
-    public static FavorPage newInstance(String param1, String param2) {
+    public static FavorPage newInstance(AccountModel loginAccount) {
         FavorPage fragment = new FavorPage();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putParcelable("loginAccount", loginAccount);
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,8 +135,10 @@ public class FavorPage extends Fragment implements Fragment_Interface {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            loginAccount = (AccountModel) getArguments().get("loginAccount");
+            Toast.makeText(getContext(), "userID : "+loginAccount.getUser_id(), Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(getContext(), "agrs is null",Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -81,92 +152,62 @@ public class FavorPage extends Fragment implements Fragment_Interface {
     }
 
     public void initComponents(View view){
-        filter_btn = view.findViewById(R.id.filter_btn);
         star_btn = view.findViewById(R.id.rating_filter_btn);
         sort_btn = view.findViewById(R.id.sort_btn);
-        layout = view.findViewById(R.id.fav_layout);;
-        initFilterBar();
+        layout = view.findViewById(R.id.fav_layout);
+
+        favorRecyclerView = view.findViewById(R.id.favorRecycleView);
+        loadingScreen = view.findViewById(R.id.loadingLayout);
+        initFeatures();
     }
 
-    @Override
-    public void initFilterBar(){
+    public void initFeatures(){
+        loadingScreen.setVisibility(View.VISIBLE);
+        fav_movies = new ArrayList<MovieModel>();
+        favorAdapter = new FavorAdapter(getContext(), fav_movies, favor_click);
+        Call<List<DetailModel>> favorListCall = MyService2.getApi().getFavorListByUserId("detail", loginAccount.getUser_id());
+       favorListCall.enqueue(new Callback<List<DetailModel>>() {
+           @Override
+           public void onResponse(Call<List<DetailModel>> call, Response<List<DetailModel>> response) {
+               if(response.code() == 200){
+                   for(DetailModel movie : response.body()){
+                        initListItem(movie.getMovieId(), movie.getDuration());
+                   }
+                   initList();
+                   loadingScreen.setVisibility(View.GONE);
+               }
+           }
 
-            filter_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    initFilterPopup();
-                }
-            });
-
-            star_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    initRatingPopup();
-                }
-            });
+           @Override
+           public void onFailure(Call<List<DetailModel>> call, Throwable t) {
+                Log.e("FAVOR TASK", t.toString());
+           }
+       });
+    }
+    public void initList(){
+        Log.e("ERROR adapter is null : " , " " + (favorAdapter == null) );
+        favorRecyclerView.setAdapter(favorAdapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        favorRecyclerView.setLayoutManager(linearLayoutManager);
     }
 
-    @Override
-    public void initFilterPopup(){
-        if(filter_popup == null){
-            LayoutInflater inflater = (LayoutInflater)   this.getContext().getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
-            View popUpFilter = inflater.inflate(R.layout.filter_search_popup, null);
-
-            int width = ViewGroup.LayoutParams.MATCH_PARENT;
-            int height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            boolean focusable = true;
-            filter_popup= new PopupWindow(popUpFilter, width, height, focusable);
-            filter_popup.setAnimationStyle(R.style.PopupAnimation);
-        }
-        layout.post(new Runnable() {
+    public void initListItem(int movieId, String duration){
+        Call<MovieModel> movieCall = MyService.getMovieApi().searchMovieDetail(movieId, Credentials.API_KEY, "videos");
+        movieCall.enqueue(new Callback<MovieModel>() {
             @Override
-            public void run() {
-                filter_popup.showAtLocation(layout, Gravity.TOP, 0,400);
+            public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
+                MovieModel movie = response.body();
+                movie.setDuration(duration);
+                fav_movies.add(movie);
+                favorAdapter.notifyDataSetChanged();
+                Log.i("Favor movie : " , movie.getTitle());
+            }
+
+            @Override
+            public void onFailure(Call<MovieModel> call, Throwable t) {
+                Log.i("FAVOR TASK", "Fail to add movie : " + t.toString());
             }
         });
     }
 
-    @Override
-    public void initRatingPopup(){
-        if(rating_popup == null){
-            LayoutInflater inflater = (LayoutInflater)   this.getContext().getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
-            View popUpFilter = inflater.inflate(R.layout.filter_starbar, null);
-            int width = ViewGroup.LayoutParams.MATCH_PARENT;
-            int height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            boolean focusable = true;
-            rating_popup= new PopupWindow(popUpFilter, width, height, focusable);
-            rating_popup.setAnimationStyle(R.style.PopupAnimation);
-        }
-        layout.post(new Runnable() {
-            @Override
-            public void run() {
-                rating_popup.showAtLocation(layout, Gravity.TOP, 0,400);
-            }
-        });
-    }
-
-    @Override
-    public void initSort(){
-        sort_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-    }
-
-    @Override
-    public void sortBtnChange(int n_sort) {
-        if(c_sort == 0){
-            c_sort = 1;
-            sort_btn.setBackgroundResource(R.drawable.toggle_stroke);
-        }else if(c_sort == 1){
-            c_sort = 2;
-            sort_btn.setBackgroundResource(R.drawable.neon_blue_corner);
-        }else{
-            c_sort =0;
-            sort_btn.setBackgroundResource(R.drawable.nomal_stroke);
-        }
-    }
 }

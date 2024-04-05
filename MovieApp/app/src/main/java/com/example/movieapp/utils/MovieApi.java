@@ -98,4 +98,10 @@ public interface MovieApi {
            @Path("movie_id") int movie_id,
             @Query("api_key") String key
     );
+    @GET("3/movie/{movie_id}")
+    Call<MovieModel> searchMovieDetail(
+            @Path("movie_id") int movie_id,
+            @Query("api_key") String key,
+            @Query("append_to_response") String append_to_ressponse
+    );
 }

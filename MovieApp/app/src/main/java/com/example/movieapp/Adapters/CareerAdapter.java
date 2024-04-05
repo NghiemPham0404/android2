@@ -43,9 +43,10 @@ public class CareerAdapter extends RecyclerView.Adapter<CareerAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.movie_name.setText(creditModelList.get(position).getTitle());
-        holder.role.setText(creditModelList.get(position).getCharacter());
-        int rating =  (int)(creditModelList.get(position).getVote_average()*10);
+        CreditModel creditModel = creditModelList.get(position);
+        holder.movie_name.setText(creditModel.getTitle());
+        holder.role.setText(creditModel.getCharacter());
+        int rating =  (int)(creditModel.getVote_average()*10);
         if(rating < 70){
             if(rating<50 && rating!=0){
                 holder.rating.setTextColor(context.getResources().getColor(R.color.neon_pink));
@@ -55,11 +56,11 @@ public class CareerAdapter extends RecyclerView.Adapter<CareerAdapter.ViewHolder
         }else{
             holder.rating.setTextColor(context.getResources().getColor(R.color.lime_green));
         }
-        holder.rating.setText( (int)(creditModelList.get(position).getVote_average()*10) + " %");
+        holder.rating.setText( (int)(creditModel.getVote_average()*10) + " %");
 
-        if(!yearList.contains(creditModelList.get(position).getYear())){
-            yearList.add(creditModelList.get(position).getYear());
-            holder.year.setText(creditModelList.get(position).getYear()+"");
+        if(!yearList.contains(creditModel.getYear())){
+            yearList.add(creditModel.getYear());
+            holder.year.setText(creditModel.getYear()+"");
         }else{
             holder.year.setText("");
         }
@@ -68,7 +69,7 @@ public class CareerAdapter extends RecyclerView.Adapter<CareerAdapter.ViewHolder
             @Override
             public void onClick(View v) {
                 Intent movie_intent = new Intent(context, Movie_infomation.class);
-                movie_intent.putExtra("film_id",creditModelList.get(position).getId());
+                movie_intent.putExtra("film_id",creditModel.getId());
                 context.startActivity(movie_intent);
             }
         });
