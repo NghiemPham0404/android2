@@ -3,6 +3,7 @@ package com.example.movieapp.utils;
 import com.example.movieapp.Model.DetailModel;
 import com.example.movieapp.Model.LoginModel;
 import com.example.movieapp.Model.VideoModel;
+import com.example.movieapp.Response.DetailResponse;
 
 import java.util.List;
 
@@ -53,4 +54,28 @@ public interface ManagerApi {
             @Query("userId") String userId
     );
 
+    //Add to Review
+    @POST(Credentials.favor_url)
+    Call<DetailModel> addReview(
+            @Query("functionname") String functionname,
+            @Query("userId") String userId,
+            @Query("movieId") int movieId,
+            @Query("rating") float rating,
+            @Query("review") String review
+    );
+
+    @POST(Credentials.favor_url)
+    Call<DetailResponse>getReviewByFilmId(
+            @Query("functionname") String functionname,
+            @Query("movieId") int movieId
+    );
+
+    // set duration
+    @POST(Credentials.favor_url)
+    Call<DetailModel> setDuration(
+            @Query("functionname") String functionname,
+            @Query("userId") String userId,
+            @Query("movieId") int movieId,
+            @Query("duration") String current_duration
+    );
 }

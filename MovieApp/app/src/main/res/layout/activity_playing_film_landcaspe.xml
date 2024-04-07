@@ -8,12 +8,12 @@
     android:padding="5dp"
     tools:context=".View.PlayingFilm">
 
-    <androidx.media3.ui.PlayerView
+    <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/playing_film_window"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:controller_layout_id="@layout/exo_playback_control_view"
         app:use_controller="true"
-        tools:layout_editor_absoluteX="170dp"
-        tools:layout_editor_absoluteY="99dp" />
+        />
 
 </RelativeLayout>

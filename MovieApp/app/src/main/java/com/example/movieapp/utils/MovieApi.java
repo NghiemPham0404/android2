@@ -5,8 +5,11 @@ import com.example.movieapp.Model.ExternalLinkModel;
 import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.Response.CastResponse;
 import com.example.movieapp.Response.CreditResponse;
+import com.example.movieapp.Response.MovieResponse;
 import com.example.movieapp.Response.MovieSearchResponse;
 import com.example.movieapp.Response.VideoResponse;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -103,5 +106,11 @@ public interface MovieApi {
             @Path("movie_id") int movie_id,
             @Query("api_key") String key,
             @Query("append_to_response") String append_to_ressponse
+    );
+
+    @GET("3/movie/{movie_id}/recommendations")
+    Call<MovieSearchResponse> searchMovieRelativeRecommendation(
+            @Path("movie_id") int movie_id,
+            @Query("api_key") String key
     );
 }

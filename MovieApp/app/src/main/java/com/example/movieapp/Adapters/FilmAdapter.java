@@ -81,15 +81,13 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             float format_rate = (float) (Math.round(rate*100)*1.0/100);
             viewHolder.movie_rating.setText(format_rate+"");
 
-            //set date
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
             try {
-                Date newDate = df.parse(this.movies.get(position).getRelease_date());
-                df = new SimpleDateFormat("M.dd, yyyy");
-                viewHolder.publish_date.setText(df.format(newDate));
+                String[] date_split = this.movies.get(position).getRelease_date().split(",");
+                int year = Integer.parseInt(date_split[date_split.length-1]);
+                viewHolder.publish_date.setText(year+"");
             } catch (Exception e) {
                 try {
-                    int year = Integer.parseInt(this.movies.get(position).getRelease_date().split("-")[0]);
+                    String year =this.movies.get(position).getRelease_date().split("-")[0];
                     viewHolder.publish_date.setText(year);
                 }catch (Exception ex){
                     viewHolder.publish_date.setText(this.movies.get(position).getRelease_date());

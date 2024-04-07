@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#000000"
+    android:layout_marginTop="5dp"
+    android:background="@drawable/round_corner_shape"
+    android:backgroundTint="@color/bright_gray"
     android:orientation="horizontal"
     android:padding="5dp">
 
@@ -48,6 +50,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="left"
             android:orientation="horizontal">
 
             <TextView
@@ -55,11 +58,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:layout_weight="1"
                 android:ems="10"
                 android:fontFamily="@font/inter"
                 android:gravity="top"
-                android:hint="your comments here"
                 android:inputType="text"
                 android:padding="5dp"
                 android:textColor="#FFFFFF"
@@ -74,13 +75,23 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <RatingBar
-                android:id="@+id/ratingBar_comment_box"
+            <TextView
+                android:id="@+id/date_comment_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:progressBackgroundTint="@color/bright_gray"
-                android:progressTint="@color/yellow" />
+                android:layout_margin="5dp"
+                android:ems="10"
+                android:fontFamily="@font/inter"
+                android:gravity="top"
+                android:hint="your comments here"
+                android:inputType="text"
+                android:padding="5dp"
+                android:textColor="@color/light_gray"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="comment" />
 
+            <include layout="@layout/rating_bagde" />
         </LinearLayout>
 
         <TextView
@@ -96,23 +107,6 @@
             android:inputType="text"
             android:padding="5dp"
             android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            tools:text="comment" />
-
-        <TextView
-            android:id="@+id/date_comment_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:ems="10"
-            android:fontFamily="@font/inter"
-            android:gravity="top"
-            android:hint="your comments here"
-            android:inputType="text"
-            android:padding="5dp"
-            android:textColor="@color/light_gray"
             android:textSize="14sp"
             android:textStyle="bold"
             tools:text="comment" />
