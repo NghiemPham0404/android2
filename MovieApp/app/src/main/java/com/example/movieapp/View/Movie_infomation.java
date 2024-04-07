@@ -128,12 +128,11 @@ public class Movie_infomation extends AppCompatActivity {
                     float rate = Math.round(movie.getVote_average() * 100) * 1.0f / 100;
                     rating.setText(rate + "");
                     try {
-                        int year = Integer.parseInt(movie.getRelease_date().split("-")[0]);
+                        String year =movie.getRelease_date().split("-")[0];
                         date_info.setText("("+year + ")");
                     }catch (Exception ex){
                         date_info.setText(movie.getRelease_date() + "");
                     }
-                    date_info.setText(movie.getRelease_date() + "");
                     time_info.setText(movie.getMaxDurationTime());
                     genres_info.setText(movie.getGenresString());
                     new ImageLoader().loadImageIntoImageView(Movie_infomation.this,Credentials.BASE_IMAGE_URL + movie.getPoster_path(), poster_image, findViewById(R.id.shimmerLayout_info));
@@ -186,6 +185,7 @@ public class Movie_infomation extends AppCompatActivity {
                                 Intent playMovieIntent = new Intent(Movie_infomation.this, PlayingFilm.class);
                                 playMovieIntent.putExtra("film_id",movie.getId());
                                 playMovieIntent.putExtra("videoUrl",response.body().getUrl());
+                                playMovieIntent.putExtra("userId", userId );
                                 playMovieIntent.putExtra("movie_name", movie.getTitle());
                                 playMovieIntent.putExtra("duration", movie.getDuration());
                                 startActivity(playMovieIntent);

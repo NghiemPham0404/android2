@@ -17,7 +17,7 @@
         <LinearLayout
             android:id="@+id/searchDiv"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:layout_margin="5dp"
             android:background="@drawable/text_input"
             android:orientation="horizontal">
@@ -28,21 +28,21 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:backgroundTint="@color/black"
-                android:ems="10"
                 android:hint="movie name |  actors.."
                 android:inputType="text"
                 android:textColor="@color/white"
                 android:textColorHighlight="@color/black"
                 android:textColorHint="@color/white"
-                android:textColorLink="@color/black" />
+                android:textColorLink="@color/black"
+                android:textSize="14dp" />
 
             <Button
                 android:id="@+id/searchBtn"
                 android:layout_width="50dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@null"
                 android:drawableTop="@drawable/search_icon"
-                android:paddingTop="20dp" />
+                android:paddingTop="10dp" />
 
             <Button
                 android:id="@+id/mirco_btn"
@@ -50,7 +50,7 @@
                 android:layout_height="match_parent"
                 android:background="@null"
                 android:drawableTop="@drawable/mic"
-                android:paddingTop="20dp" />
+                android:paddingTop="10dp" />
         </LinearLayout>
 
         <include

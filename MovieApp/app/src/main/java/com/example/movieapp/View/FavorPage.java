@@ -74,23 +74,43 @@ public class FavorPage extends Fragment{
         }
 
         @Override
-        public void playMovie(MovieModel movie) {
+        public void playMovie(MovieModel movie, Button button) {
             Call<VideoModel> getVideoCall = MyService2.getApi().getMovieVideo(Credentials.functionname_video, movie.getId());
             getVideoCall.enqueue(new Callback<VideoModel>() {
                 @Override
                 public void onResponse(Call<VideoModel> call, Response<VideoModel> response) {
                         String video_link = response.body().getUrl();
                         if(!video_link.equalsIgnoreCase("")){
-                            Intent intent = new Intent(getContext(), PlayingFilm.class);
-                            intent.putExtra("videoUrl",video_link);
-                            intent.putExtra("film_id", movie.getId());
-                            intent.putExtra("movie_name", movie.getTitle());
-                            intent.putExtra("duration", movie.getDuration());
-                            startActivity(intent);
+                            button.setBackgroundResource(R.drawable.gradient_corner_bg);
+                            button.setText("watch now");
+                            button.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(getContext(), PlayingFilm.class);
+                                    intent.putExtra("videoUrl",video_link);
+                                    intent.putExtra("film_id", movie.getId());
+                                    intent.putExtra("userId", loginAccount.getUser_id());
+                                    intent.putExtra("movie_name", movie.getTitle());
+                                    intent.putExtra("duration", movie.getDuration());
+                                    startActivity(intent);
+                                }
+                            });
                         }else{
-                            Intent intent = new Intent(getContext(), PlayingTrailer.class);
-                            intent.putExtra("video_string", movie.getTrailer());
-                            startActivity(intent);
+                            String trailer = movie.getTrailer();
+                            if(trailer!=null){
+                                button.setBackgroundResource(R.drawable.play_trailer_btn);
+                                button.setText("play trailer");
+                                button.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(getContext(), PlayingTrailer.class);
+                                        intent.putExtra("video_string", trailer);
+                                        startActivity(intent);
+                                    }
+                                });
+                            }else{
+                                button.setText("Unavailable");
+                            }
                         }
                 }
 

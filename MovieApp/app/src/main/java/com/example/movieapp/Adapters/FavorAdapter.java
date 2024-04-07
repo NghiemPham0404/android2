@@ -29,7 +29,7 @@ public class FavorAdapter extends RecyclerView.Adapter<FavorAdapter.ViewHolder>{
     public interface favor_interface{
         public void openMovie(int movieId);
 
-        public void playMovie(MovieModel movie);
+        public void playMovie(MovieModel movie, Button button);
 
         public void changeFavorite(int movieId);
     }
@@ -81,14 +81,7 @@ public class FavorAdapter extends RecyclerView.Adapter<FavorAdapter.ViewHolder>{
                 }
             });
 
-            holder.playBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    favor_click.playMovie(movie);
-                }
-            });
-
-
+            favor_click.playMovie(movie,holder.playBtn);
     }
 
     @Override

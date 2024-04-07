@@ -10,7 +10,7 @@ public class MovieResponse {
     @Expose
     private MovieModel movieModel;
 
-    private MovieModel getMovie(){
+    public MovieModel getMovie(){
         return movieModel;
     }
 

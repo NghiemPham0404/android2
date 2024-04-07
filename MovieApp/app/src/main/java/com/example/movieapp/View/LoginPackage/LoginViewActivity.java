@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.movieapp.AsyncTasks.LoginAsyncTask;
 import com.example.movieapp.Interfaces.Form_validate;
 import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.LoginModel;
@@ -191,6 +190,7 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
                     String google_id = credential.getId();
 
                     if (google_id != null) {
+                        loadingScreen.setVisibility(View.VISIBLE);
                         Call<LoginModel> loginModelCall = MyService2.getApi().loginWithGoogle(google_id);
                         loginModelCall.enqueue(new Callback<LoginModel>() {
                             @Override
@@ -201,6 +201,7 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
                                         AccountModel loginAccount = (AccountModel) loginModel;
                                         Intent loginSuccessIntent = new Intent(LoginViewActivity.this, HomeActivity.class);
                                         loginSuccessIntent.putExtra("loginAccount", loginAccount);
+                                        loadingScreen.setVisibility(View.GONE);
                                         startActivity(loginSuccessIntent);
                                     }else{
                                         Toast.makeText(LoginViewActivity.this, loginModel.getError(), Toast.LENGTH_SHORT).show();

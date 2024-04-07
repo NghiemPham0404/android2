@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/playing_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
@@ -45,43 +46,58 @@
                 android:paddingLeft="10dp"
                 android:text="Avengers : Endgame"
                 android:textColor="@color/white"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <androidx.media3.ui.PlayerView
+            <com.google.android.exoplayer2.ui.PlayerView
                 android:id="@+id/playing_film_window"
-                android:layout_width="390dp"
+                android:layout_width="match_parent"
                 android:layout_height="216dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="5dp"
-                app:use_controller="true" />
+                app:controller_layout_id="@layout/exo_playback_control_view"
+                app:use_controller="true">
 
-            <include layout="@layout/film_group"></include>
+            </com.google.android.exoplayer2.ui.PlayerView>
 
-            <include
-                android:id="@+id/comment_box"
-                layout="@layout/comment_rating_box"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"></include>
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                <Button
+                    android:id="@+id/rating_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/nomal_stroke"
+                    android:drawableRight="@drawable/baseline_comment_24"
+                    android:fontFamily="@font/inter"
+                    android:text="Reviews"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <ToggleButton
+                    android:id="@+id/favorBtn_playing"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/favor_btn_corner"
+                    android:drawableRight="@drawable/favor_toggle_btn_bg"
+                    android:textAllCaps="false"
+                    android:textColor="@drawable/favor_btn_text_color"
+                    android:textOff="mark favor"
+                    android:textOn="mark favor" />
+
+            </LinearLayout>
+
+            <include
+                android:id="@+id/relative_movie_film_group"
+                layout="@layout/film_group"></include>
 
         </LinearLayout>
     </ScrollView>
-
-    <include
-        android:id="@+id/comment_box_focus"
-        layout="@layout/comment_rating_box"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"></include>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
