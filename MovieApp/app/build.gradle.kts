@@ -48,6 +48,7 @@ dependencies {
     // retrofit
     implementation ("com.squareup.retrofit2:retrofit:2.1.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.1.0")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.3")
 
     //shimmer
     implementation ("com.facebook.shimmer:shimmer:0.1.0")
