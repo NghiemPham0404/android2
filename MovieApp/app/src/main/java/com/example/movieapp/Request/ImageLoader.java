@@ -34,7 +34,7 @@ public class ImageLoader {
         shimmerFrameLayout.startShimmerAnimation(); // Start shimmer animation
 
         try {
-            if (!imageUrl.equalsIgnoreCase(Credentials.BASE_IMAGE_URL+"null")) {
+            if (!imageUrl.equalsIgnoreCase(Credentials.BASE_IMAGE_URL + "null")) {
                 Glide.with(context)
                         .load(imageUrl)
                         .diskCacheStrategy(DiskCacheStrategy.ALL) // Caching strategy
@@ -42,14 +42,14 @@ public class ImageLoader {
             } else {
                 imageView.setImageDrawable(context.getDrawable(R.drawable.unknow_image));
             }
-        }finally {
+        } finally {
             shimmerFrameLayout.stopShimmerAnimation(); // Stop shimmer animation if loading fails
         }
 
     }
 
     public void loadImageIntoImageView(Context context, String imageUrl, ImageView imageView) {
-        if (!imageUrl.equalsIgnoreCase(Credentials.BASE_IMAGE_URL+"null")) {
+        if (!imageUrl.equalsIgnoreCase(Credentials.BASE_IMAGE_URL + "null")) {
             Glide.with(context)
                     .load(imageUrl)
                     .diskCacheStrategy(DiskCacheStrategy.ALL) // Caching strategy
@@ -59,25 +59,22 @@ public class ImageLoader {
         }
     }
 
-    public void loadAvatar(Context context, String imageUrl, ImageView imageView, TextView avatarText, String username){
-            Glide.with(context)
-                    .load(imageUrl)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL) // Caching strategy
-                    .into(imageView);
-           avatarText.setVisibility(View.GONE);
-           imageView.setVisibility(View.VISIBLE);
-
-           if(imageView.getDrawable()==null){
-               Toast.makeText(context, "Fail load Avatar", Toast.LENGTH_SHORT).show();
-               Random rnd = new Random();
-               int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-               imageView.setBackgroundColor(color);
-               char firstChar = username.charAt(0);
-               avatarText.setText(firstChar+"");
-               avatarText.setVisibility(View.VISIBLE);
-               imageView.setVisibility(View.VISIBLE);
-           }
-
+    public void loadAvatar(Context context, String imageUrl, ImageView imageView, TextView avatarText, String username) {
+        Glide.with(context)
+                .load(imageUrl)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imageView);
+        avatarText.setVisibility(View.GONE);
+        imageView.setVisibility(View.VISIBLE);
+        if (imageView.getDrawable() == null) {
+            Random rnd = new Random();
+            int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+            imageView.setBackgroundColor(color);
+            char firstChar = username.charAt(0);
+            avatarText.setText(firstChar + "");
+            avatarText.setVisibility(View.VISIBLE);
+            imageView.setVisibility(View.VISIBLE);
+        }
     }
 }
 

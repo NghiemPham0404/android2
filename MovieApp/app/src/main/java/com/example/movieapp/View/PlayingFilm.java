@@ -404,7 +404,7 @@ public class PlayingFilm extends AppCompatActivity {
     }
     public void initUserReviewBox(){
         avatar = popupView.findViewById(R.id.imageAvatar);
-        new ImageLoader().loadImageIntoImageView(PlayingFilm.this, loginAccount.getAvatar(),avatar);
+        new ImageLoader().loadAvatar(PlayingFilm.this, loginAccount.getAvatar(),avatar, popupView.findViewById(R.id.avatarText), loginAccount.getUsername());
         reviewRating = popupView.findViewById(R.id.ratingBar_comment_box);
         reviewBox = popupView.findViewById(R.id.commentBox);
 

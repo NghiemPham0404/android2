@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -14,14 +15,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.R;
+import com.example.movieapp.Request.ImageLoader;
 import com.example.movieapp.Request.MyAvatarService;
+import com.example.movieapp.Response.AvatarResponse;
+import com.example.movieapp.utils.ApiAvatarService;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.IOException;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -45,6 +52,7 @@ public class User_Infomation extends AppCompatActivity {
     private Button choose_avatar_btn, apply_avatar_btn;
     private ImageButton back_btn;
     private ImageView avatar_display;
+    private TextView avatar_text;
 
     private Uri selectedImageUri;
 
@@ -64,6 +72,7 @@ public class User_Infomation extends AppCompatActivity {
             }
         });
 
+        avatar_text = findViewById(R.id.avatarText);
         avatar_display = findViewById(R.id.avatar_user_info);
 
         choose_avatar_btn = findViewById(R.id.choose_avatar_btn);
@@ -82,6 +91,10 @@ public class User_Infomation extends AppCompatActivity {
                 sendImageToServer(selectedImageUri);
             }
         });
+        initInfo();
+    }
+    public void initInfo(){
+        new ImageLoader().loadAvatar(User_Infomation.this, loginAccount.getAvatar(), avatar_display, avatar_text, loginAccount.getUsername());
     }
 
     public void chooseAvatar(){
@@ -104,34 +117,50 @@ public class User_Infomation extends AppCompatActivity {
             apply_avatar_btn.setVisibility(View.VISIBLE);
 
             avatar_display.setImageURI(selectedImageUri);
-            // Now you can send this selected image to the server
-//            sendImageToServer(selectedImageUri);
         }
     }
 
     public void sendImageToServer(Uri imageUri){
-        File imageFile = new File(imageUri.getPath());
+        String realPath = getRealPathFromURI(imageUri);
+        Toast.makeText(this, realPath, Toast.LENGTH_SHORT).show();
+        File imageFile = new File(realPath);
         RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), imageFile);
-        MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", imageFile.getName(), requestBody);
+        MultipartBody.Part filePart = MultipartBody.Part.createFormData("image", imageFile.getName(), requestBody);
 
-        Call<ResponseBody> call = MyAvatarService.getApi().uploadFile(filePart);
-        call.enqueue(new Callback<ResponseBody>() {
+        Call<AvatarResponse> call = MyAvatarService.getApi().uploadImage(MyAvatarService.key,filePart);
+        call.enqueue(new Callback<AvatarResponse>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    Log.d("Upload", "File uploaded successfully");
-                    // Handle success response
-                } else {
-                    Log.e("Upload", "Failed to upload file: " + response.errorBody());
-                    // Handle error response
+            public void onResponse(Call<AvatarResponse> call, Response<AvatarResponse> response) {
+                if(response.isSuccessful()){
+                        Toast.makeText(User_Infomation.this, "Đường link hình nè :" +response.body().getAvatarModel().getUrl() ,  Toast.LENGTH_SHORT).show();
+                        apply_avatar_btn.setVisibility(View.GONE);
+                }else{
+                    try {
+                        Log.i("Failure",response.errorBody().string());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("Upload", "Failed to upload file", t);
-                // Handle failure
+            public void onFailure(Call<AvatarResponse> call, Throwable t) {
+                Log.e("Upload", "Failed to upload image", t);
+                Toast.makeText(User_Infomation.this, t.toString(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private String getRealPathFromURI(Uri contentUri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(contentUri, projection, null, null, null);
+        if (cursor != null) {
+            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            String filePath = cursor.getString(columnIndex);
+            cursor.close();
+            return filePath;
+        }
+        return null;
     }
 }
