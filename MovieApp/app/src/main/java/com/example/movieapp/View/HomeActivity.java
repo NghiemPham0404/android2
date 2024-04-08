@@ -38,7 +38,7 @@ public class HomeActivity extends AppCompatActivity {
             } else if (item.getItemId() == R.id.history) {
                 replaceFragment(new HistoryPage());
             } else if (item.getItemId() == R.id.user) {
-                replaceFragment(new UserPage());
+                replaceFragment(UserPage.newInstance(loginAccount));
             }
             return true;
         });

@@ -1,5 +1,6 @@
 package com.example.movieapp.View.UserPackage;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,8 +8,11 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.R;
+import com.example.movieapp.View.UserPackage.UserInfomation.User_Infomation;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,34 +20,19 @@ import com.example.movieapp.R;
  * create an instance of this fragment.
  */
 public class UserPage extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    // TODO : GHI LẠI TÀI KHOẢN ĐÃ ĐĂNG NHẬP
+    AccountModel loginAccount;
+    public static final String getAccount = "loginAccount";
 
     public UserPage() {
         // Required empty public constructor
     }
+    Button user_infomation_btn;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment UserPage.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static UserPage newInstance(String param1, String param2) {
+    public static UserPage newInstance(AccountModel loginAccount) {
         UserPage fragment = new UserPage();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putParcelable(getAccount, loginAccount);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,8 +41,7 @@ public class UserPage extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+           loginAccount = (AccountModel) getArguments().getParcelable(getAccount);
         }
     }
 
@@ -61,6 +49,20 @@ public class UserPage extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_user_page, container, false);
+        View view = inflater.inflate(R.layout.fragment_user_page, container, false);
+        initComponents(view);
+        return  view;
+    }
+
+    public void initComponents(View view){
+        user_infomation_btn = view.findViewById(R.id.user_info_button);
+        user_infomation_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), User_Infomation.class);
+                intent.putExtra("loginAccount", loginAccount);
+                startActivity(intent);
+            }
+        });
     }
 }

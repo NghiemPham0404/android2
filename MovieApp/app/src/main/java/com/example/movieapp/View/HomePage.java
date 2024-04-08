@@ -108,8 +108,7 @@ public class HomePage extends Fragment{
                         MoviesGroup  movieGroup = new MoviesGroup(movies, search_title);
                         moviesGroups.add(movieGroup);
 
-                        moviesGroupAdapter = new MoviesGroupAdapter(getContext(), moviesGroups);
-                        moviesGroupAdapter.setUserId(loginAccount.getUser_id());
+                        moviesGroupAdapter = new MoviesGroupAdapter(getContext(), moviesGroups, loginAccount);
                         moviesGroupsRecyclerView.setAdapter(moviesGroupAdapter);
 
                         for(MovieModel movieModel : movieModels){
@@ -187,8 +186,7 @@ public class HomePage extends Fragment{
         onResponseMovieList(UpcomingResponseCall, "Upcoming");
 
 
-        moviesGroupAdapter = new MoviesGroupAdapter(getContext(), moviesGroups);
-        moviesGroupAdapter.setUserId(loginAccount.getUser_id());
+        moviesGroupAdapter = new MoviesGroupAdapter(getContext(), moviesGroups, loginAccount);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         moviesGroupsRecyclerView.setLayoutManager(linearLayoutManager);
         moviesGroupsRecyclerView.setAdapter(moviesGroupAdapter);

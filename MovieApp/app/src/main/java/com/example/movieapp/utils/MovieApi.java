@@ -113,4 +113,10 @@ public interface MovieApi {
             @Path("movie_id") int movie_id,
             @Query("api_key") String key
     );
+
+    @GET("3/discover/movie")
+    Call<MovieSearchResponse> searchMovieRelativeRecommendationByGernes(
+            @Query("api_key") String key,
+            @Query("with_genres") String with_genres
+    );
 }

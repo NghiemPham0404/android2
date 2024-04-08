@@ -1,32 +1,37 @@
 package com.example.movieapp.utils;
 
+import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.DetailModel;
 import com.example.movieapp.Model.LoginModel;
 import com.example.movieapp.Model.VideoModel;
 import com.example.movieapp.Response.DetailResponse;
 
+import java.io.File;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ManagerApi {
 
     // login with email and password
-    @POST(Credentials.login_url)
+    @POST(Credentials.manage_url)
     Call<LoginModel> loginWithAccount(
+            @Query("functionname") String functionname,
       @Query("email") String email,
       @Query("password") String password
     );
 
-    @POST(Credentials.login_url)
+    @POST(Credentials.manage_url)
     Call<LoginModel> loginWithGoogle(
+            @Query("functionname") String functionname,
             @Query("google_id") String google_id
     );
 
     // signup with email, password, username
-    @POST(Credentials.signup_url)
+    @POST(Credentials.manage_url)
     Call<LoginModel> signUpWithInfo(
             @Query("email") String email,
             @Query("password") String password,
@@ -34,48 +39,61 @@ public interface ManagerApi {
     );
 
     // get film video from id
-    @POST(Credentials.video_url)
+    @POST(Credentials.manage_url)
     Call<VideoModel> getMovieVideo(
             @Query("functionname") String functionname,
             @Query("movieId") int movieId
     );
 
     // Add to favor
-    @POST(Credentials.favor_url)
+    @POST(Credentials.manage_url)
     Call<DetailModel> addToFavor(
             @Query("functionname") String functionname,
             @Query("userId") String userId,
             @Query("movieId") int movieId
     );
 
-    @POST(Credentials.favor_url)
+    @POST(Credentials.manage_url)
     Call<List<DetailModel>> getFavorListByUserId(
             @Query("functionname") String functionname,
             @Query("userId") String userId
     );
 
     //Add to Review
-    @POST(Credentials.favor_url)
+    @POST(Credentials.manage_url)
     Call<DetailModel> addReview(
             @Query("functionname") String functionname,
             @Query("userId") String userId,
             @Query("movieId") int movieId,
-            @Query("rating") float rating,
+            @Query("rating") String rating,
             @Query("review") String review
     );
 
-    @POST(Credentials.favor_url)
+    @POST(Credentials.manage_url)
     Call<DetailResponse>getReviewByFilmId(
             @Query("functionname") String functionname,
             @Query("movieId") int movieId
     );
 
     // set duration
-    @POST(Credentials.favor_url)
+    @POST(Credentials.manage_url)
     Call<DetailModel> setDuration(
             @Query("functionname") String functionname,
             @Query("userId") String userId,
             @Query("movieId") int movieId,
             @Query("duration") String current_duration
+    );
+
+    // config user
+    @POST(Credentials.manage_url)
+    Call<AccountModel>configureUserInfo(
+            @Query("functionname") String functionname,
+            @Query("userId") String userId,
+            @Query("username") String username,
+            @Query("email") String email,
+            @Query("password") String password,
+            @Query("sms") String sms,
+            @Query("google_id") String google_id,
+            @Query("facebook_id") String facebook_id
     );
 }

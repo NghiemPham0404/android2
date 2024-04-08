@@ -51,21 +51,21 @@
         app:layout_constraintTop_toBottomOf="@+id/header">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/user_avatar2"
+            android:id="@+id/avatar_user_info"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:layout_marginStart="164dp"
 
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/avater_border3"
+            app:layout_constraintEnd_toEndOf="@id/avater_border3"
+            app:layout_constraintStart_toStartOf="@id/avater_border3"
+            app:layout_constraintTop_toTopOf="@id/avater_border3"
             app:shapeAppearanceOverlay="@style/roundedImageRounded"
             app:srcCompat="@drawable/alexis_the_nerf"></com.google.android.material.imageview.ShapeableImageView>
 
         <ImageView
             android:id="@+id/avater_border3"
-            android:layout_width="85dp"
-            android:layout_height="85dp"
+            android:layout_width="83dp"
+            android:layout_height="83dp"
             android:layout_weight="1"
             android:scaleType="centerInside"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -74,19 +74,42 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/circle" />
 
-        <Button
-            android:id="@+id/button4"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:background="@drawable/round_corner_shape"
-            android:backgroundTint="@color/bright_gray"
-            android:text="Button"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/avater_border3" />
+            app:layout_constraintTop_toBottomOf="@+id/avater_border3" >
+
+            <Button
+                android:id="@+id/choose_avatar_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:background="@drawable/round_corner_shape"
+                android:backgroundTint="@color/bright_gray"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="Choose Image"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/apply_avatar"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/round_corner_shape"
+                android:backgroundTint="@color/neon_blue"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="Save"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout

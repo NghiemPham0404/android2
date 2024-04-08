@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,7 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.movieapp.Model.DetailModel;
 import com.example.movieapp.R;
+import com.example.movieapp.Request.ImageLoader;
 
+import java.util.Collections;
 import java.util.List;
 
 public class ReviewApdater extends RecyclerView.Adapter<ReviewApdater.ViewHolder> {
@@ -21,6 +24,7 @@ public class ReviewApdater extends RecyclerView.Adapter<ReviewApdater.ViewHolder
     public ReviewApdater(Context context,  List<DetailModel> detailModels){
         this.context = context;
         this.detailModels = detailModels;
+        Collections.sort(this.detailModels, (o1, o2) -> o2.getTime().compareTo(o1.getTime()));
     }
 
     @NonNull
@@ -38,6 +42,7 @@ public class ReviewApdater extends RecyclerView.Adapter<ReviewApdater.ViewHolder
             holder.review.setText(""+detailModel.getReview());
             holder.date.setText(""+detailModel.getTime());
             holder.rating.setText(""+detailModel.getRating());
+            new ImageLoader().loadAvatar(context,detailModel.getAvatar(),holder.avatar, holder.avatar_text, detailModel.getUsername());
     }
 
     @Override
@@ -49,13 +54,16 @@ public class ReviewApdater extends RecyclerView.Adapter<ReviewApdater.ViewHolder
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView username, date, review, rating;
+        TextView username, date, review, rating, avatar_text;
+        ImageView avatar;
         public ViewHolder(@NonNull View viewItem){
             super(viewItem);
+            this.avatar_text = viewItem.findViewById(R.id.avatarText);
             this.username = viewItem.findViewById(R.id.user_name_cm_view);
             this.date = viewItem.findViewById(R.id.date_comment_view);
             this.review = viewItem.findViewById(R.id.user_comment_view);
             this.rating = viewItem.findViewById(R.id.movie_rating);
+            this.avatar = viewItem.findViewById(R.id.imageAvatar);
         }
     }
 }

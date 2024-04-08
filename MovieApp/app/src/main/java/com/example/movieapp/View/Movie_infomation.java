@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.graphics.RenderEffect;
 import android.graphics.Shader;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +19,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.movieapp.Adapters.CastAdapter;
+import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.CastModel;
 import com.example.movieapp.Model.DetailModel;
 import com.example.movieapp.Model.MovieModel;
@@ -28,7 +28,6 @@ import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
 import com.example.movieapp.Request.MyService;
 import com.example.movieapp.Request.MyService2;
-import com.example.movieapp.Response.CastResponse;
 import com.example.movieapp.utils.Credentials;
 import com.example.movieapp.utils.MovieApi;
 
@@ -47,7 +46,8 @@ public class Movie_infomation extends AppCompatActivity {
     ToggleButton favorButton;
     MovieModel movie;
     int movieId;
-    private String userId;
+
+    private AccountModel loginAccount;
     RecyclerView castRecyclerView;
     RecyclerView crewRecyclerView;
     private MovieApi movieApi;
@@ -62,12 +62,16 @@ public class Movie_infomation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_film_infomation);
         movieId = getIntent().getIntExtra("film_id", -1);
-        userId = getIntent().getStringExtra("userId");
-        Toast.makeText(this, userId, Toast.LENGTH_SHORT).show();
+        loginAccount = (AccountModel) getIntent().getParcelableExtra("loginAccount");
+        Toast.makeText(this, loginAccount.getUser_id(), Toast.LENGTH_SHORT).show();
         init();
-
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        initFavor();
+    }
     public void init() {
         initComponent();
         initDetails();
@@ -183,11 +187,9 @@ public class Movie_infomation extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 Intent playMovieIntent = new Intent(Movie_infomation.this, PlayingFilm.class);
-                                playMovieIntent.putExtra("film_id",movie.getId());
+                                playMovieIntent.putExtra("movie",movie);
                                 playMovieIntent.putExtra("videoUrl",response.body().getUrl());
-                                playMovieIntent.putExtra("userId", userId );
-                                playMovieIntent.putExtra("movie_name", movie.getTitle());
-                                playMovieIntent.putExtra("duration", movie.getDuration());
+                                playMovieIntent.putExtra("loginAccount", loginAccount );
                                 startActivity(playMovieIntent);
                             }
                         });
@@ -222,8 +224,9 @@ public class Movie_infomation extends AppCompatActivity {
     public void initFavor() {
         favorButton = findViewById(R.id.favorBtn);
         favorButton.setText("loading");
+        favorButton.setChecked(false);
         favorButton.setEnabled(false);
-        Call<List<DetailModel>> favorListCall = MyService2.getApi().getFavorListByUserId("detail", userId);
+        Call<List<DetailModel>> favorListCall = MyService2.getApi().getFavorListByUserId(Credentials.functionname_detail, loginAccount.getUser_id());
         favorListCall.enqueue(new Callback<List<DetailModel>>() {
             @Override
             public void onResponse(Call<List<DetailModel>> call, Response<List<DetailModel>>response) {
@@ -255,7 +258,7 @@ public class Movie_infomation extends AppCompatActivity {
     }
 
     public void changeFavorite() {
-            changeFavorCall = MyService2.getApi().addToFavor("detail", userId, movieId);
+            changeFavorCall = MyService2.getApi().addToFavor("detail", loginAccount.getUser_id(), movieId);
             changeFavorCall.enqueue(new Callback<DetailModel>() {
                 @Override
                 public void onResponse(Call<DetailModel> call, Response<DetailModel> response) {

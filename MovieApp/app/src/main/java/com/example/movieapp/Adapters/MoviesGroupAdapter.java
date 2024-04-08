@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.Model.MoviesGroup;
 import com.example.movieapp.R;
@@ -23,17 +24,15 @@ public class MoviesGroupAdapter extends RecyclerView.Adapter<MoviesGroupAdapter.
     Context context;
     List<MoviesGroup> moviesGroups;
 
-    String userId;
+    public AccountModel loginAccount;
 
 
-    public MoviesGroupAdapter(Context context, List<MoviesGroup> moviesGroups) {
+    public MoviesGroupAdapter(Context context, List<MoviesGroup> moviesGroups, AccountModel loginAccount) {
         this.context = context;
         this.moviesGroups= moviesGroups;
+        this.loginAccount = loginAccount;
     }
 
-    public void setUserId(String userId){
-        this.userId = userId;
-    }
 
     @NonNull
     @Override
@@ -77,8 +76,8 @@ public class MoviesGroupAdapter extends RecyclerView.Adapter<MoviesGroupAdapter.
         }else{
             moviesRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         }
-        FilmAdapter filmAdapter = new FilmAdapter(movies, context);
-        filmAdapter.setUserId(userId);
+        FilmAdapter filmAdapter = new FilmAdapter(movies, context, loginAccount);
+        filmAdapter.loginAccount = loginAccount;
         moviesRecyclerView.setAdapter(filmAdapter);
     }
 
@@ -90,8 +89,7 @@ public class MoviesGroupAdapter extends RecyclerView.Adapter<MoviesGroupAdapter.
             moviesRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         }
 
-        FilmAdapter filmAdapter = new FilmAdapter(movies, context, view_type);
-        filmAdapter.setUserId(userId);
+        FilmAdapter filmAdapter = new FilmAdapter(movies, context, loginAccount, view_type);
         moviesRecyclerView.setAdapter(filmAdapter);
     }
 }
