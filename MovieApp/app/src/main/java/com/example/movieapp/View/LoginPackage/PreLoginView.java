@@ -15,6 +15,7 @@ import com.example.movieapp.Model.LoginModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.MyService2;
 import com.example.movieapp.View.HomeActivity;
+import com.example.movieapp.utils.Credentials;
 import com.example.movieapp.utils.ManagerApi;
 
 import retrofit2.Call;
@@ -70,7 +71,7 @@ public class PreLoginView extends AppCompatActivity {
         loadingScreen.setVisibility(View.VISIBLE);
         try {
             ManagerApi managerApi = MyService2.getApi();
-            Call<LoginModel> loginModelCall = managerApi.loginWithAccount(email, password);
+            Call<LoginModel> loginModelCall = managerApi.loginWithAccount(Credentials.functionname_login,email, password);
             loginModelCall.enqueue(new Callback<LoginModel>() {
                 @Override
                 public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {

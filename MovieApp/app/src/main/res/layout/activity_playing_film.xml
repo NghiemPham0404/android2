@@ -67,7 +67,7 @@
                 <Button
                     android:id="@+id/rating_btn"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="50dp"
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/nomal_stroke"
@@ -82,7 +82,7 @@
                 <ToggleButton
                     android:id="@+id/favorBtn_playing"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@drawable/favor_btn_corner"
                     android:drawableRight="@drawable/favor_toggle_btn_bg"

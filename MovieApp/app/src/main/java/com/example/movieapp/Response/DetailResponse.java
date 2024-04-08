@@ -8,7 +8,7 @@ import java.util.List;
 
 public class DetailResponse {
 
-    public int getTotalRating() {
+    public float getTotalRating() {
         return totalRating;
     }
 
@@ -18,7 +18,7 @@ public class DetailResponse {
 
     @SerializedName("totalRating")
     @Expose
-    private int totalRating;
+    public float totalRating;
 
     @SerializedName("allReviews")
     @Expose

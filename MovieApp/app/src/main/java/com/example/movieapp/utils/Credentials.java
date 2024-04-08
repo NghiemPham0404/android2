@@ -31,15 +31,14 @@ public class Credentials {
 
 
     // TODO : SIGNIN, SIGNUP
-
-    public static final String login_link = "https://script.google.com/macros/s/AKfycbxLJe1OSmnLSKY_v40woVDCWhHgI7KRTGl6NLl7BUazg2307dSMp-97ufAuvXzt4V2y/exec";
     public static final String signup_link = "https://script.google.com/macros/s/AKfycbztDFqDQ27AEJtc7HR5PQa_Jtj1sTYum8yyP94FOqhRzT_nPiu5ySlHsQ3c3oll77cA/exec";
 
-    public static final String login_url = "AKfycbxLJe1OSmnLSKY_v40woVDCWhHgI7KRTGl6NLl7BUazg2307dSMp-97ufAuvXzt4V2y/exec";
-    public static final String signup_url = "AKfycbztDFqDQ27AEJtc7HR5PQa_Jtj1sTYum8yyP94FOqhRzT_nPiu5ySlHsQ3c3oll77cA/exec";
-    public static final String favor_url = "AKfycbwb6OpcqdD1yJifVIZMeR5x2Ae1R5Ak-V04ASpXUNnkF1IjzbClCW8ZAdC0hoCE6QRp/exec";
-    public static final String functionname_favor = "detail";
+    public static final String manage_url = "AKfycbwb6OpcqdD1yJifVIZMeR5x2Ae1R5Ak-V04ASpXUNnkF1IjzbClCW8ZAdC0hoCE6QRp/exec";
+    public static final String functionname_detail = "detail";
     public static final String functionname_video = "movies";
-    public static final String video_url = "AKfycbwb6OpcqdD1yJifVIZMeR5x2Ae1R5Ak-V04ASpXUNnkF1IjzbClCW8ZAdC0hoCE6QRp/exec";
+
+    public static final String functionname_login = "login";
+
+    public static final String functionname_regis = "regis";
     public static final String BASE_MANAGE_URL = "https://script.google.com/macros/s/";
 }

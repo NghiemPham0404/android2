@@ -102,7 +102,7 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
         loadingScreen.setVisibility(View.VISIBLE);
         try {
             ManagerApi managerApi = MyService2.getApi();
-            Call<LoginModel> loginModelCall = managerApi.loginWithAccount(email, password);
+            Call<LoginModel> loginModelCall = managerApi.loginWithAccount(Credentials.functionname_login,email, password);
             loginModelCall.enqueue(new Callback<LoginModel>() {
                 @Override
                 public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
@@ -134,7 +134,7 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
 
                 @Override
                 public void onFailure(Call<LoginModel> call, Throwable t) {
-                    Log.i(TAG, "Fail");
+                    Log.i(TAG, "Fail"+t.toString());
                     if(loadingScreen!=null){
                         loadingScreen.setVisibility(View.GONE);
                     }
@@ -191,7 +191,7 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
 
                     if (google_id != null) {
                         loadingScreen.setVisibility(View.VISIBLE);
-                        Call<LoginModel> loginModelCall = MyService2.getApi().loginWithGoogle(google_id);
+                        Call<LoginModel> loginModelCall = MyService2.getApi().loginWithGoogle(Credentials.functionname_login,google_id);
                         loginModelCall.enqueue(new Callback<LoginModel>() {
                             @Override
                             public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {

@@ -1,6 +1,5 @@
 package com.example.movieapp.View;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -10,18 +9,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.example.movieapp.Adapters.FavorAdapter;
-import com.example.movieapp.Interfaces.Fragment_Interface;
 import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.DetailModel;
 import com.example.movieapp.Model.MovieModel;
@@ -30,9 +26,6 @@ import com.example.movieapp.R;
 import com.example.movieapp.Request.MyService;
 import com.example.movieapp.Request.MyService2;
 import com.example.movieapp.utils.Credentials;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +41,6 @@ import retrofit2.Response;
  */
 public class FavorPage extends Fragment{
 
-    private Button filter_btn, star_btn, sort_btn;
-    int c_sort = 0;
 
     AccountModel loginAccount;
 
@@ -69,7 +60,7 @@ public class FavorPage extends Fragment{
         public void openMovie(int movieId) {
             Intent openMovieIntent = new Intent(getContext(), Movie_infomation.class);
             openMovieIntent.putExtra("film_id", movieId);
-            openMovieIntent.putExtra("userId", loginAccount.getUser_id());
+            openMovieIntent.putExtra("loginAccount", loginAccount);
             startActivity(openMovieIntent);
         }
 
@@ -88,10 +79,8 @@ public class FavorPage extends Fragment{
                                 public void onClick(View v) {
                                     Intent intent = new Intent(getContext(), PlayingFilm.class);
                                     intent.putExtra("videoUrl",video_link);
-                                    intent.putExtra("film_id", movie.getId());
+                                    intent.putExtra("movie", movie);
                                     intent.putExtra("userId", loginAccount.getUser_id());
-                                    intent.putExtra("movie_name", movie.getTitle());
-                                    intent.putExtra("duration", movie.getDuration());
                                     startActivity(intent);
                                 }
                             });
@@ -172,8 +161,6 @@ public class FavorPage extends Fragment{
     }
 
     public void initComponents(View view){
-        star_btn = view.findViewById(R.id.rating_filter_btn);
-        sort_btn = view.findViewById(R.id.sort_btn);
         layout = view.findViewById(R.id.fav_layout);
 
         favorRecyclerView = view.findViewById(R.id.favorRecycleView);
@@ -185,7 +172,7 @@ public class FavorPage extends Fragment{
         loadingScreen.setVisibility(View.VISIBLE);
         fav_movies = new ArrayList<MovieModel>();
         favorAdapter = new FavorAdapter(getContext(), fav_movies, favor_click);
-        Call<List<DetailModel>> favorListCall = MyService2.getApi().getFavorListByUserId("detail", loginAccount.getUser_id());
+        Call<List<DetailModel>> favorListCall = MyService2.getApi().getFavorListByUserId(Credentials.functionname_detail, loginAccount.getUser_id());
        favorListCall.enqueue(new Callback<List<DetailModel>>() {
            @Override
            public void onResponse(Call<List<DetailModel>> call, Response<List<DetailModel>> response) {

@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
@@ -38,17 +39,19 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private List<MovieModel> movies;
     private Context context;
     int view_type = 0;
-    private String userId;
+   public AccountModel loginAccount;
 
-    public FilmAdapter(List<MovieModel> movies, Context context) {
+    public FilmAdapter(List<MovieModel> movies, Context context,  AccountModel loginAccount) {
         this.movies = movies;
         this.context = context;
+        this.loginAccount = loginAccount;
     }
 
-    public FilmAdapter(List<MovieModel> movies, Context context, int view_type) {
+    public FilmAdapter(List<MovieModel> movies, Context context, AccountModel loginAccount,  int view_type) {
         this.movies = movies;
         this.context = context;
         this.view_type = view_type;
+        this.loginAccount = loginAccount;
     }
 
     @Override
@@ -118,7 +121,7 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             public void onClick(View v) {
                 Intent intent = new Intent(context, Movie_infomation.class);
                 intent.putExtra("film_id", movies.get(pos).getId());
-                intent.putExtra("userId", userId);
+                intent.putExtra("loginAccount", loginAccount);
                 context.startActivity(intent);
             }
         });
@@ -127,12 +130,12 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     @Override
     public int getItemCount() {
-        return movies.size();
+        if(movies != null)
+            return movies.size();
+        else
+            return 0;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
 
     class ViewHolder extends RecyclerView.ViewHolder{
             TextView movie_rating, movie_title, publish_date;

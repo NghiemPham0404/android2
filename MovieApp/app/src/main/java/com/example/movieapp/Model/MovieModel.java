@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 
 import java.util.List;
 
-public class MovieModel implements Parcelable {
+public class MovieModel implements Parcelable, Comparable<MovieModel> {
     private int id;
     private String title;
 
@@ -29,6 +29,33 @@ public class MovieModel implements Parcelable {
 
     public int runtime;
 
+
+    protected MovieModel(Parcel in) {
+        id = in.readInt();
+        title = in.readString();
+        release_date = in.readString();
+        backdrop_path = in.readString();
+        adult = in.readByte() != 0;
+        overview = in.readString();
+        vote_average = in.readFloat();
+        poster_path = in.readString();
+        genres = in.createTypedArrayList(Genre.CREATOR);
+        runtime = in.readInt();
+        duration = in.readString();
+    }
+
+    public static final Creator<MovieModel> CREATOR = new Creator<MovieModel>() {
+        @Override
+        public MovieModel createFromParcel(Parcel in) {
+            return new MovieModel(in);
+        }
+
+        @Override
+        public MovieModel[] newArray(int size) {
+            return new MovieModel[size];
+        }
+    };
+
     public String getDuration() {
         return duration;
     }
@@ -37,29 +64,6 @@ public class MovieModel implements Parcelable {
     }
     private String duration;
 
-    public MovieModel(int id, String title, String release_date, float vote_average, String poster_path, String backgrop_path, boolean adult, String overriew) {
-        this.id = id;
-        this.title = title;
-        this.release_date = release_date;
-        this.vote_average = vote_average;
-        this.poster_path = poster_path;
-        this.backdrop_path = backgrop_path;
-        this.adult = adult;
-        this.overview = overriew;
-    }
-
-    public MovieModel(int id, String title, String release_date, float vote_average, String poster_path, String backgrop_path, boolean adult, String overriew, List<Genre> genres, int runtime) {
-        this.id = id;
-        this.title = title;
-        this.release_date = release_date;
-        this.vote_average = vote_average;
-        this.poster_path = poster_path;
-        this.backdrop_path = backgrop_path;
-        this.adult = adult;
-        this.overview = overriew;
-        this.genres = genres;
-        this.runtime = runtime;
-    }
 
     public MovieModel(int id, String title, String release_date, float vote_average, String poster_path, String backgrop_path, boolean adult, String overriew, List<Genre> genres, int runtime, Videos videos, Credits credits) {
         this.id = id;
@@ -76,42 +80,6 @@ public class MovieModel implements Parcelable {
         this.credits = credits;
     }
 
-    public MovieModel(int id, String title, String release_date, float vote_average, String poster_path, String backgrop_path, boolean adult, String overriew, List<Genre> genres, int runtime, Videos videos) {
-        this.id = id;
-        this.title = title;
-        this.release_date = release_date;
-        this.vote_average = vote_average;
-        this.poster_path = poster_path;
-        this.backdrop_path = backgrop_path;
-        this.adult = adult;
-        this.overview = overriew;
-        this.genres = genres;
-        this.runtime = runtime;
-        this.videos = videos;
-    }
-
-    protected MovieModel(Parcel in) {
-        id = in.readInt();
-        title = in.readString();
-        release_date = in.readString();
-        vote_average = in.readFloat();
-        poster_path = in.readString();
-        backdrop_path = in.readString();
-        adult = in.readByte() != 0;
-        overview = in.readString();
-    }
-
-    public static final Creator<MovieModel> CREATOR = new Creator<MovieModel>() {
-        @Override
-        public MovieModel createFromParcel(Parcel in) {
-            return new MovieModel(in);
-        }
-
-        @Override
-        public MovieModel[] newArray(int size) {
-            return new MovieModel[size];
-        }
-    };
 
     public int getId() {
         return id;
@@ -175,6 +143,18 @@ public class MovieModel implements Parcelable {
         return genres_str;
     }
 
+    public String getGenresIdString(){
+        String genres_str = "";
+        for(Genre genre : genres){
+            if(genres_str.equalsIgnoreCase("")){
+                genres_str+=genre.getId();
+            }else{
+                genres_str+=","+genre.getId();
+            }
+        }
+        return genres_str;
+    }
+
 
     public String getBackdrop_path() {
         return backdrop_path;
@@ -209,7 +189,6 @@ public class MovieModel implements Parcelable {
         return credits;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -220,16 +199,23 @@ public class MovieModel implements Parcelable {
         dest.writeInt(id);
         dest.writeString(title);
         dest.writeString(release_date);
-        dest.writeFloat(vote_average);
-        dest.writeString(poster_path);
         dest.writeString(backdrop_path);
         dest.writeByte((byte) (adult ? 1 : 0));
         dest.writeString(overview);
-        dest.writeParcelableList(genres, flags);
+        dest.writeFloat(vote_average);
+        dest.writeString(poster_path);
+        dest.writeTypedList(genres);
         dest.writeInt(runtime);
+        dest.writeString(duration);
     }
 
-    public class Genre implements  Parcelable{
+    @Override
+    public int compareTo(MovieModel o) {
+        return this.getTitle().compareTo(o.getTitle());
+    }
+
+
+    public static class Genre implements  Parcelable{
         private int id;
         private String name;
 
@@ -238,7 +224,7 @@ public class MovieModel implements Parcelable {
             name = in.readString();
         }
 
-        public final Creator<Genre> CREATOR = new Creator<Genre>() {
+        public static final Creator<Genre> CREATOR = new Creator<Genre>() {
             @Override
             public Genre createFromParcel(Parcel in) {
                 return new Genre(in);
