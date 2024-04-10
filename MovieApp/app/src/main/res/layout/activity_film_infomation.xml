@@ -87,38 +87,49 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="center"
             android:orientation="horizontal"
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="rating :"
-                android:textAlignment="center"
-                android:textColor="@color/light_gray"
-                android:textSize="18sp" />
-
             <include
                 layout="@layout/rating_bagde"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"></include>
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"></include>
+
+            <View
+                android:id="@+id/divider7"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/white" />
 
             <TextView
                 android:id="@+id/publish_date_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:text="9999"
                 android:textAlignment="center"
                 android:textColor="@color/light_gray"
                 android:textSize="18sp" />
 
+            <View
+                android:id="@+id/divider9"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/white" />
+
             <TextView
                 android:id="@+id/time_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:text="runtime"
                 android:textAlignment="center"
                 android:textColor="@color/light_gray"

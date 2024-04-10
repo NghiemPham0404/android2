@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.CastModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
@@ -25,6 +26,8 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder> {
 
     List<CastModel> castModels;
     Context context;
+    AccountModel loginAccount;
+
 
     public CastAdapter(Context context, List<CastModel> castModels) {
         this.context = context;

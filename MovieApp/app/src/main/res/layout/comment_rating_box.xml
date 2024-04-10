@@ -63,37 +63,24 @@
         tools:layout_editor_absoluteX="1dp"
         tools:layout_editor_absoluteY="1dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <RatingBar
-                android:id="@+id/ratingBar_comment_box"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:progressBackgroundTint="@color/bright_gray"
-                android:progressTint="@color/yellow" />
-
-            <Button
-                android:id="@+id/delete_btn_comment_box"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@null"
-                android:fontFamily="@font/inter"
-                android:text="delete"
-                android:textAllCaps="false"
-                android:textColor="@color/neon_pink"
-                android:textSize="14sp" />
-
-        </LinearLayout>
+        <RatingBar
+            android:id="@+id/ratingBar_comment_box"
+            style="@android:style/Widget.Material.Light.RatingBar.Indicator"
+            android:layout_width="356dp"
+            android:layout_height="wrap_content"
+            android:isIndicator="false"
+            android:numStars="10"
+            android:progressBackgroundTint="@color/light_gray"
+            android:progressTint="@color/yellow"
+            android:scaleX="0.9"
+            android:scaleY="1"
+            android:stepSize="1" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/neon_blue_corner"
+            android:backgroundTint="@color/bright_gray"
             android:gravity="center"
             android:layoutDirection="inherit"
             android:orientation="horizontal">
@@ -104,14 +91,18 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
+                android:background="@null"
                 android:ems="10"
                 android:fontFamily="@font/inter"
                 android:gravity="top"
                 android:hint="your comments here"
                 android:inputType="text"
+                android:lines="@null"
                 android:padding="5dp"
                 android:textColor="#FFFFFF"
+                android:textColorHighlight="@null"
                 android:textColorHint="@color/light_gray"
+                android:textColorLink="@null"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 

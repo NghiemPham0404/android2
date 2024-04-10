@@ -9,23 +9,10 @@
     android:padding="5dp"
     tools:context=".View.PlayingFilm">
 
-    <ImageButton
-        android:id="@+id/backBtn_playing"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/back_icon"
-        android:text="Button"
-        android:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="50dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,17 +25,6 @@
             android:orientation="vertical"
             android:padding="5dp">
 
-            <TextView
-                android:id="@+id/film_title_playing"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter"
-                android:paddingLeft="10dp"
-                android:text="Avengers : Endgame"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
             <com.google.android.exoplayer2.ui.PlayerView
                 android:id="@+id/playing_film_window"
                 android:layout_width="match_parent"
@@ -58,11 +34,78 @@
 
             </com.google.android.exoplayer2.ui.PlayerView>
 
+            <TextView
+                android:id="@+id/film_title_playing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter"
+                android:paddingLeft="10dp"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:visibility="visible" />
+
             <LinearLayout
+                android:id="@+id/info_bar_playing"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                tools:visibility="visible">
+
+                <include
+                    layout="@layout/rating_bagde"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"></include>
+
+                <View
+                    android:id="@+id/divider7"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white" />
+
+                <TextView
+                    android:id="@+id/publish_date_playing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:text="9999"
+                    android:textAlignment="center"
+                    android:textColor="@color/light_gray"
+                    android:textSize="18sp" />
+
+                <View
+                    android:id="@+id/divider9"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white" />
+
+                <TextView
+                    android:id="@+id/time_playing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:text="runtime"
+                    android:textAlignment="center"
+                    android:textColor="@color/light_gray"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/button_bar_playing"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                tools:visibility="visible">
 
                 <Button
                     android:id="@+id/rating_btn"
@@ -95,7 +138,8 @@
 
             <include
                 android:id="@+id/relative_movie_film_group"
-                layout="@layout/film_group"></include>
+                layout="@layout/film_group"
+                tools:visibility="visible"></include>
 
         </LinearLayout>
     </ScrollView>

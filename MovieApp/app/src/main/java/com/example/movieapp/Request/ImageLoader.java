@@ -26,9 +26,14 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class ImageLoader {
+    public final static String regexPattern = ".*\\.(jpg|jpeg|png|gif|bmp|webp)$";
+    public final static Pattern pattern = Pattern.compile(regexPattern, Pattern.CASE_INSENSITIVE);
+
     public void loadImageIntoImageView(Context context, String imageUrl, ImageView imageView, ShimmerFrameLayout shimmerFrameLayout) {
 
         shimmerFrameLayout.startShimmerAnimation(); // Start shimmer animation
@@ -60,15 +65,16 @@ public class ImageLoader {
     }
 
     public void loadAvatar(Context context, String imageUrl, ImageView imageView, TextView avatarText, String username) {
-        Glide.with(context)
-                .load(imageUrl)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imageView);
-        avatarText.setVisibility(View.GONE);
-        imageView.setVisibility(View.VISIBLE);
-        if (imageView.getDrawable() == null) {
+        if(pattern.matcher(imageUrl).matches()){
+            Glide.with(context)
+                    .load(imageUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imageView);
+            avatarText.setVisibility(View.GONE);
+            imageView.setVisibility(View.VISIBLE);
+        }else{
             Random rnd = new Random();
-            int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+            int color = Color.argb(255, rnd.nextInt(200), rnd.nextInt(200), rnd.nextInt(200));
             imageView.setBackgroundColor(color);
             char firstChar = username.charAt(0);
             avatarText.setText(firstChar + "");

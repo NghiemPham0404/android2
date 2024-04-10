@@ -1,4 +1,19 @@
-<vector android:height="16dp" android:viewportHeight="72"
-    android:viewportWidth="84" android:width="18.666666dp" xmlns:android="http://schemas.android.com/apk/res/android">
-    <path android:fillColor="#3F5EFB" android:pathData="M0.04,72L84,36L0.04,0L0,28L60,36L0,44L0.04,72Z"/>
+<vector android:height="16dp"
+    android:viewportHeight="72"
+    android:viewportWidth="84"
+    android:width="18.666666dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <path android:pathData="M0.04,72L84,36L0.04,0L0,28L60,36L0,44L0.04,72Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:endColor="@color/neon_pink"
+                android:endX="84"
+                android:endY="36"
+                android:startColor="@color/neon_blue"
+                android:startX="0"
+                android:startY="36"
+                android:type="linear" />
+        </aapt:attr>
+    </path>
 </vector>

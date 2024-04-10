@@ -80,7 +80,7 @@ public class FavorPage extends Fragment{
                                     Intent intent = new Intent(getContext(), PlayingFilm.class);
                                     intent.putExtra("videoUrl",video_link);
                                     intent.putExtra("movie", movie);
-                                    intent.putExtra("userId", loginAccount.getUser_id());
+                                    intent.putExtra("loginAccount", loginAccount);
                                     startActivity(intent);
                                 }
                             });

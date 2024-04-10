@@ -61,6 +61,9 @@ public class AccountModel implements Parcelable {
         return avatar;
     }
 
+    public void setAvatar(String avatar){
+        this.avatar = avatar;
+    }
     String user_id;
     String username;
     String email;

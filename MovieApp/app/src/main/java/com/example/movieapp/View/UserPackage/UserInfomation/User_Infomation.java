@@ -133,6 +133,7 @@ public class User_Infomation extends AppCompatActivity {
             public void onResponse(Call<AvatarResponse> call, Response<AvatarResponse> response) {
                 if(response.isSuccessful()){
                         Toast.makeText(User_Infomation.this, "Đường link hình nè :" +response.body().getAvatarModel().getUrl() ,  Toast.LENGTH_SHORT).show();
+                        loginAccount.setAvatar(response.body().getAvatarModel().getUrl());
                         apply_avatar_btn.setVisibility(View.GONE);
                 }else{
                     try {

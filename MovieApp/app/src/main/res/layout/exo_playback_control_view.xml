@@ -10,6 +10,19 @@
     android:orientation="vertical">
 
     <!-- Playback controls -->
+    <TextView
+        android:id="@+id/film_title_playing_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/inter"
+        android:lines="2"
+        android:paddingLeft="10dp"
+        android:text="MovieName"
+        android:textAlignment="viewStart"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,17 +39,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
-            android:id="@id/exo_rew"
-            style="@style/ExoMediaButton.Rewind"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginStart="50dp"
-            android:layout_weight="1"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
             android:id="@id/exo_pause"
             style="@style/ExoMediaButton.Pause"
             android:layout_width="match_parent"
@@ -45,30 +47,31 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@id/exo_ffwd"
-            style="@style/ExoMediaButton.FastForward"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginEnd="50dp"
-            android:layout_weight="1"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Progress bar and duration -->
+    <com.google.android.exoplayer2.ui.DefaultTimeBar
+        android:id="@id/exo_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+
+        app:buffered_color="@color/bright_gray_blur"
+        app:played_color="@color/neon_pink"
+        app:scrubber_color="@color/neon_pink" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:padding="0dp">
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <TextView
@@ -94,26 +97,62 @@
                 android:textColor="#FFBEBEBE"
                 android:textSize="12sp"
                 android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/exo_volume"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/volume_up_icon"
+                android:scaleType="centerInside"
+                app:layout_constraintStart_toStartOf="parent" />
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/exo_fullscreen_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="end"
-            android:adjustViewBounds="true"
-            android:background="@drawable/maximize_ic"
-            android:scaleType="centerInside" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="right|center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@id/exo_rew"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/rewind_icon"
+                android:scaleType="centerInside"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageButton
+                android:id="@id/exo_ffwd"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/forward_icon"
+                android:scaleType="centerInside"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <ImageView
+                android:id="@+id/exo_pic_in_pip"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="5dp"
+                android:adjustViewBounds="true"
+                android:background="@drawable/baseline_picture_in_picture_alt_24"
+                android:scaleType="centerInside" />
+
+            <ImageView
+                android:id="@+id/exo_fullscreen_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="5dp"
+                android:adjustViewBounds="true"
+                android:background="@drawable/maximize_ic"
+                android:scaleType="centerInside" />
+        </LinearLayout>
+
     </LinearLayout>
 
-    <com.google.android.exoplayer2.ui.DefaultTimeBar
-        android:id="@id/exo_progress"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:focusable="false"
-
-        app:buffered_color="@color/bright_gray_blur"
-        app:played_color="@color/neon_pink"
-        app:scrubber_color="@color/neon_pink" />
 </LinearLayout>

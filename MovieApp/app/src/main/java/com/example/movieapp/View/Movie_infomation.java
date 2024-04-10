@@ -140,17 +140,8 @@ public class Movie_infomation extends AppCompatActivity {
                     time_info.setText(movie.getMaxDurationTime());
                     genres_info.setText(movie.getGenresString());
                     new ImageLoader().loadImageIntoImageView(Movie_infomation.this,Credentials.BASE_IMAGE_URL + movie.getPoster_path(), poster_image, findViewById(R.id.shimmerLayout_info));
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        imageView2.setRenderEffect(RenderEffect.createBlurEffect(100, 100, Shader.TileMode.MIRROR));
-                        new ImageLoader().loadImageIntoImageView(Movie_infomation.this, Credentials.BASE_IMAGE_URL + movie.getPoster_path() , imageView2);
-                        findViewById(R.id.darken_screen).setVisibility(View.GONE);
-                    } else {
-                        new ImageLoader().loadImageIntoImageView(Movie_infomation.this,  Credentials.BASE_IMAGE_URL + movie.getPoster_path(), imageView2);
-                    }
+                    new ImageLoader().loadImageIntoImageView(Movie_infomation.this,  Credentials.BASE_IMAGE_URL + movie.getPoster_path(), imageView2);
                         initVideo();
-//                    new GetMovieVideo(movieId, (Button) findViewById(R.id.playBtn_info), Movie_infomation.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
 
                     film_title.setText(movie.getTitle());
                     film_overview.setText(movie.getOverriew());
