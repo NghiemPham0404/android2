@@ -6,12 +6,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.PictureInPictureParams;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.Log;
+import android.util.Rational;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +44,7 @@ import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import retrofit2.Call;
@@ -53,30 +56,26 @@ public class PlayingFilm extends AppCompatActivity {
     ConstraintLayout layout;
     private static final String PLAYBACK_POSITION_KEY = "playback_position";
     private final boolean playWhenReady = true;
-    private final int currentWindow = 0;
-    private final long playbackPosition = 0;
     private PowerManager.WakeLock wakeLock;
 
     SimpleExoPlayer player;
     PlayerView playerView;
 
     TextView totalRating;
-    private ImageButton backBtn, postReviewBtn;
+    private ImageButton  postReviewBtn;
     ImageView avatar;
     EditText reviewBox;
     RatingBar reviewRating;
-    TextView movie_title_playing;
+    TextView movie_title_playing, movie_rating, publish_date, duration;
 
-    private ImageView maximize_btn;
+    private ImageView maximize_btn, pic_in_pic_btn, volume_btn;
     private MovieModel movie;
     private AccountModel loginAccount;
     private String videoUrl;
     private RecyclerView recommendRecycler;
     private Button reviewButton;
     private ToggleButton favorButton;
-
-    private int current_duration;
-    private boolean full_screen;
+    private boolean full_screen, volume = true, turnOffLight = false;
     private PopupWindow reviewSessionPopup;
     private RecyclerView reviewsRecyclerView;
     private Call<DetailResponse> detailResponseCall;
@@ -117,16 +116,24 @@ public class PlayingFilm extends AppCompatActivity {
 
 
     public void initComponent_Potral(){
-        backBtn = findViewById(R.id.backBtn_playing);
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
         movie_title_playing = findViewById(R.id.film_title_playing);
         movie_title_playing.setText(movie.getTitle());
+
+
+        movie_rating = findViewById(R.id.movie_rating);
+        float rate = Math.round(movie.getVote_average() * 100) * 1.0f / 100;
+        movie_rating.setText(rate+"");
+
+        publish_date = findViewById(R.id.publish_date_playing);
+        try {
+            String year =movie.getRelease_date().split("-")[0];
+            publish_date.setText("("+year + ")");
+        }catch (Exception ex){
+            publish_date.setText(movie.getRelease_date() + "");
+        }
+
+        duration = findViewById(R.id.time_playing);
+        duration.setText(movie.getMaxDurationTime());
 
         TextView recommend_title = findViewById(R.id.relative_movie_film_group).findViewById(R.id.groupTitle);
         recommend_title.setText("Recommendation");
@@ -232,7 +239,6 @@ public class PlayingFilm extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(PlayingFilm.this,RecyclerView.HORIZONTAL, false);
         recommendRecycler.setLayoutManager(linearLayoutManager);
 
-
         recommendationsMovieslCall = MyService.getMovieApi().searchMovieRelativeRecommendation(movie.getId(), Credentials.API_KEY);
         recommendationsMovieslCall.enqueue(new Callback<MovieSearchResponse>() {
             @Override
@@ -242,6 +248,13 @@ public class PlayingFilm extends AppCompatActivity {
                     movieModelList.remove(movie);
                    filmAdapter = new FilmAdapter(movieModelList, PlayingFilm.this, loginAccount);
                     recommendRecycler.setAdapter(filmAdapter);
+                    if(filmAdapter == null){
+                        initRecommendationByGenres();
+                    }else{
+                        if(filmAdapter.getItemCount() == 0){
+                            initRecommendationByGenres();
+                        }
+                    }
                 }
             }
 
@@ -250,14 +263,6 @@ public class PlayingFilm extends AppCompatActivity {
                 Log.e("LOAD RECOMMEND", "FAIL");
             }
         });
-
-        if(filmAdapter == null){
-             initRecommendationByGenres();
-        }else{
-            if(filmAdapter.getItemCount() == 0){
-                initRecommendationByGenres();
-            }
-        }
     }
     private void initRecommendationByGenres(){
         recommendationsMovieslCall = MyService.getMovieApi().searchMovieRelativeRecommendationByGernes(
@@ -295,10 +300,18 @@ public class PlayingFilm extends AppCompatActivity {
             player.setMediaItem(mediaItem);
 
             player.setPlayWhenReady(playWhenReady);
-            player.seekTo(currentWindow, playbackPosition);
             player.prepare();
+
+            player.seekTo(movie.getPlayBackPositition());
         }
         playerView.setPlayer(player);
+
+        movie_title_playing = playerView.findViewById(R.id.film_title_playing_2);
+        if(full_screen){
+            movie_title_playing.setText(movie.getTitle());
+        }else{
+            movie_title_playing.setText("");
+        }
         initPlayerButton();
     }
 
@@ -345,17 +358,30 @@ public class PlayingFilm extends AppCompatActivity {
     }
 
     @Override
+    public void onStop(){
+        super.onStop();
+        player.stop();
+        Toast.makeText(this,"Stop", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         if (wakeLock != null && wakeLock.isHeld()) {
             wakeLock.release();
         }
+        postPlayBackDuration();
+        Toast.makeText(this,"Destroy", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onBackPressed(){
-        super.onBackPressed();
-        player.release();
+            super.onBackPressed();
+            if (wakeLock != null && wakeLock.isHeld()) {
+                wakeLock.release();
+            }
+            player.release();
+            Toast.makeText(this,"Back press", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -381,6 +407,30 @@ public class PlayingFilm extends AppCompatActivity {
                 } else {
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                     full_screen = true;
+                }
+            }
+        });
+
+        pic_in_pic_btn = playerView.findViewById(R.id.exo_pic_in_pip);
+        pic_in_pic_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PictureInPictureMode();
+            }
+        });
+
+        volume_btn = playerView.findViewById(R.id.exo_volume);
+        volume_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(volume){
+                    volume_btn.setBackgroundResource(R.drawable.volume_off_icon);
+                    player.setVolume(0);
+                    volume = false;
+                }else{
+                    volume_btn.setBackgroundResource(R.drawable.volume_up_icon);
+                    player.setVolume(1);
+                    volume = true;
                 }
             }
         });
@@ -431,5 +481,42 @@ public class PlayingFilm extends AppCompatActivity {
                 Toast.makeText(PlayingFilm.this, "posting review is fail,", Toast.LENGTH_LONG ).show();
             }
         });
+    }
+
+    public void postPlayBackDuration(){
+        String history = new SimpleDateFormat("yyyy/M/dd").format(System.currentTimeMillis());
+        long current_position = player.getCurrentPosition();
+        String duration = current_position + "-" + history;
+        movie.setDuration(duration);
+        Call<DetailModel> detailModelCall =MyService2.getApi().postPlayBackDuration(Credentials.functionname_detail, loginAccount.getUser_id(), movie.getId(), duration);
+        detailModelCall.enqueue(new Callback<DetailModel>() {
+            @Override
+            public void onResponse(Call<DetailModel> call, Response<DetailModel> response) {
+                if(response.code() == 200){
+                    Toast.makeText(PlayingFilm.this, "Save successfully", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DetailModel> call, Throwable t) {
+                Toast.makeText(PlayingFilm.this, "Save fail", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    @Override
+    public void onUserLeaveHint() {
+        enterPictureInPictureMode();
+    }
+
+    private void PictureInPictureMode() {
+        Rational aspectRatio = new Rational(16, 9);
+        PictureInPictureParams.Builder pipBuilder = new PictureInPictureParams.Builder();
+        pipBuilder.setAspectRatio(aspectRatio);
+        enterPictureInPictureMode(pipBuilder.build());
+    }
+
+    public void turnOffLight(){
+
     }
 }

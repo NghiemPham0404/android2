@@ -77,7 +77,7 @@ public interface ManagerApi {
 
     // set duration
     @POST(Credentials.manage_url)
-    Call<DetailModel> setDuration(
+    Call<DetailModel> postPlayBackDuration(
             @Query("functionname") String functionname,
             @Query("userId") String userId,
             @Query("movieId") int movieId,
@@ -94,6 +94,7 @@ public interface ManagerApi {
             @Query("password") String password,
             @Query("sms") String sms,
             @Query("google_id") String google_id,
-            @Query("facebook_id") String facebook_id
+            @Query("facebook_id") String facebook_id,
+            @Query("avatar") String avatar
     );
 }

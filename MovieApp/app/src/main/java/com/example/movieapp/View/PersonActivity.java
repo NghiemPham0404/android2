@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.movieapp.Adapters.CareerAdapter;
@@ -24,6 +25,7 @@ import com.example.movieapp.Request.MyService;
 import com.example.movieapp.Response.CreditResponse;
 import com.example.movieapp.utils.Credentials;
 import com.example.movieapp.utils.MovieApi;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.List;
@@ -42,6 +44,8 @@ public class PersonActivity extends AppCompatActivity {
 
     TextView know_for, gender, date_of_birth, place_of_birth, biography, name;
     RecyclerView career_recyclerView;
+    FloatingActionButton pg_up_button;
+    ScrollView scrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,16 @@ public class PersonActivity extends AppCompatActivity {
     public void initComponents(){
         avatar = findViewById(R.id.avatar_person);
         name = findViewById(R.id.person_name_lbl);
+
+        scrollView = findViewById(R.id.scrollView_person);
+        pg_up_button = findViewById(R.id.pg_up_btn);
+
+        pg_up_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scrollView.scrollTo(0,0);
+            }
+        });
 
         twitter_x = findViewById(R.id.twitter_x_person);
         facebook = findViewById(R.id.facebook_person);

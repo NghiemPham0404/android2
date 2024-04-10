@@ -29,6 +29,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="@color/black"
                 android:hint="movie name |  actors.."
+                android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:textColor="@color/white"
                 android:textColorHighlight="@color/black"

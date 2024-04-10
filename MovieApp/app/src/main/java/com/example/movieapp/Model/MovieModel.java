@@ -59,6 +59,16 @@ public class MovieModel implements Parcelable, Comparable<MovieModel> {
     public String getDuration() {
         return duration;
     }
+
+    public String getHistory(){
+        if(duration == null) return null;
+        else return duration.split("-")[1];
+    }
+
+    public long getPlayBackPositition(){
+        return (this.duration == null)?0:Long.parseLong(duration.split("-")[0]);
+    }
+
     public void setDuration(String duration){
         this.duration = duration;
     }

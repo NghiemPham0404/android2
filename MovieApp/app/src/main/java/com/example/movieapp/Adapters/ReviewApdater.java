@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -41,7 +42,7 @@ public class ReviewApdater extends RecyclerView.Adapter<ReviewApdater.ViewHolder
             holder.username.setText(""+detailModel.getUsername());
             holder.review.setText(""+detailModel.getReview());
             holder.date.setText(""+detailModel.getTime());
-            holder.rating.setText(""+detailModel.getRating());
+            holder.rating.setRating(Float.parseFloat(detailModel.getRating()));
             new ImageLoader().loadAvatar(context,detailModel.getAvatar(),holder.avatar, holder.avatar_text, detailModel.getUsername());
     }
 
@@ -54,7 +55,8 @@ public class ReviewApdater extends RecyclerView.Adapter<ReviewApdater.ViewHolder
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView username, date, review, rating, avatar_text;
+        TextView username, date, review, avatar_text;
+        RatingBar rating;
         ImageView avatar;
         public ViewHolder(@NonNull View viewItem){
             super(viewItem);

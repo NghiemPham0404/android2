@@ -1,22 +1,39 @@
 package com.example.movieapp.View;
 
+
+import static android.app.Activity.RESULT_OK;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.movieapp.Adapters.MoviesGroupAdapter;
@@ -35,6 +52,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -47,8 +65,10 @@ import retrofit2.Response;
  */
 public class HomePage extends Fragment{
 
+    private static final int REQUEST_CODE_SPEECH_INPUT = 100;
+    private static final int PERMISSION_REQUEST_RECORD_AUDIO = 99;
     RecyclerView moviesGroupsRecyclerView;
-    Button searchBtn;
+    Button searchBtn,textToSpeechBtn;;
     EditText searchBox;
 
     List<MoviesGroup> moviesGroups;
@@ -145,6 +165,7 @@ public class HomePage extends Fragment{
         moviesGroupsRecyclerView = view.findViewById(R.id.movie_groups_recycleview);
         searchBox = view.findViewById(R.id.searchBox);
         searchBtn = view.findViewById(R.id.searchBtn);
+        textToSpeechBtn = view.findViewById(R.id.mirco_btn);
         divSearch = view.findViewById(R.id.searchDiv);
         layout = view.findViewById(R.id.home_layout);;
     }
@@ -156,6 +177,28 @@ public class HomePage extends Fragment{
                 searchBox.clearFocus();
                 searchMovie(searchBox.getText().toString().trim(), page);
                 divSearch.setBackgroundResource(R.drawable.text_input);
+            }
+        });
+
+        searchBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    searchBox.clearFocus();
+                    searchMovie(searchBox.getText().toString().trim(), page);
+                    divSearch.setBackgroundResource(R.drawable.text_input);
+                    // giấu bàn phím
+                    hideKeyboard();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        textToSpeechBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                textToSpeechStart();
             }
         });
 
@@ -233,5 +276,57 @@ public class HomePage extends Fragment{
         moviesGroupsRecyclerView.setLayoutManager(linearLayoutManager);
     }
 
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(imm!=null){
+            imm.hideSoftInputFromWindow(searchBox.getWindowToken(), 0);
+        }
+    }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_RECORD_AUDIO) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startRecord();
+            } else {
+
+            }
+        }
+    }
+
+    private void textToSpeechStart(){
+        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions((Activity) getContext(), new String[]{android.Manifest.permission.RECORD_AUDIO},
+                    PERMISSION_REQUEST_RECORD_AUDIO);
+        } else {
+            startRecord();
+        }
+    }
+
+    public void startRecord(){
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak something...");
+
+        startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_SPEECH_INPUT) {
+            if (resultCode == RESULT_OK && data != null) {
+                ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                if (result != null && result.size() > 0) {
+                    String recognizedText = result.get(0);
+                    searchBox.setText(recognizedText);
+                    searchBtn.performClick();
+                }
+            }
+        }
+    }
 }
