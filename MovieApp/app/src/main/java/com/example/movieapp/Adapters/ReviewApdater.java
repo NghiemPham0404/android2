@@ -39,11 +39,13 @@ public class ReviewApdater extends RecyclerView.Adapter<ReviewApdater.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ReviewApdater.ViewHolder holder, int position) {
             DetailModel detailModel = detailModels.get(position);
-            holder.username.setText(""+detailModel.getUsername());
-            holder.review.setText(""+detailModel.getReview());
-            holder.date.setText(""+detailModel.getTime());
-            holder.rating.setRating(Float.parseFloat(detailModel.getRating()));
-            new ImageLoader().loadAvatar(context,detailModel.getAvatar(),holder.avatar, holder.avatar_text, detailModel.getUsername());
+            if(detailModel.getReview()!=null && detailModel.getRating()!=null){
+                holder.username.setText(""+detailModel.getUsername());
+                holder.review.setText(""+detailModel.getReview());
+                holder.date.setText(""+detailModel.getTime());
+                holder.rating.setRating(Float.parseFloat(detailModel.getRating()));
+                new ImageLoader().loadAvatar(context,detailModel.getAvatar(),holder.avatar, holder.avatar_text, detailModel.getUsername());
+            }
     }
 
     @Override

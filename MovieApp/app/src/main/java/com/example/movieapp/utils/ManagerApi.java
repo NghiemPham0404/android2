@@ -30,6 +30,29 @@ public interface ManagerApi {
             @Query("google_id") String google_id
     );
 
+    @POST(Credentials.manage_url)
+    Call<LoginModel> regisWithGoogle(
+            @Query("functionname") String functionname,
+            @Query("google_id") String google_id,
+            @Query("email") String email,
+            @Query("username") String username,
+            @Query("avatar") String avatar
+    );
+
+    @POST(Credentials.manage_url)
+    Call<LoginModel> loginWithFacebook(
+            @Query("functionname") String functionname,
+            @Query("facebook_id") String facebook_id
+    );
+
+    @POST(Credentials.manage_url)
+    Call<LoginModel> regisWithFacebook(
+            @Query("functionname") String functionname,
+            @Query("facebook_id") String facebook_id,
+            @Query("username") String username,
+            @Query("avatar") String avatar
+    );
+
     // signup with email, password, username
     @POST(Credentials.manage_url)
     Call<LoginModel> signUpWithInfo(

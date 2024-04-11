@@ -65,7 +65,7 @@ public class ImageLoader {
     }
 
     public void loadAvatar(Context context, String imageUrl, ImageView imageView, TextView avatarText, String username) {
-        if(pattern.matcher(imageUrl).matches()){
+        if(pattern.matcher(imageUrl).matches() || imageUrl.contains("http")){
             Glide.with(context)
                     .load(imageUrl)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
