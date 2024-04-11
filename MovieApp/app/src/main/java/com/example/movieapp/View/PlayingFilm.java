@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.PictureInPictureParams;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -84,28 +85,11 @@ public class PlayingFilm extends AppCompatActivity {
     private FilmAdapter filmAdapter;
     private Call<MovieSearchResponse> recommendationsMovieslCall;
 
-    @SuppressLint("InvalidWakeLockTag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playing_film);
-        movie =(MovieModel) getIntent().getParcelableExtra("movie");
-        loginAccount= (AccountModel) getIntent().getParcelableExtra("loginAccount");
-        videoUrl = getIntent().getStringExtra("videoUrl");
-
-        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "MovieApp tag");
-        wakeLock.acquire();
-
-        playerView = findViewById(R.id.playing_film_window);
-
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            full_screen = true;
-            switchToFullScreen();
-        } else {
-            switchToPortrait();
-            full_screen = false;
-        }
+        setVideoView(getIntent());
     }
 
     @Override
@@ -514,6 +498,33 @@ public class PlayingFilm extends AppCompatActivity {
         PictureInPictureParams.Builder pipBuilder = new PictureInPictureParams.Builder();
         pipBuilder.setAspectRatio(aspectRatio);
         enterPictureInPictureMode(pipBuilder.build());
+    }
+
+    @Override
+    public void onNewIntent(Intent intent){
+        super.onNewIntent(intent);
+       setVideoView(intent);
+    }
+
+    @SuppressLint("InvalidWakeLockTag")
+    public void setVideoView(Intent intent){
+        movie =(MovieModel) intent.getParcelableExtra("movie");
+        loginAccount= (AccountModel) intent.getParcelableExtra("loginAccount");
+        videoUrl = intent.getStringExtra("videoUrl");
+
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "MovieApp tag");
+        wakeLock.acquire();
+
+        playerView = findViewById(R.id.playing_film_window);
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            full_screen = true;
+            switchToFullScreen();
+        } else {
+            switchToPortrait();
+            full_screen = false;
+        }
     }
 
     public void turnOffLight(){

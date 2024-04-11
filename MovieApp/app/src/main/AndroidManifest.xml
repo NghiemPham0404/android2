@@ -76,7 +76,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize|layoutDirection|screenLayout"
             android:supportsPictureInPicture="true"
             android:resizeableActivity="true"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:taskAffinity=""
             android:exported="true" />
         <activity

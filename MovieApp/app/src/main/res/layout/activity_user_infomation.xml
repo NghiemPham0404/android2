@@ -60,8 +60,7 @@
             app:layout_constraintEnd_toEndOf="@id/avater_border3"
             app:layout_constraintStart_toStartOf="@id/avater_border3"
             app:layout_constraintTop_toTopOf="@id/avater_border3"
-            app:shapeAppearanceOverlay="@style/roundedImageRounded"
-            app:srcCompat="@drawable/alexis_the_nerf"></com.google.android.material.imageview.ShapeableImageView>
+            app:shapeAppearanceOverlay="@style/roundedImageRounded"></com.google.android.material.imageview.ShapeableImageView>
 
         <TextView
             android:id="@+id/avatarText"

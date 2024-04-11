@@ -94,7 +94,7 @@ public class User_Infomation extends AppCompatActivity {
         initInfo();
     }
     public void initInfo(){
-        new ImageLoader().loadAvatar(User_Infomation.this, loginAccount.getAvatar(), avatar_display, avatar_text, loginAccount.getUsername());
+        loadAvatar();
     }
 
     public void chooseAvatar(){
@@ -163,5 +163,9 @@ public class User_Infomation extends AppCompatActivity {
             return filePath;
         }
         return null;
+    }
+
+    public void loadAvatar(){
+        new ImageLoader().loadAvatar(User_Infomation.this, loginAccount.getAvatar(), avatar_display, avatar_text, loginAccount.getUsername());
     }
 }

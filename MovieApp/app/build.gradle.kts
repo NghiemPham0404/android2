@@ -72,7 +72,7 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
 
-    //facebook login
-    implementation ("com.facebook.android:facebook-android-sdk:[5,6)")
+    implementation("com.facebook.android:facebook-login:latest.release")
+    implementation ("com.facebook.android:facebook-android-sdk:latest.release")
 
 }
