@@ -31,7 +31,26 @@ public class DetailModel {
     private String review;
     private String duration;
 
+    public String getMovieUrl() {
+        return movieUrl;
+    }
+
+    public void setMovieUrl(String movieUrl) {
+        this.movieUrl = movieUrl;
+    }
+
+    private String movieUrl;
     private boolean favor;
+
+    public String getTimeFavor() {
+        return timeFavor;
+    }
+
+    public void setTimeFavor(String timeFavor) {
+        this.timeFavor = timeFavor;
+    }
+
+    private String timeFavor;
 
     public String getUsername() {
         return username;
@@ -50,7 +69,7 @@ public class DetailModel {
 
     private String time;
 
-    public DetailModel(String userId, int movieId, String rating, String review, String duration, boolean favor, String time, String username, String avatar) {
+    public DetailModel(String userId, int movieId, String rating, String review, String duration, boolean favor, String time, String username, String avatar, String movieUrl, String timeFavor) {
         this.userId = userId;
         this.movieId = movieId;
         this.rating = rating;
@@ -60,5 +79,7 @@ public class DetailModel {
         this.time = time;
         this.username = username;
         this.avatar = avatar;
+        this.movieUrl = movieUrl;
+        this.timeFavor = timeFavor;
     }
 }

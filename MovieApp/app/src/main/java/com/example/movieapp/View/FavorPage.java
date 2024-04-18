@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,7 +27,10 @@ import com.example.movieapp.Model.VideoModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.MyService;
 import com.example.movieapp.Request.MyService2;
+import com.example.movieapp.View.UserPackage.UserPage;
 import com.example.movieapp.utils.Credentials;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,90 +48,9 @@ public class FavorPage extends Fragment{
 
 
     AccountModel loginAccount;
-
-    PopupWindow filter_popup, rating_popup;
-
     FrameLayout layout;
+    TabLayout favor_navigation;
 
-    RecyclerView favorRecyclerView;
-    ConstraintLayout loadingScreen;
-    FavorAdapter favorAdapter;
-
-    List<MovieModel> fav_movies;
-
-
-    FavorAdapter.favor_interface favor_click = new FavorAdapter.favor_interface() {
-        @Override
-        public void openMovie(int movieId) {
-            Intent openMovieIntent = new Intent(getContext(), Movie_infomation.class);
-            openMovieIntent.putExtra("film_id", movieId);
-            openMovieIntent.putExtra("loginAccount", loginAccount);
-            startActivity(openMovieIntent);
-        }
-
-        @Override
-        public void playMovie(MovieModel movie, Button button) {
-            Call<VideoModel> getVideoCall = MyService2.getApi().getMovieVideo(Credentials.functionname_video, movie.getId());
-            getVideoCall.enqueue(new Callback<VideoModel>() {
-                @Override
-                public void onResponse(Call<VideoModel> call, Response<VideoModel> response) {
-                        String video_link = response.body().getUrl();
-                        if(!video_link.equalsIgnoreCase("")){
-                            button.setBackgroundResource(R.drawable.gradient_corner_bg);
-                            button.setText("watch now");
-                            button.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Intent intent = new Intent(getContext(), PlayingFilm.class);
-                                    intent.putExtra("videoUrl",video_link);
-                                    intent.putExtra("movie", movie);
-                                    intent.putExtra("loginAccount", loginAccount);
-                                    startActivity(intent);
-                                }
-                            });
-                        }else{
-                            String trailer = movie.getTrailer();
-                            if(trailer!=null){
-                                button.setBackgroundResource(R.drawable.play_trailer_btn);
-                                button.setText("play trailer");
-                                button.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent intent = new Intent(getContext(), PlayingTrailer.class);
-                                        intent.putExtra("video_string", trailer);
-                                        startActivity(intent);
-                                    }
-                                });
-                            }else{
-                                button.setText("Unavailable");
-                            }
-                        }
-                }
-
-                @Override
-                public void onFailure(Call<VideoModel> call, Throwable t) {
-                    Log.e("GET VIDEO IN FAVOR ", " : failure");
-                }
-            });
-        }
-        @Override
-        public void changeFavorite(int movieId) {
-            Call<DetailModel> detailModelCall = MyService2.getApi().addToFavor("detail",  loginAccount.getUser_id(), movieId);
-            detailModelCall.enqueue(new Callback<DetailModel>() {
-                @Override
-                public void onResponse(Call<DetailModel> call, Response<DetailModel> response) {
-                    if (response.code() == 200) {
-
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<DetailModel> call, Throwable t) {
-                    Log.e("FAVOR TASK", "change favor fail");
-                }
-            });
-        }
-    };
 
     public FavorPage() {
     }
@@ -162,59 +86,55 @@ public class FavorPage extends Fragment{
 
     public void initComponents(View view){
         layout = view.findViewById(R.id.fav_layout);
-
-        favorRecyclerView = view.findViewById(R.id.favorRecycleView);
-        loadingScreen = view.findViewById(R.id.loadingLayout);
+        favor_navigation = view.findViewById(R.id.favor_navigation);
+        for (int i = 0; i < favor_navigation.getTabCount(); i++) {
+            TabLayout.Tab tab = favor_navigation.getTabAt(i);
+            if (tab != null) {
+                tab.setText(tab.getText().toString().toLowerCase()); // Convert tab text to lowercase
+            }
+        }
         initFeatures();
     }
 
     public void initFeatures(){
-        loadingScreen.setVisibility(View.VISIBLE);
-        fav_movies = new ArrayList<MovieModel>();
-        favorAdapter = new FavorAdapter(getContext(), fav_movies, favor_click);
-        Call<List<DetailModel>> favorListCall = MyService2.getApi().getFavorListByUserId(Credentials.functionname_detail, loginAccount.getUser_id());
-       favorListCall.enqueue(new Callback<List<DetailModel>>() {
-           @Override
-           public void onResponse(Call<List<DetailModel>> call, Response<List<DetailModel>> response) {
-               if(response.code() == 200){
-                   for(DetailModel movie : response.body()){
-                        initListItem(movie.getMovieId(), movie.getDuration());
-                   }
-                   initList();
-                   loadingScreen.setVisibility(View.GONE);
-               }
-           }
-
-           @Override
-           public void onFailure(Call<List<DetailModel>> call, Throwable t) {
-                Log.e("FAVOR TASK", t.toString());
-           }
-       });
-    }
-    public void initList(){
-        Log.e("ERROR adapter is null : " , " " + (favorAdapter == null) );
-        favorRecyclerView.setAdapter(favorAdapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        favorRecyclerView.setLayoutManager(linearLayoutManager);
-    }
-
-    public void initListItem(int movieId, String duration){
-        Call<MovieModel> movieCall = MyService.getMovieApi().searchMovieDetail(movieId, Credentials.API_KEY, "videos");
-        movieCall.enqueue(new Callback<MovieModel>() {
+        favor_navigation.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
-                MovieModel movie = response.body();
-                movie.setDuration(duration);
-                fav_movies.add(movie);
-                favorAdapter.notifyDataSetChanged();
-                Log.i("Favor movie : " , movie.getTitle());
+            public void onTabSelected(TabLayout.Tab tab) {
+                int position = tab.getPosition();
+                switch (position) {
+                    case 0:
+                        Toast.makeText(getContext(), "Favorite", Toast.LENGTH_SHORT).show();
+                        replaceFragment(FavorFragment.newInstance(loginAccount));
+                        break;
+                    case 1:
+                        Toast.makeText(getContext(), "History", Toast.LENGTH_SHORT).show();
+                        replaceFragment(HistoryFragment.newInstance(loginAccount));
+                        break;
+                }
             }
 
             @Override
-            public void onFailure(Call<MovieModel> call, Throwable t) {
-                Log.i("FAVOR TASK", "Fail to add movie : " + t.toString());
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                if ( tab.getId() == R.id.favor_f) {
+                    Toast.makeText(getContext(), "favorite", Toast.LENGTH_SHORT).show();
+                } else if ( tab.getId() == R.id.history_f) {
+                    Toast.makeText(getContext(), "history", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+        replaceFragment(FavorFragment.newInstance(loginAccount));
+    }
+
+    private void replaceFragment(Fragment f){
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.fragment_favor, f);
+        ft.commit();
     }
 
 }

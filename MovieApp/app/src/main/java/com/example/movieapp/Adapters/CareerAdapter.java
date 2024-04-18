@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.CreditModel;
 import com.example.movieapp.R;
 import com.example.movieapp.View.Movie_infomation;
@@ -23,13 +24,30 @@ public class CareerAdapter extends RecyclerView.Adapter<CareerAdapter.ViewHolder
 
     Context context;
     List<CreditModel> creditModelList;
-    List<Integer> yearList= new ArrayList<Integer>();
+    List<Integer> yearList;
+    AccountModel loginAccount;
 
 
-    public CareerAdapter(Context context, List<CreditModel> creditModelList){
+    public CareerAdapter(Context context, List<CreditModel> creditModelList, AccountModel loginAccount){
         this.context = context;
         this.creditModelList = creditModelList;
         this.creditModelList.sort(Comparator.reverseOrder());
+        this.loginAccount = loginAccount;
+
+       decideToDisplayYear();
+    }
+
+    public void decideToDisplayYear(){
+        yearList= new ArrayList<Integer>();
+        for(int i = 0 ; i< creditModelList.size() ;i++){
+            CreditModel creditModel = creditModelList.get(i);
+            if(!yearList.contains(creditModel.getYear())){
+                yearList.add(creditModel.getYear());
+                creditModel.setDisplayYear(true);
+            }else{
+                creditModel.setDisplayYear(false);
+            }
+        }
     }
 
 
@@ -47,19 +65,23 @@ public class CareerAdapter extends RecyclerView.Adapter<CareerAdapter.ViewHolder
         holder.movie_name.setText(creditModel.getTitle());
         holder.role.setText(creditModel.getCharacter());
         int rating =  (int)(creditModel.getVote_average()*10);
-        if(rating < 70){
-            if(rating<50 && rating!=0){
-                holder.rating.setTextColor(context.getResources().getColor(R.color.neon_pink));
+        if(rating!=0){
+            if(rating < 70){
+                if(rating<50 ){
+                    holder.rating.setTextColor(context.getResources().getColor(R.color.neon_pink));
+                }else{
+                    holder.rating.setTextColor(context.getResources().getColor(R.color.yellow));
+                }
             }else{
-                holder.rating.setTextColor(context.getResources().getColor(R.color.yellow));
+                holder.rating.setTextColor(context.getResources().getColor(R.color.lime_green));
             }
+            holder.rating.setText( (int)(creditModel.getVote_average()*10) + " %");
         }else{
-            holder.rating.setTextColor(context.getResources().getColor(R.color.lime_green));
+            holder.rating.setText("");
         }
-        holder.rating.setText( (int)(creditModel.getVote_average()*10) + " %");
 
-        if(!yearList.contains(creditModel.getYear())){
-            yearList.add(creditModel.getYear());
+
+        if(creditModel.isDisplayYear()){
             holder.year.setText(creditModel.getYear()+"");
         }else{
             holder.year.setText("");
@@ -70,6 +92,7 @@ public class CareerAdapter extends RecyclerView.Adapter<CareerAdapter.ViewHolder
             public void onClick(View v) {
                 Intent movie_intent = new Intent(context, Movie_infomation.class);
                 movie_intent.putExtra("film_id",creditModel.getId());
+                movie_intent.putExtra("loginAccount",loginAccount);
                 context.startActivity(movie_intent);
             }
         });

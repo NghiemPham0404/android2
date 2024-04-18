@@ -19,6 +19,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -71,6 +72,7 @@ public class PlayingFilm extends AppCompatActivity {
 
     private ImageView maximize_btn, pic_in_pic_btn, volume_btn;
     private MovieModel movie;
+    private int current_id;
     private AccountModel loginAccount;
     private String videoUrl;
     private RecyclerView recommendRecycler;
@@ -90,6 +92,7 @@ public class PlayingFilm extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playing_film);
         setVideoView(getIntent());
+        current_id = movie.getId();
     }
 
     @Override
@@ -172,9 +175,9 @@ public class PlayingFilm extends AppCompatActivity {
 
             boolean focusable = true;
             reviewSessionPopup = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT, focusable);
+            reviewSessionPopup.setAnimationStyle(R.style.PopupAnimation);
 
             layout = findViewById(R.id.playing_layout);
-            reviewSessionPopup.setAnimationStyle(R.anim.review_popup_animation);
 
             loadinglayout =popupView.findViewById(R.id.loadingLayout);
             loadinglayout.setVisibility(View.VISIBLE);
@@ -189,7 +192,8 @@ public class PlayingFilm extends AppCompatActivity {
                 public void onResponse(Call<DetailResponse> call, Response<DetailResponse> response) {
                     if(response.code()==200){
                         List<DetailModel> detailModels = response.body().getAllReviews();
-                        ReviewApdater reviewApdater = new ReviewApdater(PlayingFilm.this, detailModels);
+                        ReviewApdater reviewApdater = new ReviewApdater(PlayingFilm.this, detailModels, loginAccount.getUser_id());
+                        reviewApdater.removeEmpty();
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(PlayingFilm.this);
                         reviewsRecyclerView =  popupView.findViewById(R.id.recyclerView);
                         reviewsRecyclerView.setLayoutManager(linearLayoutManager);
@@ -299,6 +303,29 @@ public class PlayingFilm extends AppCompatActivity {
         initPlayerButton();
     }
 
+    private void reInitPlayer(){
+        player.release();
+        player = new SimpleExoPlayer.Builder(this).build();
+        MediaItem mediaItem = MediaItem.fromUri(Uri.parse(videoUrl));
+        player.setMediaItem(mediaItem);
+
+        player.setPlayWhenReady(playWhenReady);
+        player.prepare();
+
+        player.seekTo(movie.getPlayBackPositition());
+
+        playerView.setPlayer(player);
+
+        movie_title_playing = playerView.findViewById(R.id.film_title_playing_2);
+        if(full_screen){
+            movie_title_playing.setText(movie.getTitle());
+        }else{
+            movie_title_playing.setText("");
+        }
+        initPlayerButton();
+    }
+
+
     private void switchToFullScreen() {
         setContentView(R.layout.activity_playing_film_landcaspe);
         playerView = findViewById(R.id.playing_film_window);
@@ -332,7 +359,6 @@ public class PlayingFilm extends AppCompatActivity {
         super.onStart();
         initializePlayer();
     }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -524,6 +550,11 @@ public class PlayingFilm extends AppCompatActivity {
         } else {
             switchToPortrait();
             full_screen = false;
+        }
+
+        if(current_id != movie.getId()){
+            reInitPlayer();
+            current_id = movie.getId();
         }
     }
 

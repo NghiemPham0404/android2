@@ -18,41 +18,33 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/groupTitle2"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/favor_navigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/inter"
-            android:gravity="center|start"
-            android:padding="10dp"
-            android:text="Favorite movies"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:tabIndicatorColor="@color/neon_pink"
+            app:tabSelectedTextColor="@color/neon_pink"
+            app:tabTextAppearance="@style/MyTabTextAppearance"
+            app:tabTextColor="@color/white">
 
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/white" />
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/favor_f"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Favorite" />
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/history_f"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="History" />
+
+        </com.google.android.material.tabs.TabLayout>
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_favor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <View
-            android:id="@+id/divider6"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/white" />
-
-        <include layout="@layout/filter_bar"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/favorRecycleView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
     </LinearLayout>
 </FrameLayout>

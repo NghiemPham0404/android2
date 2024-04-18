@@ -32,11 +32,9 @@ public class HomeActivity extends AppCompatActivity {
             if (item.getItemId() == R.id.home) {
                 replaceFragment(HomePage.newInstance(loginAccount));
             } else if (item.getItemId() == R.id.discover) {
-                replaceFragment(new DiscoverPage());
+                replaceFragment(DiscoverPage.newInstance(loginAccount));
             }  else if (item.getItemId() == R.id.favor) {
                 replaceFragment(FavorPage.newInstance(loginAccount));
-            } else if (item.getItemId() == R.id.history) {
-                replaceFragment(new HistoryPage());
             } else if (item.getItemId() == R.id.user) {
                 replaceFragment(UserPage.newInstance(loginAccount));
             }

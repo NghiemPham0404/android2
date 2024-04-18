@@ -5,31 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".View.HistoryPage" >
+    tools:context=".View.HistoryFragment" >
 
-    <LinearLayout
+    <include
+        layout="@layout/loading_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/groupTitle2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/inter"
-            android:gravity="center|start"
-            android:padding="10dp"
-            android:text="History"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/historyRecycleView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-        <include layout="@layout/filter_bar"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
 </FrameLayout>
