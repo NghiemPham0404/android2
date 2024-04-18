@@ -37,7 +37,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.movieapp.Adapters.MoviesGroupAdapter;
-import com.example.movieapp.Interfaces.Fragment_Interface;
 import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.Model.MoviesGroup;

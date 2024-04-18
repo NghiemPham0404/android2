@@ -12,33 +12,55 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.movieapp.Interfaces.FavorInterface;
 import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
 import com.example.movieapp.utils.Credentials;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class FavorAdapter extends RecyclerView.Adapter<FavorAdapter.ViewHolder>{
 
     Context context;
     List<MovieModel> movies;
-    favor_interface favor_click;
+    FavorInterface favor_click;
 
-    public interface favor_interface{
-        public void openMovie(int movieId);
-
-        public void playMovie(MovieModel movie, Button button);
-
-        public void changeFavorite(int movieId);
-    }
-
-    public FavorAdapter(Context context, List<MovieModel> movies, favor_interface favor_click){
+    public FavorAdapter(Context context, List<MovieModel> movies, FavorInterface favor_click){
         this.context = context;
         this.movies = movies;
         this.favor_click = favor_click;
     }
+
+    public void sort_by_release_date(int sort){
+        if(getItemCount() > 0){
+            if(sort ==1){
+                Collections.sort(movies, (o1, o2) -> o2.getRelease_date().compareTo(o1.getRelease_date()));
+            }else if(sort == 2){
+                Collections.sort(movies, (o1, o2) -> o1.getRelease_date().compareTo(o2.getRelease_date()));
+            }else if(sort == 0){
+                Collections.sort(movies, (o1, o2) -> o2.getFavorTime().compareTo(o1.getFavorTime()));
+            }
+        }
+    }
+
+    public void sort_by_rating(int sort){
+        if(getItemCount() > 0){
+            if(sort ==1){
+                Collections.sort(movies, (o1, o2) -> (int)(o2.getVote_average()*10 - o1.getVote_average()*10));
+            }else if(sort==2){
+                Collections.sort(movies, (o1, o2) -> (int)(o1.getVote_average()*10 - o2.getVote_average()*10));
+            }else if(sort == 0){
+                Collections.sort(movies, (o1, o2) -> o2.getFavorTime().compareTo(o1.getFavorTime()));
+            }
+        }
+    }
+
+
 
     @NonNull
     @Override
@@ -66,6 +88,12 @@ public class FavorAdapter extends RecyclerView.Adapter<FavorAdapter.ViewHolder>{
 
             holder.runtime.setText(movie.getMaxDurationTime());
 
+            long playBackPosition = movie.getPlayBackPositition();
+            if(playBackPosition>0){
+                holder.current_duration.setText(convertMillisecondsToHMmSs(playBackPosition));
+            }else{
+                holder.current_duration.setText("");
+            }
             new ImageLoader().loadImageIntoImageView(context, Credentials.BASE_IMAGE_URL + movie.getPoster_path(), holder.movie_poster, holder.shimmerFrameLayout);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -89,6 +117,13 @@ public class FavorAdapter extends RecyclerView.Adapter<FavorAdapter.ViewHolder>{
         if(movies!=null){return movies.size();
         }
         return 0;
+    }
+    public static String convertMillisecondsToHMmSs(long milliseconds) {
+        long seconds = milliseconds/1000;
+        long s = seconds % 60;
+        long m = (seconds / 60) % 60;
+        long h = (seconds / (60 * 60)) % 24;
+        return String.format("%02d:%02d:%02d", h,m,s);
     }
 
     class ViewHolder extends  RecyclerView.ViewHolder{

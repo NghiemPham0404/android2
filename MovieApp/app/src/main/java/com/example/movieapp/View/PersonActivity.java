@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.movieapp.Adapters.CareerAdapter;
 import com.example.movieapp.Adapters.CastAdapter;
+import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.CastModel;
 import com.example.movieapp.Model.CreditModel;
 import com.example.movieapp.Model.ExternalLinkModel;
@@ -47,16 +49,31 @@ public class PersonActivity extends AppCompatActivity {
     FloatingActionButton pg_up_button;
     ScrollView scrollView;
 
+    AccountModel loginAccount;
+
+    ImageButton back_btn;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person);
 
         cast_id = getIntent().getIntExtra("cast_id", -1);
+        loginAccount = getIntent().getParcelableExtra("loginAccount");
 
         initComponents();
     }
     public void initComponents(){
+        back_btn = findViewById(R.id.backBtn_person);
+        back_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
         avatar = findViewById(R.id.avatar_person);
         name = findViewById(R.id.person_name_lbl);
 
@@ -159,7 +176,7 @@ public class PersonActivity extends AppCompatActivity {
             public void onResponse(Call<CreditResponse> call, Response<CreditResponse> response) {
                 if(response.code()==200){
                     List<CreditModel> creditModelList = response.body().getCreditModelList();
-                    CareerAdapter careerAdapter = new CareerAdapter(PersonActivity.this, creditModelList);
+                    CareerAdapter careerAdapter = new CareerAdapter(PersonActivity.this, creditModelList, loginAccount);
 
                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(PersonActivity.this);
                      career_recyclerView.setAdapter(careerAdapter);

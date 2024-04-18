@@ -21,31 +21,57 @@ import java.util.List;
 public class ReviewApdater extends RecyclerView.Adapter<ReviewApdater.ViewHolder> {
     List<DetailModel> detailModels;
     Context context;
-
-    public ReviewApdater(Context context,  List<DetailModel> detailModels){
+    String userId;
+    public ReviewApdater(Context context,  List<DetailModel> detailModels, String userId){
         this.context = context;
         this.detailModels = detailModels;
         Collections.sort(this.detailModels, (o1, o2) -> o2.getTime().compareTo(o1.getTime()));
+        this.userId = userId;
+    }
+
+    public void removeEmpty(){
+        for(int i = 0; i<this.detailModels.size(); i++){
+            DetailModel detailModel = detailModels.get(i);
+            if(detailModel.getReview().equalsIgnoreCase("") && detailModel.getRating().equalsIgnoreCase("")
+            ||detailModel.getReview()==null && detailModel.getRating()==null){
+                detailModels.remove(i);
+            }
+        }
     }
 
     @NonNull
     @Override
     public ReviewApdater.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_rating_view, parent, false);
-        ReviewApdater.ViewHolder viewHolder = new ReviewApdater.ViewHolder(view);
-        return viewHolder;
+        if(viewType == 0){
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_rating_view, parent, false);
+            ReviewApdater.ViewHolder viewHolder = new ReviewApdater.ViewHolder(view);
+            return viewHolder;
+        }else{
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_rating_view_user, parent, false);
+            ReviewApdater.ViewHolder viewHolder = new ReviewApdater.ViewHolder(view);
+            return viewHolder;
+        }
     }
 
     @Override
     public void onBindViewHolder(@NonNull ReviewApdater.ViewHolder holder, int position) {
             DetailModel detailModel = detailModels.get(position);
-            if(detailModel.getReview()!=null && detailModel.getRating()!=null){
+            if(!detailModel.getReview().equalsIgnoreCase("") && !detailModel.getRating().equalsIgnoreCase("")){
                 holder.username.setText(""+detailModel.getUsername());
                 holder.review.setText(""+detailModel.getReview());
                 holder.date.setText(""+detailModel.getTime());
                 holder.rating.setRating(Float.parseFloat(detailModel.getRating()));
                 new ImageLoader().loadAvatar(context,detailModel.getAvatar(),holder.avatar, holder.avatar_text, detailModel.getUsername());
             }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if(detailModels.get(position).getUserId().equalsIgnoreCase(this.userId)){
+            return 1;
+        }else{
+            return 0;
+        }
     }
 
     @Override

@@ -27,6 +27,16 @@ public class CreditModel implements  Comparable<CreditModel>{
 
     private String title;
 
+    public boolean isDisplayYear() {
+        return displayYear;
+    }
+
+    public void setDisplayYear(boolean displayYear) {
+        this.displayYear = displayYear;
+    }
+
+    private boolean displayYear;
+
     public String getCredit_id() {
         return credit_id;
     }
@@ -58,6 +68,7 @@ public class CreditModel implements  Comparable<CreditModel>{
             return new Date(System.currentTimeMillis()).getYear()+1900;
         }
     }
+
 
     @Override
     public int compareTo(CreditModel o) {

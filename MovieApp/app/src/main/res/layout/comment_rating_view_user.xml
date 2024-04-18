@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:orientation="horizontal"
+    android:padding="5dp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_weight="1"
+        android:background="@drawable/review_session_bg_1"
+        android:orientation="vertical"
+        android:padding="10dp"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="left"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/user_name_cm_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:fontFamily="@font/inter"
+                android:gravity="top"
+                android:inputType="text"
+                android:padding="5dp"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="comment" />
+
+        </LinearLayout>
+
+        <RatingBar
+            android:id="@+id/movie_rating"
+            style="@style/Widget.AppCompat.RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:numStars="10"
+            android:progressBackgroundTint="@color/bright_gray"
+            android:progressTint="@color/yellow" />
+
+        <TextView
+            android:id="@+id/user_comment_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:fontFamily="@font/inter"
+            android:gravity="top"
+            android:inputType="text"
+            android:padding="5dp"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            tools:text="comment" />
+
+        <TextView
+            android:id="@+id/date_comment_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:ems="10"
+            android:fontFamily="@font/inter"
+            android:gravity="top"
+            android:inputType="text"
+            android:padding="5dp"
+            android:textColor="@color/light_gray"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            tools:text="comment" />
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/avater_border"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginTop="15dp"
+            android:layout_weight="1"
+            android:scaleType="centerInside"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/circle" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imageAvatar"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:scaleType="fitCenter"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/avater_border"
+            app:layout_constraintEnd_toEndOf="@+id/avater_border"
+            app:layout_constraintStart_toStartOf="@+id/avater_border"
+
+            app:layout_constraintTop_toTopOf="@+id/avater_border"
+            app:shapeAppearanceOverlay="@style/roundedImageRounded"></com.google.android.material.imageview.ShapeableImageView>
+
+        <TextView
+            android:id="@+id/avatarText"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:fontFamily="@font/inter"
+            android:gravity="center"
+            android:scaleType="fitCenter"
+            android:textAlignment="center"
+
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/avater_border"
+            app:layout_constraintEnd_toEndOf="@+id/avater_border"
+            app:layout_constraintStart_toStartOf="@+id/avater_border"
+            app:layout_constraintTop_toTopOf="@+id/avater_border" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

@@ -73,7 +73,9 @@ public class AccountModel implements Parcelable {
     String facebook_id;
     String avatar;
 
+    public AccountModel(){
 
+    }
     public AccountModel(String user_id, String username, String email, String password, String sms, String google_id, String facebook_id, String avatar) {
         this.user_id = user_id;
         this.username = username;

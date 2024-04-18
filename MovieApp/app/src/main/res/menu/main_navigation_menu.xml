@@ -6,24 +6,16 @@
         android:id="@+id/home"
         android:icon="@drawable/nav_item_home"
         android:title="Home"
-        
         />
-
     <item
         android:id="@+id/discover"
         android:icon="@drawable/nav_item_discover"
         android:title="Discover"
-
         />
-
     <item
         android:id="@+id/favor"
         android:title="Favor"
         android:icon="@drawable/nav_item_favor"/>
-    <item
-        android:id="@+id/history"
-        android:title="History"
-        android:icon="@drawable/nav_item_history"/>
 
     <item android:title="You"
         android:id="@+id/user"

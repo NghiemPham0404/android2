@@ -29,9 +29,10 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder> {
     AccountModel loginAccount;
 
 
-    public CastAdapter(Context context, List<CastModel> castModels) {
+    public CastAdapter(Context context, List<CastModel> castModels, AccountModel loginAccount) {
         this.context = context;
         this.castModels = castModels;
+        this.loginAccount = loginAccount;
     }
 
     @NonNull
@@ -60,6 +61,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder> {
             public void onClick(View v) {
                 Intent castIntent = new Intent(context, PersonActivity.class);
                 castIntent.putExtra("cast_id", castModel.getId());
+                castIntent.putExtra("loginAccount", loginAccount);
                 context.startActivity(castIntent);
             }
         });

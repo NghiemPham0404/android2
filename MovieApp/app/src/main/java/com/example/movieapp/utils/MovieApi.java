@@ -1,11 +1,12 @@
 package com.example.movieapp.utils;
 
 import com.example.movieapp.Model.CastModel;
+import com.example.movieapp.Model.CountryModel;
 import com.example.movieapp.Model.ExternalLinkModel;
 import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.Response.CastResponse;
 import com.example.movieapp.Response.CreditResponse;
-import com.example.movieapp.Response.MovieResponse;
+import com.example.movieapp.Response.GenreResponse;
 import com.example.movieapp.Response.MovieSearchResponse;
 import com.example.movieapp.Response.VideoResponse;
 
@@ -44,8 +45,6 @@ public interface MovieApi {
             @Query("api_key") String key,
             @Query("language") String language
     );
-
-    //https://api.themoviedb.org/3/genre/movie/list
     //https://api.themoviedb.org/3/discover/movie
 
 
@@ -118,5 +117,27 @@ public interface MovieApi {
     Call<MovieSearchResponse> searchMovieRelativeRecommendationByGernes(
             @Query("api_key") String key,
             @Query("with_genres") String with_genres
+    );
+
+    // DISCOVER MOVIE
+
+    //https://api.themoviedb.org/3/genre/movie/list
+    @GET("3/genre/movie/list")
+    Call<GenreResponse> getAllGenre(
+            @Query("api_key") String key
+    );
+
+    @GET("3/configuration/countries")
+    Call<List<CountryModel>> getAllRegion(
+            @Query("api_key") String key
+    );
+
+    @GET("3/discover/movie")
+    Call<MovieSearchResponse> discoverMovie(
+            @Query("api_key") String key,
+            @Query("with_genres") String with_genres,
+            @Query("with_origin_country") String with_origin_country,
+            @Query("year") int year,
+            @Query("page") int page
     );
 }

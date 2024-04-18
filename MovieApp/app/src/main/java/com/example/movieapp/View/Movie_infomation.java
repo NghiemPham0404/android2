@@ -63,7 +63,7 @@ public class Movie_infomation extends AppCompatActivity {
         setContentView(R.layout.activity_film_infomation);
         movieId = getIntent().getIntExtra("film_id", -1);
         loginAccount = (AccountModel) getIntent().getParcelableExtra("loginAccount");
-        Toast.makeText(this, loginAccount.getUser_id(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, loginAccount.getUser_id(), Toast.LENGTH_SHORT).show();
         init();
     }
 
@@ -97,14 +97,14 @@ public class Movie_infomation extends AppCompatActivity {
     private void initCast() {
                 List<CastModel> castModels = movie.getCredits().getCast();
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(Movie_infomation.this, LinearLayoutManager.HORIZONTAL, false);
-                CastAdapter castAdapter = new CastAdapter(Movie_infomation.this, castModels);
+                CastAdapter castAdapter = new CastAdapter(Movie_infomation.this, castModels, loginAccount);
                 castRecyclerView.setAdapter(castAdapter);
                 castRecyclerView.setLayoutManager(linearLayoutManager);
     }
     private void initCrew(){
         List<CastModel> crewModels = movie.getCredits().getCrew();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(Movie_infomation.this, LinearLayoutManager.HORIZONTAL, false);
-        CastAdapter crewAdapter = new CastAdapter(Movie_infomation.this,  crewModels);
+        CastAdapter crewAdapter = new CastAdapter(Movie_infomation.this,  crewModels, loginAccount);
         crewRecyclerView.setAdapter(crewAdapter);
         crewRecyclerView.setLayoutManager(linearLayoutManager);
     }

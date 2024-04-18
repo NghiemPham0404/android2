@@ -2,9 +2,13 @@ package com.example.movieapp.Model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class MovieModel implements Parcelable, Comparable<MovieModel> {
@@ -29,6 +33,26 @@ public class MovieModel implements Parcelable, Comparable<MovieModel> {
 
     public int runtime;
 
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
+
+    public String videoUrl;
+
+    public String getFavorTime() {
+        return favorTime;
+    }
+
+    public void setFavorTime(String favorTime) {
+        this.favorTime = favorTime;
+    }
+
+    public String favorTime;
+
 
     protected MovieModel(Parcel in) {
         id = in.readInt();
@@ -42,6 +66,7 @@ public class MovieModel implements Parcelable, Comparable<MovieModel> {
         genres = in.createTypedArrayList(Genre.CREATOR);
         runtime = in.readInt();
         duration = in.readString();
+        videoUrl = in.readString();
     }
 
     public static final Creator<MovieModel> CREATOR = new Creator<MovieModel>() {
@@ -60,13 +85,51 @@ public class MovieModel implements Parcelable, Comparable<MovieModel> {
         return duration;
     }
 
+    public String getHistoryDate() {
+        if (duration == null)
+            return null;
+        else
+            return duration.split("-")[1];
+    }
     public String getHistory(){
-        if(duration == null) return null;
-        else return duration.split("-")[1];
+        if(duration == null)
+            return null;
+        else {
+            String year_month_day_split  =  getHistoryDate();
+            String[] date_split = year_month_day_split.split("/");
+            int year = Integer.parseInt(date_split[0]);
+            int month = Integer.parseInt(date_split[1]);
+            int day = Integer.parseInt(date_split[2]);
+
+            Date history_date = new Date(year-1900, month-1, day);
+            Date today = new Date(System.currentTimeMillis());
+
+            SimpleDateFormat df;
+            if(history_date.getYear() == today.getYear()){
+                if(history_date.getMonth() == today.getMonth()){
+                    if(today.getDate() == day){
+                        return "Today";
+                    }else if(today.getDate()-7<= day){
+                        return "This week";
+                    }else{
+                        return "This month";
+                    }
+                }else{
+                    df = new SimpleDateFormat("MMMM ");
+                    return df.format(history_date);
+                }
+            }else{
+                df = new SimpleDateFormat("MMMM yyyy");
+                return  df.format(history_date);
+            }
+        }
     }
 
     public long getPlayBackPositition(){
-        return (this.duration == null)?0:Long.parseLong(duration.split("-")[0]);
+        if(duration == null) {
+            return 0;
+        }
+        else return Long.parseLong(duration.split("-")[0]);
     }
 
     public void setDuration(String duration){
@@ -217,6 +280,7 @@ public class MovieModel implements Parcelable, Comparable<MovieModel> {
         dest.writeTypedList(genres);
         dest.writeInt(runtime);
         dest.writeString(duration);
+        dest.writeString(videoUrl);
     }
 
     @Override
