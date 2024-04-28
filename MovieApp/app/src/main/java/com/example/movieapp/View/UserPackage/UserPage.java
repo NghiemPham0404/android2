@@ -15,7 +15,9 @@ import android.widget.TextView;
 import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
+import com.example.movieapp.View.LoginPackage.LoginViewActivity;
 import com.example.movieapp.View.UserPackage.UserInfomation.User_Infomation;
+import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,7 +34,7 @@ public class UserPage extends Fragment {
     public UserPage() {
         // Required empty public constructor
     }
-    Button user_infomation_btn;
+    Button user_infomation_btn, logout_btn;
 
     public static UserPage newInstance(AccountModel loginAccount) {
         UserPage fragment = new UserPage();
@@ -65,6 +67,7 @@ public class UserPage extends Fragment {
         user_avatar = view.findViewById(R.id.user_avatar);
         avatar_text = view.findViewById(R.id.avatarText);
         user_infomation_btn = view.findViewById(R.id.user_info_button);
+        logout_btn = view.findViewById(R.id.logout_btn);
     }
 
     public void initFeature(){
@@ -75,6 +78,15 @@ public class UserPage extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), User_Infomation.class);
                 intent.putExtra("loginAccount", loginAccount);
+                startActivity(intent);
+            }
+        });
+
+        logout_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getContext(), LoginViewActivity.class);
                 startActivity(intent);
             }
         });

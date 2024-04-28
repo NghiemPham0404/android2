@@ -20,7 +20,18 @@
             android:layout_height="50dp"
             android:layout_margin="5dp"
             android:background="@drawable/text_input"
-            android:orientation="horizontal">
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <Button
+                android:id="@+id/searchBtn"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:drawableTop="@drawable/search_icon"
+                android:gravity="center_vertical"
+                android:paddingTop="10dp" />
 
             <EditText
                 android:id="@+id/searchBox"
@@ -38,32 +49,93 @@
                 android:textSize="14dp" />
 
             <Button
-                android:id="@+id/searchBtn"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:drawableTop="@drawable/search_icon"
-                android:paddingTop="10dp" />
-
-            <Button
                 android:id="@+id/mirco_btn"
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:background="@null"
                 android:drawableTop="@drawable/mic"
-                android:paddingTop="10dp" />
+                android:paddingTop="10dp"
+                android:visibility="gone" />
         </LinearLayout>
 
         <include
-            layout="@layout/filter_bar"
+            android:id="@+id/search_film_group"
+            layout="@layout/film_group"
             android:visibility="gone" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/movie_groups_recycleview"
+        <ScrollView
+            android:id="@+id/recyclerView_scrollview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="10dp"
-            android:visibility="visible" />
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/groupTitle2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter"
+                    android:gravity="center|start"
+                    android:padding="10dp"
+                    android:text="Now playing"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/movie_slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="225dp" >
+
+                </androidx.viewpager2.widget.ViewPager2>
+
+                <TextView
+                    android:id="@+id/groupTitle3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter"
+                    android:gravity="center|start"
+                    android:padding="10dp"
+                    android:text="Popular"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/popular_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:id="@+id/groupTitle4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter"
+                    android:gravity="center|start"
+                    android:padding="10dp"
+                    android:text="Upcomming"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/upcomming_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
 

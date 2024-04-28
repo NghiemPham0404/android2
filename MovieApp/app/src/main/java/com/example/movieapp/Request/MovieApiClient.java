@@ -6,8 +6,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.movieapp.AppExecutors;
 import com.example.movieapp.Model.MovieModel;
-import com.example.movieapp.Repositories.MovieRepository;
-import com.example.movieapp.Response.MovieResponse;
 import com.example.movieapp.Response.MovieSearchResponse;
 import com.example.movieapp.utils.Credentials;
 
@@ -21,9 +19,12 @@ import retrofit2.Response;
 
 public class MovieApiClient {
     private static MovieApiClient instance;
-    private MutableLiveData<List<MovieModel>> mMovies;
+    private MutableLiveData<List<MovieModel>> mMovies, popularMovies, upcommingMovies;
+    private int totalResults;
 
     private RetrieveMoviesRunnable retrieveMoviesRunnable;
+    private RetrieveMoviesRunnable retrievePopularMoviesRunnable;
+    private RetrieveMoviesRunnable retrieveUpcommingMoviesRunnable;
 
     public static MovieApiClient getInstance() {
         if (instance == null) {
@@ -34,10 +35,18 @@ public class MovieApiClient {
 
     public MovieApiClient() {
         mMovies = new MutableLiveData<>();
+        popularMovies = new MutableLiveData<>();
+        upcommingMovies = new MutableLiveData<>();
     }
 
     public MutableLiveData<List<MovieModel>> getMovies() {
         return mMovies;
+    }
+    public MutableLiveData<List<MovieModel>> getPopularMovies() {
+        return popularMovies;
+    }
+    public MutableLiveData<List<MovieModel>> getUpcommingMovies() {
+        return upcommingMovies;
     }
 
     public void searchMovieApi(String query, int page) {
@@ -56,11 +65,43 @@ public class MovieApiClient {
         }, 10, TimeUnit.SECONDS);
     }
 
-    public void searchMovieApi(int list_type, int page) {
-        if (retrieveMoviesRunnable != null) {
+    public void searchFavorMovieApi(int page){
+        if (retrievePopularMoviesRunnable != null) {
+            retrievePopularMoviesRunnable = null;
+        }
+        retrievePopularMoviesRunnable = new RetrieveMoviesRunnable(2, page);
+        final Future myHandler = AppExecutors.getInstance().networkIO().submit(retrievePopularMoviesRunnable);
+
+        AppExecutors.getInstance().networkIO().schedule(new Runnable() {
+            @Override
+            public void run() {
+                // Hủy lời gọi Retrofit
+                myHandler.cancel(true);
+            }
+        }, 10, TimeUnit.SECONDS);
+    }
+
+    public void searchUpcommingMovieApi(int page){
+        if(retrieveUpcommingMoviesRunnable !=null){
+            retrieveUpcommingMoviesRunnable = null;
+        }
+        retrieveUpcommingMoviesRunnable = new RetrieveMoviesRunnable(4, page);
+        final Future myHandler = AppExecutors.getInstance().networkIO().submit(retrieveUpcommingMoviesRunnable);
+
+        AppExecutors.getInstance().networkIO().schedule(new Runnable() {
+            @Override
+            public void run() {
+                // Hủy lời gọi Retrofit
+                myHandler.cancel(true);
+            }
+        }, 10, TimeUnit.SECONDS);
+    }
+
+    public void discoverMovieApi(String genre_str, String country ,int year, int pageNumber){
+        if(retrieveMoviesRunnable != null) {
             retrieveMoviesRunnable = null;
         }
-        retrieveMoviesRunnable = new RetrieveMoviesRunnable(list_type, page);
+        retrieveMoviesRunnable = new RetrieveMoviesRunnable(genre_str, country, year, pageNumber);
         final Future myHandler = AppExecutors.getInstance().networkIO().submit(new Runnable() {
             @Override
             public void run() {
@@ -77,15 +118,27 @@ public class MovieApiClient {
         }, 10, TimeUnit.SECONDS);
     }
 
+    public int getTotalResults(){
+        if(mMovies!=null){
+            return totalResults;
+        }else{
+            return 0;
+        }
+
+    }
+
     // Lấy dữ liệu từ Retrofit bằng class Runnable
     // cần 2 loại truy vấn, theo ID và tiềm kiếm
     private class RetrieveMoviesRunnable implements Runnable {
 
+        private int year;
+        private String genre_str;
+        private  String country;
         private String query;
         private int pageNumber;
         boolean cancelRequest;
-
         private int list_type = 0;
+
 
         public RetrieveMoviesRunnable(String query, int pageNumber) {
             this.query = query;
@@ -99,38 +152,63 @@ public class MovieApiClient {
             this.cancelRequest = false;
         }
 
+        public RetrieveMoviesRunnable(String genre_str, String country ,int year, int pageNumber){
+            this.genre_str = genre_str;
+            this.country = country;
+            this.year =year;
+            this.pageNumber = pageNumber;
+        }
 
         @Override
         public void run() {
             Response response;
             try {
-                if (list_type == 0) {
-                    response = getMovies(query, pageNumber).execute();
-                } else {
-                    response = getMovies(list_type, pageNumber).execute();
+                // discover
+                if(genre_str!=null){
+                    response = getMovies(genre_str, country, year, pageNumber).execute();
+                }else{
+                    //search
+                    if (list_type == 0) {
+                        response = getMovies(query, pageNumber).execute();
+                        parseDataIntoList(response, mMovies);
+                    } else {
+                        // favor
+                        response = getMovies(list_type, pageNumber).execute();
+                        switch (list_type){
+                            case  2 :
+                                parseDataIntoList(response, popularMovies);
+                                break;
+                            case 4 :
+                                parseDataIntoList(response, upcommingMovies);
+                                break;
+                        }
+                    }
                 }
-
                 if (cancelRequest) {
                     cancelRequest();
                     return;
                 }
-
-                if (response.code() == 200) {
-                    List<MovieModel> list = new ArrayList<>(((MovieSearchResponse) response.body()).getMovies());
-                    if (pageNumber == 1) {
-                        mMovies.postValue(list);
-                    } else {
-                        List currentList = mMovies.getValue();
-                        currentList.addAll(list);
-                        mMovies.postValue(currentList);
-                    }
-                } else {
-                    String error = response.errorBody().string();
-                    Log.v("Tag", error);
-                    mMovies.postValue(null);
-                }
             } catch (Exception e) {
                 e.printStackTrace();
+                Log.i("movielist", "error");
+            }
+        }
+
+        private void parseDataIntoList(Response response, MutableLiveData<List<MovieModel>> Movies){
+            if (response.code() == 200) {
+                List<MovieModel> list = new ArrayList<>(((MovieSearchResponse) response.body()).getMovies());
+                if (pageNumber == 1) {
+                    Movies.postValue(list);
+                } else {
+                    List currentList = Movies.getValue();
+                    currentList.addAll(list);
+                    Movies.postValue(currentList);
+                }
+                Log.i("movielist","finding 7");
+                totalResults =((MovieSearchResponse) response.body()).total_results;
+            } else {
+                Log.v("parse data", "Fail to call response" + response.errorBody());
+                Movies.postValue(null);
             }
         }
 
@@ -139,8 +217,10 @@ public class MovieApiClient {
         }
 
         private Call<MovieSearchResponse> getMovies(int list_type, int pageNumber) {
+            Log.i("movielist","finding5");
             switch (list_type) {
                 case 1:
+                    Log.i("movielist","finding 6");
                     return MyService.getMovieApi().searchMoviesList(Credentials.BASE_URL + Credentials.NOW_PLAYING, Credentials.API_KEY, pageNumber);
                 case 2:
                     return MyService.getMovieApi().searchMoviesList(Credentials.BASE_URL + Credentials.POPULAR, Credentials.API_KEY, pageNumber);
@@ -148,14 +228,16 @@ public class MovieApiClient {
                     return MyService.getMovieApi().searchMoviesList(Credentials.BASE_URL + Credentials.TOP_RATED, Credentials.API_KEY, pageNumber);
                 case 4:
                     return MyService.getMovieApi().searchMoviesList(Credentials.BASE_URL + Credentials.UPCOMING, Credentials.API_KEY, pageNumber);
-                default:
-                    return MyService.getMovieApi().searchMoviesList(Credentials.BASE_URL + Credentials.NOW_PLAYING, Credentials.API_KEY, pageNumber);
             }
+            return null;
         }
+        private Call<MovieSearchResponse> getMovies(String genre_str, String country ,int year, int pageNumber) {
+            return MyService.getMovieApi().discoverMovie(Credentials.API_KEY, genre_str, country, year, pageNumber);
+        }
+
 
         private void cancelRequest() {
             Log.v("QUERY TASK", "Canceled request");
-
         }
     }
 }

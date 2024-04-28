@@ -33,6 +33,18 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder> {
         this.context = context;
         this.castModels = castModels;
         this.loginAccount = loginAccount;
+        shortenRole();
+    }
+
+    public void shortenRole(){
+        for(int i =0; i< this.castModels.size()-1; i++){
+            for(int j = i+1; j< this.castModels.size(); j++){
+                if(this.castModels.get(i).getId() == this.castModels.get(j).getId()){
+                    this.castModels.remove(j);
+                    j--;
+                }
+            }
+        }
     }
 
     @NonNull
@@ -48,7 +60,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder> {
         CastModel castModel = castModels.get(position);
         if (castModel.getCharacter() != null) {
             holder.charater_cast.setText(castModel.getCharacter());
-        } else if (castModel.getKnown_for_department() != null) {
+        }else if (castModel.getKnown_for_department() != null) {
             holder.charater_cast.setText(castModel.getKnown_for_department());
         }
 

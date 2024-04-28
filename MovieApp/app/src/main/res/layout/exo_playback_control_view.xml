@@ -10,44 +10,82 @@
     android:orientation="vertical">
 
     <!-- Playback controls -->
-    <TextView
-        android:id="@+id/film_title_playing_2"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/inter"
-        android:lines="2"
-        android:paddingLeft="10dp"
-        android:text="MovieName"
-        android:textAlignment="viewStart"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="5dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+        <TextView
+            android:id="@+id/film_title_playing_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/inter"
+            android:lines="2"
+            android:paddingLeft="10dp"
+            android:text="MovieName"
+            android:textAlignment="viewStart"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <ImageButton
+            android:id="@id/exo_rew"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginRight="32dp"
+            android:background="@drawable/rewind_icon"
+            android:scaleType="centerInside"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.499"
+            tools:layout_editor_absoluteX="51dp" />
 
         <ImageButton
             android:id="@id/exo_play"
             style="@style/ExoMediaButton.Play"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/exo_ffwd"
+            app:layout_constraintStart_toEndOf="@+id/exo_rew"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@id/exo_pause"
             style="@style/ExoMediaButton.Pause"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/exo_ffwd"
+            app:layout_constraintStart_toEndOf="@+id/exo_rew"
             app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageButton
+            android:id="@id/exo_ffwd"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginLeft="32dp"
+            android:background="@drawable/forward_icon"
+            android:scaleType="centerInside"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.499"
+            tools:layout_editor_absoluteX="300dp" />
+
+    </LinearLayout>
 
     <!-- Progress bar and duration -->
     <com.google.android.exoplayer2.ui.DefaultTimeBar
@@ -117,28 +155,20 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@id/exo_rew"
+                android:id="@+id/exo_setting"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:layout_marginStart="5dp"
                 android:layout_marginLeft="5dp"
-                android:background="@drawable/rewind_icon"
+                android:background="@drawable/setting_gray_icon"
                 android:scaleType="centerInside"
                 app:layout_constraintStart_toStartOf="parent" />
-
-            <ImageButton
-                android:id="@id/exo_ffwd"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginLeft="5dp"
-                android:background="@drawable/forward_icon"
-                android:scaleType="centerInside"
-                app:layout_constraintEnd_toEndOf="parent" />
 
             <ImageView
                 android:id="@+id/exo_pic_in_pip"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="8dp"
                 android:adjustViewBounds="true"
                 android:background="@drawable/baseline_picture_in_picture_alt_24"
                 android:scaleType="centerInside" />
@@ -147,7 +177,7 @@
                 android:id="@+id/exo_fullscreen_icon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="8dp"
                 android:adjustViewBounds="true"
                 android:background="@drawable/maximize_ic"
                 android:scaleType="centerInside" />

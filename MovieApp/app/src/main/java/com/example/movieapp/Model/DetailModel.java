@@ -31,6 +31,9 @@ public class DetailModel {
     private String review;
     private String duration;
 
+    private String movieUrl;
+    private boolean favor;
+
     public String getMovieUrl() {
         return movieUrl;
     }
@@ -38,9 +41,6 @@ public class DetailModel {
     public void setMovieUrl(String movieUrl) {
         this.movieUrl = movieUrl;
     }
-
-    private String movieUrl;
-    private boolean favor;
 
     public String getTimeFavor() {
         return timeFavor;

@@ -88,9 +88,8 @@ public class FavorAdapter extends RecyclerView.Adapter<FavorAdapter.ViewHolder>{
 
             holder.runtime.setText(movie.getMaxDurationTime());
 
-            long playBackPosition = movie.getPlayBackPositition();
-            if(playBackPosition>0){
-                holder.current_duration.setText(convertMillisecondsToHMmSs(playBackPosition));
+            if(movie.getPlayBackPositition()>0){
+                holder.current_duration.setText(movie.getPlayBackPositionString());
             }else{
                 holder.current_duration.setText("");
             }
@@ -117,13 +116,6 @@ public class FavorAdapter extends RecyclerView.Adapter<FavorAdapter.ViewHolder>{
         if(movies!=null){return movies.size();
         }
         return 0;
-    }
-    public static String convertMillisecondsToHMmSs(long milliseconds) {
-        long seconds = milliseconds/1000;
-        long s = seconds % 60;
-        long m = (seconds / 60) % 60;
-        long h = (seconds / (60 * 60)) % 24;
-        return String.format("%02d:%02d:%02d", h,m,s);
     }
 
     class ViewHolder extends  RecyclerView.ViewHolder{

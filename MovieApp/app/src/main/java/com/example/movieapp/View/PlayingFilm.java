@@ -10,6 +10,7 @@ import android.app.PictureInPictureParams;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -19,7 +20,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -70,26 +70,31 @@ public class PlayingFilm extends AppCompatActivity {
     RatingBar reviewRating;
     TextView movie_title_playing, movie_rating, publish_date, duration;
 
-    private ImageView maximize_btn, pic_in_pic_btn, volume_btn;
+    private Drawable check_icon;
+    private ImageView maximize_btn, pic_in_pic_btn, volume_btn, setting_btn ;
     private MovieModel movie;
     private int current_id;
     private AccountModel loginAccount;
-    private String videoUrl;
+    private String videoUrl, videoUrl720;
     private RecyclerView recommendRecycler;
     private Button reviewButton;
     private ToggleButton favorButton;
     private boolean full_screen, volume = true, turnOffLight = false;
-    private PopupWindow reviewSessionPopup;
+    private PopupWindow reviewSessionPopup, continuePlaybackPopup, resolutionChangePopup;
     private RecyclerView reviewsRecyclerView;
     private Call<DetailResponse> detailResponseCall;
     private ConstraintLayout error_layout,loadinglayout;
-    private View popupView;
+    private View popupView, popupView2, popupView3;
     private FilmAdapter filmAdapter;
     private Call<MovieSearchResponse> recommendationsMovieslCall;
+    private TextView  btn_360, btn_720;
+    public int current_resolution = 720;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        check_icon = getResources().getDrawable(R.drawable.check_icon);
         setContentView(R.layout.activity_playing_film);
         setVideoView(getIntent());
         current_id = movie.getId();
@@ -284,13 +289,19 @@ public class PlayingFilm extends AppCompatActivity {
     private void initializePlayer() {
         if(player == null){
             player = new SimpleExoPlayer.Builder(this).build();
-            MediaItem mediaItem = MediaItem.fromUri(Uri.parse(videoUrl));
+            MediaItem mediaItem;
+            if(!videoUrl720.equalsIgnoreCase("")){
+                mediaItem = MediaItem.fromUri(Uri.parse(videoUrl720));
+                current_resolution = 720;
+            } else{
+                mediaItem = MediaItem.fromUri(Uri.parse(videoUrl));
+                current_resolution = 360;
+            }
             player.setMediaItem(mediaItem);
 
             player.setPlayWhenReady(playWhenReady);
             player.prepare();
 
-            player.seekTo(movie.getPlayBackPositition());
         }
         playerView.setPlayer(player);
 
@@ -306,13 +317,19 @@ public class PlayingFilm extends AppCompatActivity {
     private void reInitPlayer(){
         player.release();
         player = new SimpleExoPlayer.Builder(this).build();
-        MediaItem mediaItem = MediaItem.fromUri(Uri.parse(videoUrl));
+        MediaItem mediaItem;
+        if(!videoUrl720.equalsIgnoreCase("")){
+            mediaItem = MediaItem.fromUri(Uri.parse(videoUrl720));
+        } else{
+            mediaItem = MediaItem.fromUri(Uri.parse(videoUrl));
+        }
+
         player.setMediaItem(mediaItem);
 
         player.setPlayWhenReady(playWhenReady);
         player.prepare();
 
-        player.seekTo(movie.getPlayBackPositition());
+        continuePlayBackPostion();
 
         playerView.setPlayer(player);
 
@@ -339,6 +356,7 @@ public class PlayingFilm extends AppCompatActivity {
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
         maximize_btn.setBackgroundResource(R.drawable.exit_maximize_ic);
+        pic_in_pic_btn.setVisibility(View.GONE);
     }
 
     private void switchToPortrait() {
@@ -351,6 +369,7 @@ public class PlayingFilm extends AppCompatActivity {
         }
         maximize_btn.setBackgroundResource(R.drawable.maximize_ic);
         initComponent_Potral();
+        pic_in_pic_btn.setVisibility(View.VISIBLE);
     }
 
 
@@ -408,6 +427,7 @@ public class PlayingFilm extends AppCompatActivity {
 
     public void initPlayerButton(){
         maximize_btn = playerView.findViewById(R.id.exo_fullscreen_icon);
+        pic_in_pic_btn = playerView.findViewById(R.id.exo_pic_in_pip);
         maximize_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -421,7 +441,6 @@ public class PlayingFilm extends AppCompatActivity {
             }
         });
 
-        pic_in_pic_btn = playerView.findViewById(R.id.exo_pic_in_pip);
         pic_in_pic_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -442,6 +461,15 @@ public class PlayingFilm extends AppCompatActivity {
                     player.setVolume(1);
                     volume = true;
                 }
+            }
+        });
+
+        setting_btn = playerView.findViewById(R.id.exo_setting);
+
+        setting_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeResolutionBox();
             }
         });
     }
@@ -524,6 +552,9 @@ public class PlayingFilm extends AppCompatActivity {
         PictureInPictureParams.Builder pipBuilder = new PictureInPictureParams.Builder();
         pipBuilder.setAspectRatio(aspectRatio);
         enterPictureInPictureMode(pipBuilder.build());
+        if(reviewSessionPopup!=null){
+            reviewSessionPopup.dismiss();
+        }
     }
 
     @Override
@@ -537,6 +568,7 @@ public class PlayingFilm extends AppCompatActivity {
         movie =(MovieModel) intent.getParcelableExtra("movie");
         loginAccount= (AccountModel) intent.getParcelableExtra("loginAccount");
         videoUrl = intent.getStringExtra("videoUrl");
+        videoUrl720 = intent.getStringExtra("videoUrl720");
 
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "MovieApp tag");
@@ -555,6 +587,130 @@ public class PlayingFilm extends AppCompatActivity {
         if(current_id != movie.getId()){
             reInitPlayer();
             current_id = movie.getId();
+        }
+
+        continuePlayBackPostion();
+    }
+
+    public void continuePlayBackPostion(){
+        if(movie.getPlayBackPositition() <= 1000) return;
+
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        popupView2 = inflater.inflate(R.layout.continue_playing, null);
+
+        layout = findViewById(R.id.playing_layout);
+
+        boolean focusable = true;
+        continuePlaybackPopup = new PopupWindow(popupView2, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT, focusable);
+        continuePlaybackPopup.setAnimationStyle(R.style.PopupAnimation);
+
+        TextView text_cp = popupView2.findViewById(R.id.text_cp);
+        text_cp.setText(movie.getPlayBackPositionString());
+
+        ImageButton close_btn_cp = popupView2.findViewById(R.id.close_btn_cp);
+        close_btn_cp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                continuePlaybackPopup.dismiss();
+            }
+        });
+
+        Button ok_btn_cp = popupView2.findViewById(R.id.ok_btn_cp);
+        ok_btn_cp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                continuePlaybackPopup.dismiss();
+                player.seekTo(movie.getPlayBackPositition());
+            }
+        });
+        playerView.post(new Runnable() {
+            @Override
+            public void run() {
+                continuePlaybackPopup.showAtLocation(playerView, Gravity.TOP, 0, 0);
+            }
+        });
+    }
+
+    public void changeResolutionBox(){
+        Toast.makeText(getBaseContext(), "setting click", Toast.LENGTH_SHORT).show();
+        if(resolutionChangePopup==null){
+            // initial change resolution box
+            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+            popupView3 = inflater.inflate(R.layout.player_config, null);
+            boolean focusable = true;
+            resolutionChangePopup = new PopupWindow(popupView3,400, WindowManager.LayoutParams.WRAP_CONTENT, focusable);
+
+            // btn change resolution btn
+             btn_360 = popupView3.findViewById(R.id.btn_360);
+             btn_720= popupView3.findViewById(R.id.btn_720);
+
+            if(videoUrl.equalsIgnoreCase("")){
+                btn_360.setVisibility(View.GONE);
+            }else{
+                btn_360.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        changeResolution(360);
+                    }
+                });
+            }
+
+            if(videoUrl720.equalsIgnoreCase("")){
+                btn_720.setVisibility(View.GONE);
+            }else{
+                btn_720.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        changeResolution(720);
+                    }
+                });
+            }
+
+            if(current_resolution == 720){
+                btn_720.setTextColor(getColor(R.color.neon_pink));
+            }else{
+                btn_360.setTextColor(getColor(R.color.neon_pink));
+            }
+        }
+        playerView.post(new Runnable() {
+            @Override
+            public void run() {
+                resolutionChangePopup.showAtLocation(playerView, Gravity.BOTTOM, 0, 0);
+            }
+        });
+    }
+
+    public void changeResolution(int resolution){
+        if(resolution==720){
+            if(current_resolution == 720){
+                return;
+            }else{
+                current_resolution = 720;
+                btn_720.setTextColor(getColor(R.color.neon_pink));
+                btn_360.setTextColor(getColor(R.color.white));
+                player.stop();
+                long c_position = player.getCurrentPosition();
+                MediaItem mediaItem = MediaItem.fromUri(Uri.parse(videoUrl720));
+                player.setMediaItem(mediaItem);
+                player.setPlayWhenReady(true);
+                player.prepare();
+                player.seekTo(c_position);
+            }
+        }else{
+            if(current_resolution == 360){
+                return;
+            }else{
+                current_resolution = 360;
+                btn_360.setTextColor(getColor(R.color.neon_pink));
+                btn_720.setTextColor(getColor(R.color.white));
+                player.stop();
+                long c_position = player.getCurrentPosition();
+                MediaItem mediaItem = MediaItem.fromUri(Uri.parse(videoUrl));
+                player.setMediaItem(mediaItem);
+                player.setPlayWhenReady(true);
+                player.prepare();
+                player.seekTo(c_position);
+            }
         }
     }
 

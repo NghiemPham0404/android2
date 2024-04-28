@@ -27,7 +27,8 @@
         <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
         <activity
             android:name=".View.PlayingTrailer"
-            android:exported="false" />
+            android:exported="false"
+            android:configChanges="orientation|screenSize"/>
         <activity
             android:name=".View.PersonActivity"
             android:exported="false"
@@ -108,6 +109,9 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/small_notify_icon" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
