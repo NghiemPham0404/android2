@@ -71,6 +71,14 @@ public class CastModel {
         return character;
     }
 
+    public void setCharacter(String character) {
+        this.character = character;
+    }
+
+    public void setKnown_for_department(String known_for_department) {
+        this.known_for_department = known_for_department;
+    }
+
     public CastModel(int id, String name, String profile_path, String character) {
         this.id = id;
         this.name = name;

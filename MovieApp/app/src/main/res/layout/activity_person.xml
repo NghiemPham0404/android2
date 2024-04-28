@@ -70,7 +70,7 @@
                 android:text="Person Name"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -130,7 +130,7 @@
                 android:text="Personal Info"
                 android:textAlignment="viewStart"
                 android:textColor="@color/white"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -146,7 +146,7 @@
                 android:text="Knowing for"
                 android:textAlignment="viewStart"
                 android:textColor="@color/white"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -160,7 +160,7 @@
                 android:paddingLeft="10dp"
                 android:text="TextView"
                 android:textColor="@color/light_gray"
-                android:textSize="18sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/textView16"
@@ -172,7 +172,7 @@
                 android:text="Gender"
                 android:textAlignment="viewStart"
                 android:textColor="@color/white"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -186,7 +186,7 @@
                 android:paddingLeft="10dp"
                 android:text="TextView"
                 android:textColor="@color/light_gray"
-                android:textSize="18sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/textView15"
@@ -198,7 +198,7 @@
                 android:text="Date of birth"
                 android:textAlignment="viewStart"
                 android:textColor="@color/white"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -212,7 +212,7 @@
                 android:paddingLeft="10dp"
                 android:text="TextView"
                 android:textColor="@color/light_gray"
-                android:textSize="18sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -224,7 +224,7 @@
                 android:text="Place of birth"
                 android:textAlignment="viewStart"
                 android:textColor="@color/white"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -238,7 +238,7 @@
                 android:paddingLeft="10dp"
                 android:text="TextView"
                 android:textColor="@color/light_gray"
-                android:textSize="18sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/textView28"
@@ -250,7 +250,7 @@
                 android:text="Biography"
                 android:textAlignment="viewStart"
                 android:textColor="@color/white"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -264,7 +264,7 @@
                 android:paddingLeft="10dp"
                 android:text="TextView"
                 android:textColor="@color/light_gray"
-                android:textSize="18sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/textView30"
@@ -276,7 +276,7 @@
                 android:text="Career"
                 android:textAlignment="viewStart"
                 android:textColor="@color/white"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -295,7 +295,7 @@
                     android:paddingLeft="10dp"
                     android:text="Year"
                     android:textColor="@color/light_gray"
-                    android:textSize="18sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/biography_person3"
@@ -306,7 +306,7 @@
                     android:paddingLeft="10dp"
                     android:text="movie/role"
                     android:textColor="@color/light_gray"
-                    android:textSize="18sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/biography_person2"
@@ -317,7 +317,7 @@
                     android:paddingRight="10dp"
                     android:text="Critic rate"
                     android:textColor="@color/light_gray"
-                    android:textSize="18sp" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView

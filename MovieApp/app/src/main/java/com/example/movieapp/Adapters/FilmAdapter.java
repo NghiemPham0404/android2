@@ -34,9 +34,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder>{
 
-    private List<MovieModel> movies;
+   public List<MovieModel> movies;
     private Context context;
     int view_type = 0;
    public AccountModel loginAccount;
@@ -46,12 +46,13 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         this.context = context;
         this.loginAccount = loginAccount;
     }
-
-    public FilmAdapter(List<MovieModel> movies, Context context, AccountModel loginAccount,  int view_type) {
-        this.movies = movies;
+    public FilmAdapter(Context context,  AccountModel loginAccount) {
         this.context = context;
-        this.view_type = view_type;
         this.loginAccount = loginAccount;
+    }
+
+    public void setMovies(List<MovieModel> movies){
+        this.movies = movies;
     }
 
     @Override
@@ -60,22 +61,14 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     }
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view;
-        if(viewType == 0){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.film_item, parent, false);
-            return new FilmAdapter.ViewHolder(view);
-        }else{
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.film_item_2, parent, false);
-           return new  ImageSliderItem(view);
-        }
-
+    public FilmAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.film_item, parent, false);
+        return new FilmAdapter.ViewHolder(view);
     }
 
     @NonNull
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if(view_type == 0){
+    public void onBindViewHolder(@NonNull FilmAdapter.ViewHolder holder, int position) {
             FilmAdapter.ViewHolder viewHolder = (FilmAdapter.ViewHolder) holder;
             viewHolder.movie_title.setText(this.movies.get(position).getTitle());
 
@@ -99,21 +92,6 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
             // set poster for a film
             new ImageLoader().loadImageIntoImageView(context, Credentials.BASE_IMAGE_URL + this.movies.get(position).getPoster_path(), viewHolder.movie_poster, viewHolder.shimmerFrameLayout);
-        }else{
-            ImageSliderItem s_holder = (ImageSliderItem) holder;
-            s_holder.movie_title.setText(this.movies.get(position).getTitle());
-
-            // set rating number
-            float rate = this.movies.get(position).getVote_average();
-            float format_rate = (float) (Math.round(rate*100)*1.0/100);
-            s_holder.movie_rating.setText(format_rate+"");
-
-            s_holder.status.setText(null);
-
-            new ImageLoader().loadImageIntoImageView(context, Credentials.BASE_IMAGE_URL + this.movies.get(position).getBackgrop_path(),  s_holder.movie_backdrop, s_holder.shimmerFrameLayout);
-        }
-
-
         int pos = position;
         //set action when click
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -126,7 +104,6 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             }
         });
     }
-
 
     @Override
     public int getItemCount() {
@@ -151,21 +128,4 @@ public class FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 this.shimmerFrameLayout = itemView.findViewById(R.id.shimmer_layout);
             }
     }
-
-    class ImageSliderItem extends RecyclerView.ViewHolder{
-        TextView movie_rating, movie_title, status;
-        ShapeableImageView movie_backdrop;
-        ShimmerFrameLayout shimmerFrameLayout;
-
-        public ImageSliderItem (@NonNull View itemView){
-            super(itemView);
-            this.movie_rating = itemView.findViewById(R.id.movie_rating);
-            this.movie_title = itemView.findViewById(R.id.title_film_item_Lbl2);
-            this.status = itemView.findViewById(R.id.status_movie_lbl);
-            this.movie_backdrop = itemView.findViewById(R.id.movie_backdrop);
-            this.shimmerFrameLayout = itemView.findViewById(R.id.shimmer_layout);
-        }
-
-    }
-
 }

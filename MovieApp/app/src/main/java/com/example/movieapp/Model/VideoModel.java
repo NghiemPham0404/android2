@@ -8,8 +8,11 @@ public class VideoModel {
     public String getUrl() {
         return url;
     }
-
+    public String getUrl720(){
+        return url720;
+    }
     private String url;
+    private String url720;
 
     public String getId() {
         return id;
@@ -31,8 +34,9 @@ public class VideoModel {
         this.type = type;
     }
 
-    public VideoModel(String url){
+    public VideoModel(String url, String url720){
         this.url = url;
+        this.url720 = url;
     }
 
 }

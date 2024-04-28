@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.movieapp.Interfaces.Form_validate;
+import com.example.movieapp.MainActivity;
 import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.LoginModel;
 import com.example.movieapp.R;
@@ -49,12 +50,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.security.Provider;
 import java.util.Arrays;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -91,15 +94,17 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser!=null) {
+        if(currentUser!=null){
+            Toast.makeText(getBaseContext(), ""+currentUser.getDisplayName(), Toast.LENGTH_SHORT).show();
+             Log.i("User UID", currentUser.getUid());
             for (UserInfo userInfo : currentUser.getProviderData()) {
-                Toast.makeText(this, "AVAILABLE gg : " + (userInfo.getProviderId() == GoogleAuthProvider.PROVIDER_ID), Toast.LENGTH_LONG).show();
-                Toast.makeText(this, "AVAILABLE fb : " + (userInfo.getProviderId() == FacebookAuthProvider.PROVIDER_ID), Toast.LENGTH_LONG).show();
-                if (currentUser.getProviderId() == FacebookAuthProvider.PROVIDER_ID) {
-                    loginToAccountWithFB(currentUser.getUid());
-                } else if (userInfo.getProviderId() == GoogleAuthProvider.PROVIDER_ID) {
+                String providerId = userInfo.getProviderId();
+                if (providerId.equals("google.com")) {
+                    Log.i("User UID", "Google");
                     loginToAccountWithGoogle(currentUser.getUid());
-                    Toast.makeText(this, "GOOGLE", Toast.LENGTH_LONG).show();
+                } else if (providerId.equals("facebook.com")) {
+                    Log.i("User UID", "Facebook");
+                    loginToAccountWithFB(currentUser.getUid());
                 }
             }
         }
@@ -357,6 +362,7 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
                         navigateToHomeActivity(loginModel);
                     }else{
                         Log.e("LOGIN TASK", "Fail to login with google");
+                        loadingScreen.setVisibility(View.GONE);
                     }
                 }
             }
@@ -398,6 +404,7 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
             public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
                 if(response.code() == 200){
                     LoginModel loginModel = response.body();
+                    subcribeToNotification();
                     navigateToHomeActivity(loginModel);
                 }else{
                     Log.e("REGIS TASK", "fail to regist and login");
@@ -460,6 +467,7 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
             @Override
             public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
                 LoginModel loginModel = response.body();
+                subcribeToNotification();
                 navigateToHomeActivity(loginModel);
             }
 
@@ -482,7 +490,7 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
     public void onDestroy() {
         super.onDestroy();
         Toast.makeText(this, "Destroy", Toast.LENGTH_SHORT).show();
-        FirebaseAuth.getInstance().signOut();
+//        FirebaseAuth.getInstance().signOut();
         LoginManager.getInstance().logOut();
     }
 
@@ -494,5 +502,20 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
     @Override
     public void turnOffValidateViews() {
 
+    }
+
+    public void subcribeToNotification(){
+        FirebaseMessaging.getInstance().subscribeToTopic("notification")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = "Subscribed";
+                        if (!task.isSuccessful()) {
+                            msg = "Subscribe failed";
+                        }
+                        Log.d(TAG, msg);
+                        Toast.makeText(LoginViewActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

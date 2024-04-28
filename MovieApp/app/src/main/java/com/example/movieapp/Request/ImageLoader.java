@@ -35,9 +35,7 @@ public class ImageLoader {
     public final static Pattern pattern = Pattern.compile(regexPattern, Pattern.CASE_INSENSITIVE);
 
     public void loadImageIntoImageView(Context context, String imageUrl, ImageView imageView, ShimmerFrameLayout shimmerFrameLayout) {
-
         shimmerFrameLayout.startShimmerAnimation(); // Start shimmer animation
-
         try {
             if (!imageUrl.equalsIgnoreCase(Credentials.BASE_IMAGE_URL + "null")) {
                 Glide.with(context)

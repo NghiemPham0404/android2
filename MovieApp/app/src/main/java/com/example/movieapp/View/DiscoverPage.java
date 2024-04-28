@@ -2,6 +2,7 @@ package com.example.movieapp.View;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 
@@ -54,7 +55,7 @@ import retrofit2.Response;
  */
 public class DiscoverPage extends Fragment {
 
-    LinearLayout layout;
+    LinearLayout layout, position_bar;
     AccountModel loginAccount;
     List<MovieModel.Genre> genres;
     List<CountryModel> regions;
@@ -70,12 +71,12 @@ public class DiscoverPage extends Fragment {
     AutoCompleteTextView country_auto, year_auto;
     ArrayAdapter country_apdater, year_adapter;
     String selected_country = "", selected_country_display = "";
-    int selected_year = -1, postion = 0;
+    int selected_year = -1, position = 0;
     private String gerne_id_string;
     List<MovieModel> movies;
 
     ImageView image_view_discover;
-    TextView film_title_discover, overview_discover, movie_rating, publish_date_discover,  time_discover;
+    TextView film_title_discover, overview_discover, movie_rating, publish_date_discover,  time_discover, current_pos, max_pos;
 
     public DiscoverPage() {
         // Required empty public constructor
@@ -106,6 +107,10 @@ public class DiscoverPage extends Fragment {
     }
     public void initComponents(View view){
         layout = view.findViewById(R.id.linearLayout3);
+        position_bar = view.findViewById(R.id.position_bar);
+        current_pos = view.findViewById(R.id.current_pos);
+        max_pos = view.findViewById(R.id.max_pos);
+
         init_discover_filter_btn = view.findViewById(R.id.init_discover_filter_btn);
         selected_chip = view.findViewById(R.id.chip_group_discover);
         recyclerview_discover = view.findViewById(R.id.recycler_discover);
@@ -309,17 +314,21 @@ public class DiscoverPage extends Fragment {
             display_filter_chip.setTextColor(getResources().getColor(R.color.white));
             selected_chip.addView(display_filter_chip);
         }
-        Chip country_chip = new Chip(getContext());
-        country_chip.setText(selected_country_display);
-        country_chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.neon_blue)));
-        country_chip.setTextColor(getResources().getColor(R.color.white));
-        selected_chip.addView(country_chip);
+        if(!selected_country_display.equalsIgnoreCase("")){
+            Chip country_chip = new Chip(getContext());
+            country_chip.setText(selected_country_display);
+            country_chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.neon_blue)));
+            country_chip.setTextColor(getResources().getColor(R.color.white));
+            selected_chip.addView(country_chip);
+        }
 
-        Chip year_chip = new Chip(getContext());
-        year_chip.setText(selected_year+"");
-        year_chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.neon_blue)));
-        year_chip.setTextColor(getResources().getColor(R.color.white));
-        selected_chip.addView(year_chip);
+        if(selected_year!=-1){
+            Chip year_chip = new Chip(getContext());
+            year_chip.setText(selected_year+"");
+            year_chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.neon_blue)));
+            year_chip.setTextColor(getResources().getColor(R.color.white));
+            selected_chip.addView(year_chip);
+        }
 
         gerne_id_string = stringBuilder.toString();
         displayFilterSelection();
@@ -335,7 +344,9 @@ public class DiscoverPage extends Fragment {
                 if(response.code() == 200){
                     movies = response.body().getMovies();
                     if(movies.size() > 0){
-                        postion = 0;
+                        position = 0;
+                        current_pos.setText(""+(position +1));
+                        max_pos.setText(""+movies.size());
                         initDisplayItem(0);
                     }
                     Log.i("INIT DISCOVER", "SUCCESSFUL");
@@ -353,10 +364,12 @@ public class DiscoverPage extends Fragment {
             @Override
             public void onClick(View v) {
                if(pos == 0){
-                   initDisplayItem(movies.size()-1);
+                    position = movies.size()-1;
                }else{
-                   initDisplayItem(pos-1);
+                   position = pos-1;
                }
+                initDisplayItem(position);
+                current_pos.setText(""+(position +1));
             }
         });
 
@@ -364,10 +377,13 @@ public class DiscoverPage extends Fragment {
             @Override
             public void onClick(View v) {
                 if(pos == movies.size()-1){
-                    initDisplayItem(0);
+                    position = 0;
+                    initDisplayItem(position);
                 }else{
-                    initDisplayItem(pos+1);
+                    position =pos+1;
+                    initDisplayItem(position);
                 }
+                current_pos.setText(""+(position +1));
             }
         });
 
@@ -383,6 +399,16 @@ public class DiscoverPage extends Fragment {
             publish_date_discover.setText(movie.getRelease_date());
         }
         time_discover.setText(movie.getMaxDurationTime());
+
+        discover_item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent movie_info_intent= new Intent(getContext(), Movie_infomation.class);
+                movie_info_intent.putExtra("loginAccount", loginAccount);
+                movie_info_intent.putExtra("film_id", movie.getId());
+                getContext().startActivity(movie_info_intent);
+            }
+        });
     }
 
     public void displayNonFilter(){
@@ -408,6 +434,7 @@ public class DiscoverPage extends Fragment {
         discover_item.setVisibility(View.GONE);
         next_discover_btn.setVisibility(View.GONE);
         pre_discover_btn.setVisibility(View.GONE);
+        position_bar.setVisibility(View.GONE);
 
         recyclerview_discover.setVisibility(View.VISIBLE);
     }
@@ -418,6 +445,7 @@ public class DiscoverPage extends Fragment {
         discover_item.setVisibility(View.VISIBLE);
         next_discover_btn.setVisibility(View.VISIBLE);
         pre_discover_btn.setVisibility(View.VISIBLE);
+        position_bar.setVisibility(View.VISIBLE);
     }
 
 }

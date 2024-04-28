@@ -132,13 +132,27 @@ public class MovieModel implements Parcelable, Comparable<MovieModel> {
         else return Long.parseLong(duration.split("-")[0]);
     }
 
+    public static String convertMillisecondsToHMmSs(long milliseconds) {
+        long seconds = milliseconds/1000;
+        long s = seconds % 60;
+        long m = (seconds / 60) % 60;
+        long h = (seconds / (60 * 60)) % 24;
+        return String.format("%02d:%02d:%02d", h,m,s);
+    }
+
+    public String getPlayBackPositionString(){
+        return convertMillisecondsToHMmSs(this.getPlayBackPositition());
+    }
+
     public void setDuration(String duration){
         this.duration = duration;
     }
     private String duration;
 
+    private List<CountryModel> production_countries;
+    private ExternalLinkModel external_ids;
 
-    public MovieModel(int id, String title, String release_date, float vote_average, String poster_path, String backgrop_path, boolean adult, String overriew, List<Genre> genres, int runtime, Videos videos, Credits credits) {
+    public MovieModel(int id, String title, String release_date, float vote_average, String poster_path, String backgrop_path, boolean adult, String overriew, List<Genre> genres, int runtime, Videos videos, Credits credits, List<CountryModel> production_countries, ExternalLinkModel external_ids) {
         this.id = id;
         this.title = title;
         this.release_date = release_date;
@@ -151,6 +165,20 @@ public class MovieModel implements Parcelable, Comparable<MovieModel> {
         this.runtime = runtime;
         this.videos =videos;
         this.credits = credits;
+        this.production_countries = production_countries;
+        this.external_ids = external_ids;
+    }
+
+    public String getProductionCountry(){
+        if(production_countries!=null){
+            return production_countries.get(0).getName();
+        }else{
+            return null;
+        }
+    }
+
+    public ExternalLinkModel getExternal_ids(){
+        return external_ids;
     }
 
 
@@ -172,10 +200,6 @@ public class MovieModel implements Parcelable, Comparable<MovieModel> {
 
     public String getPoster_path() {
         return poster_path;
-    }
-
-    public String getBackgrop_path() {
-        return backdrop_path;
     }
 
     public boolean isAdult() {
