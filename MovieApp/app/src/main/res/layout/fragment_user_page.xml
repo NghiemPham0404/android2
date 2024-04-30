@@ -26,15 +26,15 @@
                 android:fontFamily="@font/inter"
                 android:text="Filter"
                 android:textColor="@color/white"
-                android:textSize="24sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/avater_border2"
-                android:layout_width="85dp"
-                android:layout_height="85dp"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
                 android:layout_marginStart="17dp"
                 android:layout_weight="1"
                 android:scaleType="centerInside"
@@ -45,14 +45,14 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/user_avatar"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginStart="20dp"
+                android:layout_width="61dp"
+                android:layout_height="61dp"
 
+                android:layout_marginStart="1dp"
+                android:layout_marginTop="1dp"
                 android:scaleType="fitCenter"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/avater_border2"
+                app:layout_constraintTop_toTopOf="@+id/avater_border2"
                 app:shapeAppearanceOverlay="@style/roundedImageRounded"></com.google.android.material.imageview.ShapeableImageView>
 
             <TextView

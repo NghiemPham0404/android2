@@ -1,12 +1,13 @@
 package com.example.movieapp.View.LoginPackage;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +20,7 @@ import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.LoginModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
+import com.example.movieapp.Request.LoginAccountRequest;
 import com.example.movieapp.Request.MyService2;
 import com.example.movieapp.View.HomeActivity;
 import com.example.movieapp.utils.Credentials;
@@ -55,6 +57,9 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.security.Provider;
 import java.util.Arrays;
 import java.util.List;
@@ -93,21 +98,21 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser!=null){
-            Toast.makeText(getBaseContext(), ""+currentUser.getDisplayName(), Toast.LENGTH_SHORT).show();
-             Log.i("User UID", currentUser.getUid());
-            for (UserInfo userInfo : currentUser.getProviderData()) {
-                String providerId = userInfo.getProviderId();
-                if (providerId.equals("google.com")) {
-                    Log.i("User UID", "Google");
-                    loginToAccountWithGoogle(currentUser.getUid());
-                } else if (providerId.equals("facebook.com")) {
-                    Log.i("User UID", "Facebook");
-                    loginToAccountWithFB(currentUser.getUid());
-                }
-            }
-        }
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        if(currentUser!=null){
+//            Toast.makeText(getBaseContext(), ""+currentUser.getDisplayName(), Toast.LENGTH_SHORT).show();
+//             Log.i("User UID", currentUser.getUid());
+//            for (UserInfo userInfo : currentUser.getProviderData()) {
+//                String providerId = userInfo.getProviderId();
+//                if (providerId.equals("google.com")) {
+//                    Log.i("User UID", "Google");
+//                    loginToAccountWithGoogle(currentUser.getUid());
+//                } else if (providerId.equals("facebook.com")) {
+//                    Log.i("User UID", "Facebook");
+//                    loginToAccountWithFB(currentUser.getUid());
+//                }
+//            }
+//        }
     }
 
 
@@ -189,10 +194,7 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
                        LoginModel result = response.body();
                        if(result!=null){
                            if (result.getSuccess().equalsIgnoreCase("true")) {
-                               Intent intent = new Intent(LoginViewActivity.this, HomeActivity.class);
-                               AccountModel accountModel = (AccountModel) result;
-                               intent.putExtra("loginAccount",accountModel);
-                               LoginViewActivity.this.startActivity(intent);
+                             navigateToHomeActivity(result);
                            } else {
                                String error = result.getError();
                                if (error.equalsIgnoreCase("Wrong Password") && password_err_signin != null) {
@@ -404,7 +406,6 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
             public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
                 if(response.code() == 200){
                     LoginModel loginModel = response.body();
-                    subcribeToNotification();
                     navigateToHomeActivity(loginModel);
                 }else{
                     Log.e("REGIS TASK", "fail to regist and login");
@@ -443,11 +444,11 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
         loginModelCall.enqueue(new Callback<LoginModel>() {
             @Override
             public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
-                if(response.isSuccessful()){
+                if(response.isSuccessful()) {
                     LoginModel loginModel = response.body();
-                    if(loginModel.getSuccess().equalsIgnoreCase("true"))
+                    if (loginModel.getSuccess().equalsIgnoreCase("true")){
                         navigateToHomeActivity(loginModel);
-                    else{
+                }else{
                         Log.e("LOGIN TASK", "Fail to login with FB");
                         regisWithFB(fb_id, username, avatar);
                     }
@@ -467,7 +468,6 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
             @Override
             public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
                 LoginModel loginModel = response.body();
-                subcribeToNotification();
                 navigateToHomeActivity(loginModel);
             }
 
@@ -481,8 +481,10 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
     public void navigateToHomeActivity(LoginModel loginModel){
         loadingScreen.setVisibility(View.GONE);
         AccountModel loginAccount = (AccountModel) loginModel;
+        LoginAccountRequest.saveUserToFile(loginAccount, this);
         Intent loginSuccessIntent = new Intent(LoginViewActivity.this, HomeActivity.class);
-        loginSuccessIntent.putExtra("loginAccount", loginAccount);
+        loginSuccessIntent.putExtra("loginAccount", (Parcelable) loginAccount);
+        subcribeToNotification();
         startActivity(loginSuccessIntent);
     }
 

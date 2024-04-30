@@ -100,7 +100,7 @@
             android:layout_height="50dp"
             android:layout_margin="10dp"
             android:layout_weight="1"
-            android:background="@drawable/gradient_corner_bg"
+            android:background="@drawable/gradient_round_corner2"
             android:fontFamily="sans-serif"
             android:text="Login"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"

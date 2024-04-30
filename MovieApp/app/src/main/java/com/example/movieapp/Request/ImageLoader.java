@@ -1,6 +1,7 @@
 package com.example.movieapp.Request;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.movieapp.R;
@@ -36,19 +38,22 @@ public class ImageLoader {
 
     public void loadImageIntoImageView(Context context, String imageUrl, ImageView imageView, ShimmerFrameLayout shimmerFrameLayout) {
         shimmerFrameLayout.startShimmerAnimation(); // Start shimmer animation
-        try {
             if (!imageUrl.equalsIgnoreCase(Credentials.BASE_IMAGE_URL + "null")) {
                 Glide.with(context)
+                        .asBitmap()
                         .load(imageUrl)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL) // Caching strategy
-                        .into(imageView);
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(Bitmap bitmap, Transition<? super Bitmap> transition) {
+                              imageView.setImageBitmap(bitmap);
+                              shimmerFrameLayout.stopShimmerAnimation();
+                            }
+                        });
             } else {
                 imageView.setImageDrawable(context.getDrawable(R.drawable.unknow_image));
+                shimmerFrameLayout.stopShimmerAnimation();
             }
-        } finally {
-            shimmerFrameLayout.stopShimmerAnimation(); // Stop shimmer animation if loading fails
-        }
-
+    ; // Stop shimmer animation if loading fails
     }
 
     public void loadImageIntoImageView(Context context, String imageUrl, ImageView imageView) {

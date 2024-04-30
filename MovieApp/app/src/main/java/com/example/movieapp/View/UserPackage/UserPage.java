@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
+import com.example.movieapp.Request.LoginAccountRequest;
 import com.example.movieapp.View.LoginPackage.LoginViewActivity;
 import com.example.movieapp.View.UserPackage.UserInfomation.User_Infomation;
 import com.google.firebase.auth.FirebaseAuth;
@@ -77,7 +79,7 @@ public class UserPage extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), User_Infomation.class);
-                intent.putExtra("loginAccount", loginAccount);
+                intent.putExtra("loginAccount", (Parcelable) loginAccount);
                 startActivity(intent);
             }
         });
@@ -88,6 +90,7 @@ public class UserPage extends Fragment {
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(getContext(), LoginViewActivity.class);
                 startActivity(intent);
+                LoginAccountRequest.saveUserToFile(null,getContext());
             }
         });
     }

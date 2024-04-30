@@ -1,5 +1,5 @@
-<resources>
-    <string name="app_name">MovieApp</string>
+<resources translatable="false">
+    <string name="app_name" >MovieApp</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="default_web_client_id">200497617735-a5t4rrpnglvid5i5a0d9fd6kteqfnn5t.apps.googleusercontent.com</string>
@@ -7,4 +7,6 @@
     <string name="facebook_app_id">25382099161403392</string>
     <string name="fb_login_protocol_scheme">fb25382099161403392</string>
     <string name="facebook_client_token">dd2977452a4b97cf5cac994e9a56da27</string>
+
+    <string name="now_playing">Now playing</string>
 </resources>

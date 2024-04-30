@@ -5,7 +5,9 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-public class AccountModel implements Parcelable {
+import java.io.Serializable;
+
+public class AccountModel implements Parcelable, Serializable{
     protected AccountModel(Parcel in) {
         user_id = in.readString();
         username = in.readString();
@@ -94,7 +96,7 @@ public class AccountModel implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-            dest.writeString(user_id);
+        dest.writeString(user_id);
         dest.writeString(username);
         dest.writeString(email);
         dest.writeString(password);

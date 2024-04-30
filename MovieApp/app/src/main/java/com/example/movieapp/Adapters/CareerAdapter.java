@@ -2,6 +2,7 @@ package com.example.movieapp.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,7 +93,7 @@ public class CareerAdapter extends RecyclerView.Adapter<CareerAdapter.ViewHolder
             public void onClick(View v) {
                 Intent movie_intent = new Intent(context, Movie_infomation.class);
                 movie_intent.putExtra("film_id",creditModel.getId());
-                movie_intent.putExtra("loginAccount",loginAccount);
+                movie_intent.putExtra("loginAccount", (Parcelable) loginAccount);
                 context.startActivity(movie_intent);
             }
         });

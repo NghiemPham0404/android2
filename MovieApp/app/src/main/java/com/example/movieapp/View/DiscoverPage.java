@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -404,7 +405,7 @@ public class DiscoverPage extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent movie_info_intent= new Intent(getContext(), Movie_infomation.class);
-                movie_info_intent.putExtra("loginAccount", loginAccount);
+                movie_info_intent.putExtra("loginAccount", (Parcelable) loginAccount);
                 movie_info_intent.putExtra("film_id", movie.getId());
                 getContext().startActivity(movie_info_intent);
             }

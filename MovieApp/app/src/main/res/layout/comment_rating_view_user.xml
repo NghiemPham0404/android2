@@ -42,6 +42,14 @@
                 android:textStyle="bold"
                 tools:text="comment" />
 
+            <Button
+                android:id="@+id/cancel_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:text="Cancel"
+                android:textSize="12sp" />
+
         </LinearLayout>
 
         <RatingBar

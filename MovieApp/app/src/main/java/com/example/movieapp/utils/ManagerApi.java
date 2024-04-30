@@ -56,6 +56,7 @@ public interface ManagerApi {
     // signup with email, password, username
     @POST(Credentials.manage_url)
     Call<LoginModel> signUpWithInfo(
+            @Query("functionname") String functionname,
             @Query("email") String email,
             @Query("password") String password,
             @Query("username") String username
@@ -63,9 +64,10 @@ public interface ManagerApi {
 
     // get film video from id
     @POST(Credentials.manage_url)
-    Call<VideoModel> getMovieVideo(
+    Call<DetailModel> getMovieVideo(
             @Query("functionname") String functionname,
-            @Query("movieId") int movieId
+            @Query("movieId") int movieId,
+            @Query("userId") String userId
     );
 
     // Add to favor

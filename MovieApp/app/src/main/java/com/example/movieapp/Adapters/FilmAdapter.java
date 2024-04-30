@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,7 +100,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder>{
             public void onClick(View v) {
                 Intent intent = new Intent(context, Movie_infomation.class);
                 intent.putExtra("film_id", movies.get(pos).getId());
-                intent.putExtra("loginAccount", loginAccount);
+                intent.putExtra("loginAccount", (Parcelable) loginAccount);
                 context.startActivity(intent);
             }
         });

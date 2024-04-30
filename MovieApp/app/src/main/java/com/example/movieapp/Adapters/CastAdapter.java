@@ -2,6 +2,7 @@ package com.example.movieapp.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,7 +74,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder> {
             public void onClick(View v) {
                 Intent castIntent = new Intent(context, PersonActivity.class);
                 castIntent.putExtra("cast_id", castModel.getId());
-                castIntent.putExtra("loginAccount", loginAccount);
+                castIntent.putExtra("loginAccount", (Parcelable) loginAccount);
                 context.startActivity(castIntent);
             }
         });

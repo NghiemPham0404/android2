@@ -89,6 +89,7 @@ public class PlayingFilm extends AppCompatActivity {
     private Call<MovieSearchResponse> recommendationsMovieslCall;
     private TextView  btn_360, btn_720;
     public int current_resolution = 720;
+    private ReviewApdater reviewApdater;
 
 
     @Override
@@ -197,7 +198,36 @@ public class PlayingFilm extends AppCompatActivity {
                 public void onResponse(Call<DetailResponse> call, Response<DetailResponse> response) {
                     if(response.code()==200){
                         List<DetailModel> detailModels = response.body().getAllReviews();
-                        ReviewApdater reviewApdater = new ReviewApdater(PlayingFilm.this, detailModels, loginAccount.getUser_id());
+
+                        // Không cho review lần 2
+                        for(int i =0 ;i <detailModels.size(); i++){
+                            int num = i;
+                            if(detailModels.get(i).getUserId().equalsIgnoreCase(loginAccount.getUser_id())){
+                                popupView.findViewById(R.id.comment_box).setVisibility(View.GONE);
+
+                                ReviewApdater.DeleteInterface deleteInterface = new ReviewApdater.DeleteInterface() {
+                                    @Override
+                                    public void delete() {
+                                        detailModels.remove(num);
+                                        reviewApdater.notifyDataSetChanged();
+                                        Call<DetailModel> detailModelCall = MyService2.getApi().addReview(Credentials.functionname_detail,  loginAccount.getUser_id(), movie.getId(), "0.0", " ");
+                                        detailModelCall.enqueue(new Callback<DetailModel>() {
+                                            @Override
+                                            public void onResponse(Call<DetailModel> call, Response<DetailModel> response) {
+                                                Log.i("delete review", "success");
+                                                popupView.findViewById(R.id.comment_box).setVisibility(View.VISIBLE);
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<DetailModel> call, Throwable t) {
+                                                Log.i("delete review", ""+t);
+                                            }
+                                        });
+                                    }
+                                };
+                                reviewApdater = new ReviewApdater(PlayingFilm.this, detailModels, loginAccount.getUser_id(), deleteInterface);
+                            }
+                        }
                         reviewApdater.removeEmpty();
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(PlayingFilm.this);
                         reviewsRecyclerView =  popupView.findViewById(R.id.recyclerView);
@@ -208,6 +238,8 @@ public class PlayingFilm extends AppCompatActivity {
                         totalRating.setText(""+response.body().getAllReviews().size());
                     }
                 }
+
+
 
                 @Override
                 public void onFailure(Call<DetailResponse> call, Throwable t) {
@@ -290,7 +322,7 @@ public class PlayingFilm extends AppCompatActivity {
         if(player == null){
             player = new SimpleExoPlayer.Builder(this).build();
             MediaItem mediaItem;
-            if(!videoUrl720.equalsIgnoreCase("")){
+            if(videoUrl720!=null){
                 mediaItem = MediaItem.fromUri(Uri.parse(videoUrl720));
                 current_resolution = 720;
             } else{
@@ -318,7 +350,7 @@ public class PlayingFilm extends AppCompatActivity {
         player.release();
         player = new SimpleExoPlayer.Builder(this).build();
         MediaItem mediaItem;
-        if(!videoUrl720.equalsIgnoreCase("")){
+        if(videoUrl720!=null){
             mediaItem = MediaItem.fromUri(Uri.parse(videoUrl720));
         } else{
             mediaItem = MediaItem.fromUri(Uri.parse(videoUrl));
@@ -390,7 +422,6 @@ public class PlayingFilm extends AppCompatActivity {
     public void onStop(){
         super.onStop();
         player.stop();
-        Toast.makeText(this,"Stop", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -400,7 +431,6 @@ public class PlayingFilm extends AppCompatActivity {
             wakeLock.release();
         }
         postPlayBackDuration();
-        Toast.makeText(this,"Destroy", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -410,7 +440,6 @@ public class PlayingFilm extends AppCompatActivity {
                 wakeLock.release();
             }
             player.release();
-            Toast.makeText(this,"Back press", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -638,13 +667,13 @@ public class PlayingFilm extends AppCompatActivity {
             LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
             popupView3 = inflater.inflate(R.layout.player_config, null);
             boolean focusable = true;
-            resolutionChangePopup = new PopupWindow(popupView3,400, WindowManager.LayoutParams.WRAP_CONTENT, focusable);
+            resolutionChangePopup = new PopupWindow(popupView3,WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT, focusable);
 
             // btn change resolution btn
              btn_360 = popupView3.findViewById(R.id.btn_360);
              btn_720= popupView3.findViewById(R.id.btn_720);
 
-            if(videoUrl.equalsIgnoreCase("")){
+            if(videoUrl==null){
                 btn_360.setVisibility(View.GONE);
             }else{
                 btn_360.setOnClickListener(new View.OnClickListener() {
@@ -655,7 +684,7 @@ public class PlayingFilm extends AppCompatActivity {
                 });
             }
 
-            if(videoUrl720.equalsIgnoreCase("")){
+            if(videoUrl720==null){
                 btn_720.setVisibility(View.GONE);
             }else{
                 btn_720.setOnClickListener(new View.OnClickListener() {
@@ -675,7 +704,7 @@ public class PlayingFilm extends AppCompatActivity {
         playerView.post(new Runnable() {
             @Override
             public void run() {
-                resolutionChangePopup.showAtLocation(playerView, Gravity.BOTTOM, 0, 0);
+                resolutionChangePopup.showAtLocation(playerView, Gravity.TOP, 0, 0);
             }
         });
     }

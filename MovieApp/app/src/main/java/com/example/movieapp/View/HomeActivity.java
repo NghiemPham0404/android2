@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
+import android.os.Process;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -27,6 +28,8 @@ public class HomeActivity extends AppCompatActivity {
     public DiscoverPage discoverPage;
     public UserPage userPage;
 
+    private int alert_out = 1;
+
     int selectedItem = 0;
 
     @Override
@@ -35,7 +38,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.home_window);
 
         viewPager = findViewById(R.id.viewPager);
-        viewPager.setOffscreenPageLimit(4);
+        viewPager.setOffscreenPageLimit(2);
         BottomNavigationView navigationView = findViewById(R.id.bottomNavigationView);
         navigationView.setItemIconTintList(null);
 
@@ -65,6 +68,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // chọn 1 nav lần hai
         navigationView.setOnNavigationItemReselectedListener(item -> {
+            alert_out = 1;
             if(item.getItemId() == R.id.home){
                 adapter.homePage.initFeatures();
             }else if(item.getItemId() == R.id.discover){
@@ -143,6 +147,19 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             return 4; // Number of fragments
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(alert_out == 1){
+            Toast.makeText(this, "press again to exit app", Toast.LENGTH_SHORT).show();
+            alert_out--;
+        }else{
+            super.onBackPressed();
+            moveTaskToBack(true);
+            Process.killProcess(Process.myPid());
+            System.exit(1);
         }
     }
 }

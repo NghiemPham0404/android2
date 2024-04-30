@@ -2,6 +2,7 @@ package com.example.movieapp.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +58,7 @@ public class FilmSliderAdapter extends RecyclerView.Adapter<FilmSliderAdapter.Sl
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, Movie_infomation.class);
-                intent.putExtra("loginAccount", loginAccount);
+                intent.putExtra("loginAccount", (Parcelable) loginAccount);
                 intent.putExtra("film_id", movie.getId());
                 context.startActivity(intent);
             }
