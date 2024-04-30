@@ -1,9 +1,11 @@
 package com.example.movieapp.Adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -14,26 +16,47 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.movieapp.Model.DetailModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
+import com.example.movieapp.Request.MyService2;
+import com.example.movieapp.utils.Credentials;
 
 import java.util.Collections;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ReviewApdater extends RecyclerView.Adapter<ReviewApdater.ViewHolder> {
     List<DetailModel> detailModels;
     Context context;
     String userId;
-    public ReviewApdater(Context context,  List<DetailModel> detailModels, String userId){
+    int movie_id;
+
+    DeleteInterface deleteInterface;
+    public interface  DeleteInterface{
+        public void delete();
+    }
+
+    public ReviewApdater(Context context,  List<DetailModel> detailModels, String userId, int movie_id){
         this.context = context;
         this.detailModels = detailModels;
-        Collections.sort(this.detailModels, (o1, o2) -> o2.getTime().compareTo(o1.getTime()));
+        Collections.sort(this.detailModels, (o1, o2) -> o2.getTimeAsDate().compareTo(o1.getTimeAsDate()));
         this.userId = userId;
+        this.movie_id = movie_id;
+    }
+
+    public ReviewApdater(Context context,  List<DetailModel> detailModels, String userId, DeleteInterface deleteInterface){
+        this.context = context;
+        this.detailModels = detailModels;
+        Collections.sort(this.detailModels, (o1, o2) -> o2.getTimeAsDate().compareTo(o1.getTimeAsDate()));
+        this.userId = userId;
+       this.deleteInterface = deleteInterface;
     }
 
     public void removeEmpty(){
         for(int i = 0; i<this.detailModels.size(); i++){
             DetailModel detailModel = detailModels.get(i);
-            if(detailModel.getReview().equalsIgnoreCase("") && detailModel.getRating().equalsIgnoreCase("")
-            ||detailModel.getReview()==null && detailModel.getRating()==null){
+            if(detailModel.getRating().equalsIgnoreCase("") || detailModel.getRating()==null){
                 detailModels.remove(i);
             }
         }
@@ -63,6 +86,16 @@ public class ReviewApdater extends RecyclerView.Adapter<ReviewApdater.ViewHolder
                 holder.rating.setRating(Float.parseFloat(detailModel.getRating()));
                 new ImageLoader().loadAvatar(context,detailModel.getAvatar(),holder.avatar, holder.avatar_text, detailModel.getUsername());
             }
+
+        if(detailModels.get(position).getUserId().equalsIgnoreCase(this.userId)){
+            Button cancelBtn = holder.itemView.findViewById(R.id.cancel_btn);
+            cancelBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteInterface.delete();
+                }
+            });
+        }
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.example.movieapp.Model;
 
-public class LoginModel extends AccountModel{
+import java.io.Serializable;
+
+public class LoginModel extends AccountModel implements Serializable {
 
     private String error;
     private String success;

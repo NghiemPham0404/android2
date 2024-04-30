@@ -8,19 +8,18 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.example.movieapp.Adapters.FavorAdapter;
 import com.example.movieapp.Adapters.HistoryAdapter;
 import com.example.movieapp.Interfaces.FavorInterface;
 import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.DetailModel;
 import com.example.movieapp.Model.MovieModel;
-import com.example.movieapp.Model.VideoModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.MyService;
 import com.example.movieapp.Request.MyService2;
@@ -56,7 +55,7 @@ public class HistoryFragment extends Fragment {
         public void openMovie(int movieId) {
             Intent openMovieIntent = new Intent(getContext(), Movie_infomation.class);
             openMovieIntent.putExtra("film_id", movieId);
-            openMovieIntent.putExtra("loginAccount", loginAccount);
+            openMovieIntent.putExtra("loginAccount", (Parcelable) loginAccount);
             startActivity(openMovieIntent);
         }
 
@@ -71,7 +70,7 @@ public class HistoryFragment extends Fragment {
                         Intent intent = new Intent(getContext(), PlayingFilm.class);
                         intent.putExtra("videoUrl", movie.getVideoUrl());
                         intent.putExtra("movie", movie);
-                        intent.putExtra("loginAccount", loginAccount);
+                        intent.putExtra("loginAccount", (Parcelable) loginAccount);
                         startActivity(intent);
                     }
                 });
@@ -160,7 +159,7 @@ public class HistoryFragment extends Fragment {
             public void onResponse(Call<List<DetailModel>> call, Response<List<DetailModel>> response) {
                 if (response.code() == 200) {
                     for (DetailModel movie : response.body()) {
-                        initListItem(movie.getMovieId(), movie.getDuration(), movie.getMovieUrl(), movie.getTimeFavor());
+                        initListItem(movie.getMovieId(), movie.getDuration(), movie.getUrl(), movie.getTimeFavor());
                     }
                 }
             }

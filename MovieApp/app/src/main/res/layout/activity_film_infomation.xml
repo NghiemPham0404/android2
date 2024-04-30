@@ -213,7 +213,7 @@
                 android:textSize="16sp" />
 
             <Button
-                android:id="@+id/button7"
+                android:id="@+id/download_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@null"
@@ -223,7 +223,7 @@
                 android:textColor="@color/neon_pink" />
 
             <Button
-                android:id="@+id/button6"
+                android:id="@+id/review_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@null"
@@ -390,7 +390,17 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
         android:background="@drawable/back_icon"
+        android:rotationY="180"
         android:text="Button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        layout="@layout/loading_layout"
+        android:layout_width="406dp"
+        android:layout_height="850dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
