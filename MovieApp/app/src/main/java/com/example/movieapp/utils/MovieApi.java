@@ -8,6 +8,7 @@ import com.example.movieapp.Response.CastResponse;
 import com.example.movieapp.Response.CreditResponse;
 import com.example.movieapp.Response.GenreResponse;
 import com.example.movieapp.Response.MovieSearchResponse;
+import com.example.movieapp.Response.PeopleResponse;
 import com.example.movieapp.Response.VideoResponse;
 
 import java.util.List;
@@ -77,10 +78,10 @@ public interface MovieApi {
     );
 
     //https://api.themoviedb.org/3/search/person
-    @GET
-    Call<CastResponse> searchPerson(
-            @Query("query") String query,
+    @GET("3/search/person")
+    Call<PeopleResponse> searchPerson(
             @Query("api_key") String key,
+            @Query("query") String query,
             @Query("page") int page
     );
 

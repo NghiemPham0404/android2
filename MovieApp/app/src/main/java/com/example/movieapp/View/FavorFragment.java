@@ -94,7 +94,7 @@ public class FavorFragment extends Fragment {
                     } else {
                         String trailer = movie.getTrailer();
                         if (trailer != null) {
-                            button.setBackgroundResource(R.drawable.play_trailer_btn);
+                            button.setBackgroundResource(R.drawable.play_trailer_btn_2);
                             button.setText("play trailer");
                             button.setOnClickListener(new View.OnClickListener() {
                                 @Override

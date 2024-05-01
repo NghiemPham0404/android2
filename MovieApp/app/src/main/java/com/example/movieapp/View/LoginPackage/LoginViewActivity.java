@@ -505,7 +505,6 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
     public void turnOffValidateViews() {
 
     }
-
     public void subcribeToNotification(){
         FirebaseMessaging.getInstance().subscribeToTopic("notification")
                 .addOnCompleteListener(new OnCompleteListener<Void>() {

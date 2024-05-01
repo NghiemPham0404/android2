@@ -167,14 +167,8 @@ public class Movie_infomation extends AppCompatActivity {
                     initSocialNetwork();
 //                        Log.i("TAG DETAIL", movie.getGenres().get(0).getName());
 
-                    float rate = Math.round(movie.getVote_average() * 100) * 1.0f / 100;
-                    rating.setText(rate + "");
-                    try {
-                        String year = movie.getRelease_date().split("-")[0];
-                        date_info.setText("(" + year + ")");
-                    } catch (Exception ex) {
-                        date_info.setText(movie.getRelease_date() + "");
-                    }
+                    rating.setText(movie.getRating());
+                    date_info.setText("(" + movie.getPublishDate() + ")");
                     time_info.setText(movie.getMaxDurationTime());
                     country_info.setText(movie.getProductionCountry());
                     genres_info.setText(movie.getGenresString());
@@ -183,7 +177,7 @@ public class Movie_infomation extends AppCompatActivity {
                     initVideo();
 
                     film_title.setText(movie.getTitle());
-                    film_overview.setText(movie.getOverriew());
+                    film_overview.setText(movie.getOverview());
                     backBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -294,13 +288,13 @@ public class Movie_infomation extends AppCompatActivity {
     }
 
     private void initDownloadButton() {
-        if(url360 == null && url720==null){
+        if (url360 == null && url720 == null) {
             download_btn.setVisibility(View.GONE);
         }
 
         String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MovieApp/" + movie.getId() + ".mp4";
-        if(new File(filePath).exists()){
-            download_btn.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.download_done_icon), null,null);
+        if (new File(filePath).exists()) {
+            download_btn.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.download_done_icon), null, null);
             download_btn.setEnabled(false);
             return;
         }
@@ -420,61 +414,51 @@ public class Movie_infomation extends AppCompatActivity {
         detailResponseCall.enqueue(new Callback<DetailResponse>() {
             @Override
             public void onResponse(Call<DetailResponse> call, Response<DetailResponse> response) {
-                if(response.code()==200){
+                if (response.code() == 200) {
                     List<DetailModel> detailModels = response.body().getAllReviews();
-
-                    // Không cho review lần 2
-                    for(int i =0 ;i <detailModels.size(); i++){
-                        int num = i;
-                        if(detailModels.get(i).getUserId().equalsIgnoreCase(loginAccount.getUser_id())){
-                            popupReviewView.findViewById(R.id.comment_box).setVisibility(View.GONE);
-
-                            ReviewApdater.DeleteInterface deleteInterface = new ReviewApdater.DeleteInterface() {
+                    ReviewApdater.DeleteInterface deleteInterface = new ReviewApdater.DeleteInterface() {
+                        @Override
+                        public void delete() {
+                            Call<DetailModel> detailModelCall = MyService2.getApi().deleteReview(Credentials.deleteDetail, loginAccount.getUser_id(), movie.getId());
+                            detailModelCall.enqueue(new Callback<DetailModel>() {
                                 @Override
-                                public void delete() {
-                                    detailModels.remove(num);
-                                    reviewApdater.notifyDataSetChanged();
-                                    Call<DetailModel> detailModelCall = MyService2.getApi().addReview(Credentials.functionname_detail,  loginAccount.getUser_id(), movie.getId(), "0.0", " ");
-                                    detailModelCall.enqueue(new Callback<DetailModel>() {
-                                        @Override
-                                        public void onResponse(Call<DetailModel> call, Response<DetailModel> response) {
-                                            Log.i("delete review", "success");
-                                            popupReviewView.findViewById(R.id.comment_box).setVisibility(View.VISIBLE);
-                                        }
-
-                                        @Override
-                                        public void onFailure(Call<DetailModel> call, Throwable t) {
-                                            Log.i("delete review", ""+t);
-                                        }
-                                    });
+                                public void onResponse(Call<DetailModel> call, Response<DetailModel> response) {
+                                    Log.i("delete review", "success");
+                                    popupReviewView.findViewById(R.id.comment_box).setVisibility(View.VISIBLE);
                                 }
-                            };
-                            reviewApdater = new ReviewApdater(Movie_infomation.this, detailModels, loginAccount.getUser_id(), deleteInterface);
+
+                                @Override
+                                public void onFailure(Call<DetailModel> call, Throwable t) {
+                                    Log.i("delete review", "" + t);
+                                }
+                            });
                         }
-                    }
+                    };
+                    reviewApdater = new ReviewApdater(Movie_infomation.this, detailModels, loginAccount.getUser_id(), deleteInterface);
                     reviewApdater.removeEmpty();
+                    reviewApdater.notifyDataSetChanged();
+                    for(int i= 0;i < detailModels.size(); i++){
+                        if(detailModels.get(i).getUserId() == loginAccount.getUser_id())
+                            popupReviewView.findViewById(R.id.comment_box).setVisibility(View.GONE);
+                    }
                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(Movie_infomation.this);
-                    reviewsRecyclerView =  popupReviewView.findViewById(R.id.recyclerView);
+                    reviewsRecyclerView = popupReviewView.findViewById(R.id.recyclerView);
                     reviewsRecyclerView.setLayoutManager(linearLayoutManager);
                     reviewsRecyclerView.setAdapter(reviewApdater);
                     loadinglayout.setVisibility(View.GONE);
                     error_layout.setVisibility(View.GONE);
-                    totalRating.setText(""+response.body().getAllReviews().size());
+                    totalRating.setText("" + response.body().getAllReviews().size());
                 }
             }
-
-
-
             @Override
             public void onFailure(Call<DetailResponse> call, Throwable t) {
-                Log.e("GET REVIEWs" , "FAIL" + t.toString());
+                Log.e("GET REVIEWs", "FAIL" + t.toString());
                 error_layout.setVisibility(View.VISIBLE);
                 loadinglayout.setVisibility(View.GONE);
             }
         });
 
-        popupReviewView.findViewById(R.id.comment_box).setVisibility(View.GONE);
-       findViewById(R.id.info_layout).post(new Runnable() {
+        findViewById(R.id.info_layout).post(new Runnable() {
             @Override
             public void run() {
                 reviewSessionPopup.showAtLocation(findViewById(R.id.info_layout), Gravity.BOTTOM, 0, 0);

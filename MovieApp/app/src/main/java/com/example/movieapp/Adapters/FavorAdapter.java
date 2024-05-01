@@ -19,8 +19,6 @@ import com.example.movieapp.Request.ImageLoader;
 import com.example.movieapp.utils.Credentials;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -76,15 +74,9 @@ public class FavorAdapter extends RecyclerView.Adapter<FavorAdapter.ViewHolder>{
             holder.title_film_item_fv_history.setText(movie.getTitle());
             holder.gerne_favor.setText(movie.getGenresString());
             holder.removeBtn.setChecked(true);
-            try{
-                int year = Integer.parseInt(movies.get(position).getRelease_date().split("-")[0]);
-                holder.publishYear.setText("("+year +")");
-            }catch (Exception e){
-                holder.publishYear.setText(movie.getRelease_date());
-            }
+            holder.publishYear.setText("("+movies.get(position).getPublishDate()+")");
 
-            float rating = Math.round(movie.getVote_average()*10)*1.0f/10;
-            holder.movie_rating.setText(rating+"");
+            holder.movie_rating.setText(movie.getRating());
 
             holder.runtime.setText(movie.getMaxDurationTime());
 
@@ -133,9 +125,9 @@ public class FavorAdapter extends RecyclerView.Adapter<FavorAdapter.ViewHolder>{
             super(itemView);
             shimmerFrameLayout = itemView.findViewById(R.id.shimmer_layout);
             movie_poster = itemView.findViewById(R.id.movie_poster_favor);
-            title_film_item_fv_history = itemView.findViewById(R.id.title_film_item_fv_history);
-            gerne_favor = itemView.findViewById(R.id.gerne_favor);
-            publishYear = itemView.findViewById(R.id.publishYear_favor);
+            title_film_item_fv_history = itemView.findViewById(R.id.title_film_favor_history);
+            gerne_favor = itemView.findViewById(R.id.gerne_favor_history);
+            publishYear = itemView.findViewById(R.id.publishYear_favor_history);
             runtime = itemView.findViewById(R.id.runtime_favor);
             movie_rating = itemView.findViewById(R.id.movie_rating);
             current_duration = itemView.findViewById(R.id.current_duration);

@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -71,7 +72,7 @@ public class PlayingFilm extends AppCompatActivity {
     TextView movie_title_playing, movie_rating, publish_date, duration;
 
     private Drawable check_icon;
-    private ImageView maximize_btn, pic_in_pic_btn, volume_btn, setting_btn ;
+    private ImageView maximize_btn, pic_in_pic_btn, volume_btn, setting_btn, back_btn ;
     private MovieModel movie;
     private int current_id;
     private AccountModel loginAccount;
@@ -79,15 +80,16 @@ public class PlayingFilm extends AppCompatActivity {
     private RecyclerView recommendRecycler;
     private Button reviewButton;
     private ToggleButton favorButton;
-    private boolean full_screen, volume = true, turnOffLight = false;
+    private boolean full_screen, volume = true, turnOffLight = false, in_pip_mode=false;
     private PopupWindow reviewSessionPopup, continuePlaybackPopup, resolutionChangePopup;
     private RecyclerView reviewsRecyclerView;
     private Call<DetailResponse> detailResponseCall;
     private ConstraintLayout error_layout,loadinglayout;
-    private View popupView, popupView2, popupView3;
+    private View popupReviewView, popupView2, popupView3;
     private FilmAdapter filmAdapter;
     private Call<MovieSearchResponse> recommendationsMovieslCall;
-    private TextView  btn_360, btn_720;
+    private TextView  btn_360;
+    private LinearLayout btn_720;
     public int current_resolution = 720;
     private ReviewApdater reviewApdater;
 
@@ -177,70 +179,61 @@ public class PlayingFilm extends AppCompatActivity {
     }
     private void initReview(){
             LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-            popupView = inflater.inflate(R.layout.comment_session, null);
+            popupReviewView = inflater.inflate(R.layout.comment_session, null);
 
             boolean focusable = true;
-            reviewSessionPopup = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT, focusable);
+            reviewSessionPopup = new PopupWindow(popupReviewView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT, focusable);
             reviewSessionPopup.setAnimationStyle(R.style.PopupAnimation);
 
             layout = findViewById(R.id.playing_layout);
 
-            loadinglayout =popupView.findViewById(R.id.loadingLayout);
+            loadinglayout = popupReviewView.findViewById(R.id.loadingLayout);
             loadinglayout.setVisibility(View.VISIBLE);
 
-            error_layout = popupView.findViewById(R.id.error_loading);
+            error_layout = popupReviewView.findViewById(R.id.error_loading);
 
-            totalRating = popupView.findViewById(R.id.total_rating_rv);
+            totalRating = popupReviewView.findViewById(R.id.total_rating_rv);
 
             detailResponseCall = MyService2.getApi().getReviewByFilmId("detail", movie.getId());
             detailResponseCall.enqueue(new Callback<DetailResponse>() {
                 @Override
                 public void onResponse(Call<DetailResponse> call, Response<DetailResponse> response) {
-                    if(response.code()==200){
+                    if (response.code() == 200) {
                         List<DetailModel> detailModels = response.body().getAllReviews();
-
-                        // Không cho review lần 2
-                        for(int i =0 ;i <detailModels.size(); i++){
-                            int num = i;
-                            if(detailModels.get(i).getUserId().equalsIgnoreCase(loginAccount.getUser_id())){
-                                popupView.findViewById(R.id.comment_box).setVisibility(View.GONE);
-
-                                ReviewApdater.DeleteInterface deleteInterface = new ReviewApdater.DeleteInterface() {
+                        ReviewApdater.DeleteInterface deleteInterface = new ReviewApdater.DeleteInterface() {
+                            @Override
+                            public void delete() {
+                                Call<DetailModel> detailModelCall = MyService2.getApi().deleteReview(Credentials.deleteDetail, loginAccount.getUser_id(), movie.getId());
+                                detailModelCall.enqueue(new Callback<DetailModel>() {
                                     @Override
-                                    public void delete() {
-                                        detailModels.remove(num);
-                                        reviewApdater.notifyDataSetChanged();
-                                        Call<DetailModel> detailModelCall = MyService2.getApi().addReview(Credentials.functionname_detail,  loginAccount.getUser_id(), movie.getId(), "0.0", " ");
-                                        detailModelCall.enqueue(new Callback<DetailModel>() {
-                                            @Override
-                                            public void onResponse(Call<DetailModel> call, Response<DetailModel> response) {
-                                                Log.i("delete review", "success");
-                                                popupView.findViewById(R.id.comment_box).setVisibility(View.VISIBLE);
-                                            }
-
-                                            @Override
-                                            public void onFailure(Call<DetailModel> call, Throwable t) {
-                                                Log.i("delete review", ""+t);
-                                            }
-                                        });
+                                    public void onResponse(Call<DetailModel> call, Response<DetailModel> response) {
+                                        Log.i("delete review", "success");
+                                        popupReviewView.findViewById(R.id.comment_box).setVisibility(View.VISIBLE);
                                     }
-                                };
-                                reviewApdater = new ReviewApdater(PlayingFilm.this, detailModels, loginAccount.getUser_id(), deleteInterface);
+
+                                    @Override
+                                    public void onFailure(Call<DetailModel> call, Throwable t) {
+                                        Log.i("delete review", "" + t);
+                                    }
+                                });
                             }
-                        }
+                        };
+                        reviewApdater = new ReviewApdater(PlayingFilm.this, detailModels, loginAccount.getUser_id(), deleteInterface);
                         reviewApdater.removeEmpty();
+                        reviewApdater.notifyDataSetChanged();
+                        for(int i= 0;i < detailModels.size(); i++){
+                            if(detailModels.get(i).getUserId() == loginAccount.getUser_id())
+                                popupReviewView.findViewById(R.id.comment_box).setVisibility(View.GONE);
+                        }
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(PlayingFilm.this);
-                        reviewsRecyclerView =  popupView.findViewById(R.id.recyclerView);
+                        reviewsRecyclerView = popupReviewView.findViewById(R.id.recyclerView);
                         reviewsRecyclerView.setLayoutManager(linearLayoutManager);
                         reviewsRecyclerView.setAdapter(reviewApdater);
                         loadinglayout.setVisibility(View.GONE);
                         error_layout.setVisibility(View.GONE);
-                        totalRating.setText(""+response.body().getAllReviews().size());
+                        totalRating.setText("" + response.body().getAllReviews().size());
                     }
                 }
-
-
-
                 @Override
                 public void onFailure(Call<DetailResponse> call, Throwable t) {
                     Log.e("GET REVIEWs" , "FAIL" + t.toString());
@@ -454,7 +447,21 @@ public class PlayingFilm extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode);
+        if (!isInPictureInPictureMode) {
+            in_pip_mode = false;
+        }
+    }
+
     public void initPlayerButton(){
+        if(in_pip_mode){
+            playerView.findViewById(R.id.player_control).setVisibility(View.GONE);
+        }else{
+            playerView.findViewById(R.id.player_control).setVisibility(View.VISIBLE);
+        }
+
         maximize_btn = playerView.findViewById(R.id.exo_fullscreen_icon);
         pic_in_pic_btn = playerView.findViewById(R.id.exo_pic_in_pip);
         maximize_btn.setOnClickListener(new View.OnClickListener() {
@@ -501,6 +508,14 @@ public class PlayingFilm extends AppCompatActivity {
                 changeResolutionBox();
             }
         });
+
+        back_btn = playerView.findViewById(R.id.back_btn);
+        back_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
     public void changeFavorite() {
         Call<DetailModel> changeFavorCall = MyService2.getApi().addToFavor("detail", loginAccount.getUser_id(), movie.getId());
@@ -520,13 +535,13 @@ public class PlayingFilm extends AppCompatActivity {
         });
     }
     public void initUserReviewBox(){
-        avatar = popupView.findViewById(R.id.imageAvatar);
-        new ImageLoader().loadAvatar(PlayingFilm.this, loginAccount.getAvatar(),avatar, popupView.findViewById(R.id.avatarText), loginAccount.getUsername());
-        reviewRating = popupView.findViewById(R.id.ratingBar_comment_box);
-        reviewBox = popupView.findViewById(R.id.commentBox);
+        avatar = popupReviewView.findViewById(R.id.imageAvatar);
+        new ImageLoader().loadAvatar(PlayingFilm.this, loginAccount.getAvatar(),avatar, popupReviewView.findViewById(R.id.avatarText), loginAccount.getUsername());
+        reviewRating = popupReviewView.findViewById(R.id.ratingBar_comment_box);
+        reviewBox = popupReviewView.findViewById(R.id.commentBox);
 
 
-        postReviewBtn = popupView.findViewById(R.id.send_comment_box);
+        postReviewBtn = popupReviewView.findViewById(R.id.send_comment_box);
         postReviewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -581,8 +596,19 @@ public class PlayingFilm extends AppCompatActivity {
         PictureInPictureParams.Builder pipBuilder = new PictureInPictureParams.Builder();
         pipBuilder.setAspectRatio(aspectRatio);
         enterPictureInPictureMode(pipBuilder.build());
+
+        in_pip_mode = true;
+
         if(reviewSessionPopup!=null){
             reviewSessionPopup.dismiss();
+        }
+
+        if(resolutionChangePopup!=null){
+            reviewSessionPopup.dismiss();
+        }
+
+        if(continuePlaybackPopup!=null){
+            continuePlaybackPopup.dismiss();
         }
     }
 
@@ -600,7 +626,7 @@ public class PlayingFilm extends AppCompatActivity {
         videoUrl720 = intent.getStringExtra("videoUrl720");
 
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "MovieApp tag");
+        wakeLock = powerManager.newWakeLock(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, "MovieApp tag");
         wakeLock.acquire();
 
         playerView = findViewById(R.id.playing_film_window);
@@ -667,7 +693,7 @@ public class PlayingFilm extends AppCompatActivity {
             LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
             popupView3 = inflater.inflate(R.layout.player_config, null);
             boolean focusable = true;
-            resolutionChangePopup = new PopupWindow(popupView3,WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT, focusable);
+            resolutionChangePopup = new PopupWindow(popupView3, 600, WindowManager.LayoutParams.WRAP_CONTENT, focusable);
 
             // btn change resolution btn
              btn_360 = popupView3.findViewById(R.id.btn_360);
@@ -696,17 +722,18 @@ public class PlayingFilm extends AppCompatActivity {
             }
 
             if(current_resolution == 720){
-                btn_720.setTextColor(getColor(R.color.neon_pink));
+                ((TextView)btn_720.findViewById(R.id.btn_720_text)).setTextColor(getColor(R.color.neon_pink));
             }else{
                 btn_360.setTextColor(getColor(R.color.neon_pink));
             }
         }
-        playerView.post(new Runnable() {
-            @Override
-            public void run() {
-                resolutionChangePopup.showAtLocation(playerView, Gravity.TOP, 0, 0);
-            }
-        });
+
+        if(full_screen){
+            resolutionChangePopup.showAtLocation(playerView, Gravity.BOTTOM, 0, 0);
+        }else{
+            resolutionChangePopup.showAtLocation(playerView, Gravity.TOP, 0, 300);
+        }
+
     }
 
     public void changeResolution(int resolution){
@@ -715,7 +742,7 @@ public class PlayingFilm extends AppCompatActivity {
                 return;
             }else{
                 current_resolution = 720;
-                btn_720.setTextColor(getColor(R.color.neon_pink));
+                ((TextView)btn_720.findViewById(R.id.btn_720_text)).setTextColor(getColor(R.color.neon_pink));
                 btn_360.setTextColor(getColor(R.color.white));
                 player.stop();
                 long c_position = player.getCurrentPosition();
@@ -731,7 +758,7 @@ public class PlayingFilm extends AppCompatActivity {
             }else{
                 current_resolution = 360;
                 btn_360.setTextColor(getColor(R.color.neon_pink));
-                btn_720.setTextColor(getColor(R.color.white));
+                ((TextView)btn_720.findViewById(R.id.btn_720_text)).setTextColor(getColor(R.color.white));
                 player.stop();
                 long c_position = player.getCurrentPosition();
                 MediaItem mediaItem = MediaItem.fromUri(Uri.parse(videoUrl));

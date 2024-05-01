@@ -1,46 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
+    android:orientation="vertical"
+    android:padding="5dp"
     tools:context=".View.UserPackage.UserInfomation.User_Infomation"
     tools:layout_editor_absoluteX="-1dp"
     tools:layout_editor_absoluteY="-73dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="40dp"
         android:background="@color/dark_gray"
+        android:gravity="center_vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/setting_mode_video_title"
-            android:layout_width="328dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="56dp"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/inter"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Your information" />
-
         <ImageButton
             android:id="@+id/backBtn_lg_setting"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/back_icon"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:rotationY="180" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:fontFamily="@font/inter"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            tools:text="Your information" />
+
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
@@ -98,7 +95,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/avater_border3" >
+            app:layout_constraintTop_toBottomOf="@+id/avater_border3">
 
             <Button
                 android:id="@+id/choose_avatar_btn"
@@ -130,13 +127,14 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
-        android:layout_width="410dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
 
         <LinearLayout
+            android:id="@+id/user_btn"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/bright_gray"
@@ -154,6 +152,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/user_txt"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_weight="1"
@@ -168,6 +167,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/password_btn"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/bright_gray"
@@ -184,6 +184,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/password_txt"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_weight="1"
@@ -198,6 +199,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/email_btn"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/bright_gray"
@@ -214,6 +216,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/email_txt"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_weight="1"
@@ -228,6 +231,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/sms_btn"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/bright_gray"
@@ -244,6 +248,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/sms_txt"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_weight="1"
@@ -258,6 +263,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/facebook_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/bright_gray"
@@ -274,6 +280,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/facebook_txt"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_weight="1"
@@ -288,6 +295,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/google_btn"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/bright_gray"
@@ -304,6 +312,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/google_txt"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_weight="1"
@@ -319,4 +328,4 @@
 
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

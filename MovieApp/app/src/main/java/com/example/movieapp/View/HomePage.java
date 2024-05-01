@@ -24,6 +24,7 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Handler;
+import android.os.Parcelable;
 import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -87,7 +88,7 @@ public class HomePage extends Fragment {
     private LinearLayout layout;
     private RecyclerView searchMoviesRecycler, popular_recycler, upcomming_recycler;
     private TextView searchTitleTV;
-    private ConstraintLayout search_film_group;
+    private LinearLayout search_film_group;
     private FilmAdapter filmSearchAdapter, film_adapter_popular, film_adapter_upcomming;
     private ScrollView recyclerView_scrollview;
     private Timer timer;
@@ -174,13 +175,9 @@ public class HomePage extends Fragment {
         movie_slider = view.findViewById(R.id.movie_slider);
 
         recyclerView_scrollview = view.findViewById(R.id.recyclerView_scrollview);
-
-        searchBox = view.findViewById(R.id.searchBox);
         searchBtn = view.findViewById(R.id.searchBtn);
-        textToSpeechBtn = view.findViewById(R.id.mirco_btn);
         divSearch = view.findViewById(R.id.searchDiv);
         layout = view.findViewById(R.id.home_layout);
-        ;
 
         search_film_group = view.findViewById(R.id.search_film_group);
         searchTitleTV = search_film_group.findViewById(R.id.groupTitle);
@@ -195,44 +192,10 @@ public class HomePage extends Fragment {
         recyclerView_scrollview.setVisibility(View.VISIBLE);
         search_film_group.setVisibility(View.GONE);
 
-        searchBox.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    divSearch.setBackgroundResource(R.drawable.text_input_onfocus);
-                } else {
-                    divSearch.setBackgroundResource(R.drawable.text_input);
-                }
-            }
-        });
-        searchBtn.setOnClickListener(new View.OnClickListener() {
+       divSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchBox.clearFocus();
-                searchMovie(searchBox.getText().toString().trim(), page);
-                divSearch.setBackgroundResource(R.drawable.text_input);
-            }
-        });
-
-        searchBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    searchBox.clearFocus();
-                    searchMovie(searchBox.getText().toString().trim(), page);
-                    divSearch.setBackgroundResource(R.drawable.text_input);
-                    // giấu bàn phím
-                    hideKeyboard();
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        textToSpeechBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                textToSpeechStart();
+                goToSearchIntent();
             }
         });
 
@@ -255,8 +218,6 @@ public class HomePage extends Fragment {
                 Log.e("Load nowplaying", "fail");
             }
         });
-
-
         movieListSearchViewModel.searchFavorMovieApi(1);
         movieListSearchViewModel.searchUpcommingMovieApi(1);
         startAutoScroll();
@@ -266,6 +227,13 @@ public class HomePage extends Fragment {
         recyclerView_scrollview.setVisibility(View.GONE);
         search_film_group.setVisibility(View.VISIBLE);
         movieListSearchViewModel.searchMovieApi(query, page);
+    }
+
+    public void goToSearchIntent(){
+        Intent intent = new Intent(getContext(), SearchPage.class);
+        intent.putExtra("loginAccount", (Parcelable) loginAccount);
+        getContext().startActivity(intent);
+        getActivity().overridePendingTransition(0, 0);
     }
 
     public void configureSearchRecycleView() {
@@ -308,14 +276,6 @@ public class HomePage extends Fragment {
             upcomming_recycler.setAdapter(film_adapter_upcomming);
         }
     }
-
-    private void hideKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.hideSoftInputFromWindow(searchBox.getWindowToken(), 0);
-        }
-    }
-
     private void startAutoScroll() {
         movie_slider.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -328,10 +288,12 @@ public class HomePage extends Fragment {
         final Handler handler = new Handler();
         final Runnable update = new Runnable() {
             public void run() {
-                if (currentPage == movie_slider.getAdapter().getItemCount()) {
-                    currentPage = 0;
+                if(movie_slider.getAdapter()!=null){
+                    if (currentPage == movie_slider.getAdapter().getItemCount()) {
+                        currentPage = 0;
+                    }
+                    movie_slider.setCurrentItem(currentPage++, true);
                 }
-                movie_slider.setCurrentItem(currentPage++, true);
             }
         };
 
@@ -342,53 +304,6 @@ public class HomePage extends Fragment {
                 handler.post(update);
             }
         }, 5000, 3000);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_REQUEST_RECORD_AUDIO) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startRecord();
-            } else {
-
-            }
-        }
-    }
-
-    private void textToSpeechStart() {
-        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.RECORD_AUDIO)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions((Activity) getContext(), new String[]{android.Manifest.permission.RECORD_AUDIO},
-                    PERMISSION_REQUEST_RECORD_AUDIO);
-        } else {
-            startRecord();
-        }
-    }
-
-    public void startRecord() {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak something...");
-
-        startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_SPEECH_INPUT) {
-            if (resultCode == RESULT_OK && data != null) {
-                ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                if (result != null && result.size() > 0) {
-                    String recognizedText = result.get(0);
-                    searchBox.setText(recognizedText);
-                    searchBtn.performClick();
-                }
-            }
-        }
     }
 
     @Override

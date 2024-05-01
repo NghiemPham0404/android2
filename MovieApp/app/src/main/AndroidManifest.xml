@@ -5,11 +5,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
-    <uses-permission android:name="android.permission.MANAGE_DEVICE_POLICY_MICROPHONE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.MANAGE_DEVICE_POLICY_MICROPHONE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -23,12 +23,21 @@
         android:theme="@style/Theme.MovieApp"
         android:usesCleartextTraffic="true"
         tools:targetApi="30">
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
-        <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
+        <activity
+            android:name=".View.SearchPage"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="com.facebook.sdk.ClientToken"
+            android:value="@string/facebook_client_token" />
+
         <activity
             android:name=".View.PlayingTrailer"
-            android:exported="false"
-            android:configChanges="orientation|screenSize"/>
+            android:configChanges="orientation|screenSize"
+            android:exported="false" />
         <activity
             android:name=".View.PersonActivity"
             android:exported="false"
@@ -64,29 +73,30 @@
         <activity
             android:name=".View.LoginPackage.LoginViewActivity"
             android:exported="true"
-            android:screenOrientation="portrait" >
-
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
         <activity
             android:name=".View.PlayingFilm"
             android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize|layoutDirection|screenLayout"
-            android:supportsPictureInPicture="true"
-            android:resizeableActivity="true"
+            android:exported="true"
             android:launchMode="singleTask"
-            android:taskAffinity=""
-            android:exported="true" />
+            android:resizeableActivity="true"
+            android:supportsPictureInPicture="true"
+            android:taskAffinity="" />
         <activity
             android:name=".View.Movie_infomation"
+            android:exported="false"
             android:launchMode="singleTop"
-            android:taskAffinity=""
             android:screenOrientation="portrait"
-            android:exported="false" />
+            android:taskAffinity="" />
         <activity
             android:name=".View.HomeActivity"
             android:exported="false"
@@ -109,6 +119,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="notify" />

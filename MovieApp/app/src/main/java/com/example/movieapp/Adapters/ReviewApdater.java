@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,65 +34,71 @@ public class ReviewApdater extends RecyclerView.Adapter<ReviewApdater.ViewHolder
     int movie_id;
 
     DeleteInterface deleteInterface;
-    public interface  DeleteInterface{
+
+    public interface DeleteInterface {
         public void delete();
     }
 
-    public ReviewApdater(Context context,  List<DetailModel> detailModels, String userId, int movie_id){
+    public ReviewApdater(Context context, List<DetailModel> detailModels, String userId, DeleteInterface deleteInterface) {
         this.context = context;
         this.detailModels = detailModels;
         Collections.sort(this.detailModels, (o1, o2) -> o2.getTimeAsDate().compareTo(o1.getTimeAsDate()));
         this.userId = userId;
-        this.movie_id = movie_id;
+        this.deleteInterface = deleteInterface;
+        removeEmpty();
     }
 
-    public ReviewApdater(Context context,  List<DetailModel> detailModels, String userId, DeleteInterface deleteInterface){
-        this.context = context;
-        this.detailModels = detailModels;
-        Collections.sort(this.detailModels, (o1, o2) -> o2.getTimeAsDate().compareTo(o1.getTimeAsDate()));
-        this.userId = userId;
-       this.deleteInterface = deleteInterface;
-    }
-
-    public void removeEmpty(){
-        for(int i = 0; i<this.detailModels.size(); i++){
+    public void removeEmpty() {
+        for (int i = 0; i < this.detailModels.size(); i++) {
             DetailModel detailModel = detailModels.get(i);
-            if(detailModel.getRating().equalsIgnoreCase("") || detailModel.getRating()==null){
+            try {
+                Float.parseFloat(detailModel.getRating());
+                Toast.makeText(context, "rating : "+detailModel.getRating(), Toast.LENGTH_SHORT).show();
+            }catch (Exception e){
                 detailModels.remove(i);
             }
         }
+        Toast.makeText(context, "total rating : "+detailModels.size(), Toast.LENGTH_SHORT).show();
     }
 
     @NonNull
     @Override
     public ReviewApdater.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if(viewType == 0){
+        if (viewType == 0) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_rating_view, parent, false);
             ReviewApdater.ViewHolder viewHolder = new ReviewApdater.ViewHolder(view);
             return viewHolder;
-        }else{
+        } else if(viewType == 1){
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_rating_view_user, parent, false);
             ReviewApdater.ViewHolder viewHolder = new ReviewApdater.ViewHolder(view);
             return viewHolder;
+        }else{
+            return null;
         }
     }
 
     @Override
     public void onBindViewHolder(@NonNull ReviewApdater.ViewHolder holder, int position) {
+        int i = position;
+        try {
             DetailModel detailModel = detailModels.get(position);
-            if(!detailModel.getReview().equalsIgnoreCase("") && !detailModel.getRating().equalsIgnoreCase("")){
-                holder.username.setText(""+detailModel.getUsername());
-                holder.review.setText(""+detailModel.getReview());
-                holder.date.setText(""+detailModel.getTime());
-                holder.rating.setRating(Float.parseFloat(detailModel.getRating()));
-                new ImageLoader().loadAvatar(context,detailModel.getAvatar(),holder.avatar, holder.avatar_text, detailModel.getUsername());
-            }
+            holder.rating.setRating(Float.parseFloat(detailModel.getRating()));
+            holder.username.setText("" + detailModel.getUsername());
+            holder.review.setText("" + detailModel.getReview());
+            holder.date.setText("" + detailModel.getTime());
+            new ImageLoader().loadAvatar(context, detailModel.getAvatar(), holder.avatar, holder.avatar_text, detailModel.getUsername());
+        }catch (Exception e){
 
-        if(detailModels.get(position).getUserId().equalsIgnoreCase(this.userId)){
+        }
+
+
+        if (detailModels.get(position).getUserId().equalsIgnoreCase(this.userId)) {
             Button cancelBtn = holder.itemView.findViewById(R.id.cancel_btn);
             cancelBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    detailModels.remove(i);
+                    notifyDataSetChanged();
                     deleteInterface.delete();
                 }
             });
@@ -100,26 +107,27 @@ public class ReviewApdater extends RecyclerView.Adapter<ReviewApdater.ViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        if(detailModels.get(position).getUserId().equalsIgnoreCase(this.userId)){
+        if (detailModels.get(position).getUserId().equalsIgnoreCase(this.userId)) {
             return 1;
-        }else{
+        } else {
             return 0;
         }
     }
 
     @Override
     public int getItemCount() {
-        if(detailModels!=null)
+        if (detailModels != null)
             return detailModels.size();
         else
             return 0;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         TextView username, date, review, avatar_text;
         RatingBar rating;
         ImageView avatar;
-        public ViewHolder(@NonNull View viewItem){
+
+        public ViewHolder(@NonNull View viewItem) {
             super(viewItem);
             this.avatar_text = viewItem.findViewById(R.id.avatarText);
             this.username = viewItem.findViewById(R.id.user_name_cm_view);

@@ -122,4 +122,10 @@ public interface ManagerApi {
             @Query("facebook_id") String facebook_id,
             @Query("avatar") String avatar
     );
+
+    @POST(Credentials.manage_url)
+    Call<DetailModel> deleteReview(
+            @Query("functionname") String functionname,
+            @Query("userId") String userId,
+            @Query("movieId") int movieId);
 }

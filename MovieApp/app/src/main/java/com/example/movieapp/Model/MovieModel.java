@@ -194,6 +194,26 @@ public class MovieModel implements Parcelable, Comparable<MovieModel> {
         return release_date;
     }
 
+    public String getPublishDate(){
+        try {
+            String[] date_split = this.getRelease_date().split(",");
+            int year = Integer.parseInt(date_split[date_split.length-1]);
+            return year + "";
+        } catch (Exception e) {
+            try {
+                String year =this.getRelease_date().split("-")[0];
+                return year;
+            }catch (Exception ex){
+                return getRelease_date();
+            }
+        }
+    }
+
+    public String getRating(){
+        float rating = Math.round(getVote_average()*10)*1.0f/10;
+        return rating+"";
+    }
+
     public float getVote_average() {
         return vote_average;
     }
@@ -204,10 +224,6 @@ public class MovieModel implements Parcelable, Comparable<MovieModel> {
 
     public boolean isAdult() {
         return adult;
-    }
-
-    public String getOverriew() {
-        return overview;
     }
 
     public List<Genre> getGenres() {
@@ -230,12 +246,14 @@ public class MovieModel implements Parcelable, Comparable<MovieModel> {
 
     public String getGenresString(){
         String genres_str = "";
-        for(Genre genre : genres){
-           if(genres_str.equalsIgnoreCase("")){
-                genres_str+=genre.getName();
-           }else{
-                genres_str+=", "+genre.getName();
-           }
+        if(genres!=null){
+            for(Genre genre : genres){
+                if(genres_str.equalsIgnoreCase("")){
+                    genres_str+=genre.getName();
+                }else{
+                    genres_str+=", "+genre.getName();
+                }
+            }
         }
         return genres_str;
     }
@@ -251,8 +269,6 @@ public class MovieModel implements Parcelable, Comparable<MovieModel> {
         }
         return genres_str;
     }
-
-
     public String getBackdrop_path() {
         return backdrop_path;
     }
