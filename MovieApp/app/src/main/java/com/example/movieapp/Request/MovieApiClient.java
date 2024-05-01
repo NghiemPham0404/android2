@@ -21,7 +21,6 @@ public class MovieApiClient {
     private static MovieApiClient instance;
     private MutableLiveData<List<MovieModel>> mMovies, popularMovies, upcommingMovies;
     private int totalResults;
-
     private RetrieveMoviesRunnable retrieveMoviesRunnable;
     private RetrieveMoviesRunnable retrievePopularMoviesRunnable;
     private RetrieveMoviesRunnable retrieveUpcommingMoviesRunnable;

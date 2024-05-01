@@ -42,7 +42,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/title_film_item_fv_history"
+            android:id="@+id/title_film_favor_history"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -59,7 +59,7 @@
             app:layout_constraintTop_toBottomOf="@+id/shimmer_layout" />
 
         <TextView
-            android:id="@+id/gerne_favor"
+            android:id="@+id/gerne_favor_history"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -75,7 +75,7 @@
             app:layout_constraintTop_toBottomOf="@+id/title_film_item_Lbl" />
 
         <TextView
-            android:id="@+id/publishYear_favor"
+            android:id="@+id/publishYear_favor_history"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"

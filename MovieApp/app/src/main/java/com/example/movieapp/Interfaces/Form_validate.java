@@ -14,4 +14,5 @@ public interface Form_validate {
     public boolean validate();
 
     public void turnOffValidateViews();
+
 }

@@ -1,5 +1,5 @@
 <resources translatable="false">
-    <string name="app_name" >MovieApp</string>
+    <string name="app_name">MovieApp</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="default_web_client_id">200497617735-a5t4rrpnglvid5i5a0d9fd6kteqfnn5t.apps.googleusercontent.com</string>

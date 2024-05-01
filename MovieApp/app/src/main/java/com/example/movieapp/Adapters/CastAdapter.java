@@ -29,11 +29,23 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder> {
     Context context;
     AccountModel loginAccount;
 
-
+    boolean isRoleShown = true;
     public CastAdapter(Context context, List<CastModel> castModels, AccountModel loginAccount) {
         this.context = context;
         this.castModels = castModels;
         this.loginAccount = loginAccount;
+        shortenRole();
+    }
+
+    public CastAdapter(Context context, AccountModel loginAccount) {
+        this.context = context;
+        this.loginAccount = loginAccount;
+        isRoleShown = false;
+    }
+
+
+    public void setCasts(List<CastModel> castModels){
+        this.castModels = castModels;
         shortenRole();
     }
 
@@ -59,16 +71,19 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull CastAdapter.ViewHolder holder, int position) {
         CastModel castModel = castModels.get(position);
-        if (castModel.getCharacter() != null) {
-            holder.charater_cast.setText(castModel.getCharacter());
-        }else if (castModel.getKnown_for_department() != null) {
-            holder.charater_cast.setText(castModel.getKnown_for_department());
+        if(isRoleShown){
+            if (castModel.getCharacter() != null) {
+                holder.charater_cast.setText(castModel.getCharacter());
+            }else if (castModel.getKnown_for_department() != null) {
+                holder.charater_cast.setText(castModel.getKnown_for_department());
+            }
+        }else{
+            holder.charater_cast.setVisibility(View.GONE);
         }
 
         holder.name_cast.setText(castModel.getName());
         holder.shimmer_cast.startShimmerAnimation();
         new ImageLoader().loadImageIntoImageView(context, Credentials.BASE_IMAGE_URL + castModel.getProfile_path(), holder.image_cast, holder.shimmer_cast);
-//        new DownloadImageTask(holder.image_cast, holder.shimmer_cast, Credentials.BASE_IMAGE_URL + castModel.getProfile_path()).execute();
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,7 +97,9 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return castModels.size();
+        if(castModels!=null)
+            return castModels.size();
+        return 0;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
