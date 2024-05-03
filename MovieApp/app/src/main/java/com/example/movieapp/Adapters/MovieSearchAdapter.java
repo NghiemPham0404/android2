@@ -14,7 +14,7 @@ import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
-import com.example.movieapp.View.MovieInteractive;
+import com.example.movieapp.View.MovieInteraction;
 import com.example.movieapp.utils.Credentials;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
@@ -54,7 +54,7 @@ public class MovieSearchAdapter extends RecyclerView.Adapter<MovieSearchAdapter.
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MovieInteractive.openMovieInformation(context, movie.getId(), loginAccount);
+                MovieInteraction.openMovieInformation(context, movie.getId(), loginAccount);
             }
         });
     }

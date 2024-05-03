@@ -472,7 +472,11 @@ public class Movie_infomation extends AppCompatActivity {
             @Override
             public void onResponse(Call<DetailModel> call, Response<DetailModel> response) {
                 if (response.code() == 200) {
-                    changeFavorCall = null;
+                    if(response.body().isFavor()){
+                        MovieInteraction.subcribeToNotification(movie.getId());
+                    }else{
+                        MovieInteraction.unsubcribeToNotification(movie.getId());
+                    }
                 }
             }
 
@@ -507,4 +511,5 @@ public class Movie_infomation extends AppCompatActivity {
         super.onPause();
         unregisterReceiver(downloadReceiver);
     }
+
 }
