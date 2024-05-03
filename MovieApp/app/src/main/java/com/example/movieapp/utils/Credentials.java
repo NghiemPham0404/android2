@@ -42,4 +42,7 @@ public class Credentials {
 
     public static final String functionname_regis = "regis";
     public static final String BASE_MANAGE_URL = "https://script.google.com/macros/s/";
+
+    public static final String USER_FILE_PATH = "user.txt";
+    public static final String RECOMMEND_SEARCH_FILE_PATH = "search.txt";
 }

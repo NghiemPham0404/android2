@@ -19,7 +19,6 @@ import java.io.ObjectOutputStream;
 
 public class LoginAccountRequest {
     public static void saveUserToFile(AccountModel user, Context context) {
-
         try {
             FileOutputStream fileOut = context.openFileOutput("user.txt", Context.MODE_PRIVATE);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);

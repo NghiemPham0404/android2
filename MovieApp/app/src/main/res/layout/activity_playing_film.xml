@@ -6,13 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    android:padding="5dp"
+    android:padding="0dp"
     tools:context=".View.PlayingFilm">
 
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/playing_film_window"
         android:layout_width="0dp"
         android:layout_height="216dp"
+        android:keepScreenOn="true"
         app:controller_layout_id="@layout/exo_playback_control_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="0dp">
+            android:padding="5dp">
 
             <TextView
                 android:id="@+id/film_title_playing"

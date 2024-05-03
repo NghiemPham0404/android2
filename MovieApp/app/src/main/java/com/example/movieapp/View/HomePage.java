@@ -91,8 +91,10 @@ public class HomePage extends Fragment {
     private LinearLayout search_film_group;
     private FilmAdapter filmSearchAdapter, film_adapter_popular, film_adapter_upcomming;
     private ScrollView recyclerView_scrollview;
-    private Timer timer;
     private int currentPage = 0;
+    private Timer timer;
+    private Runnable update;
+    private Handler handler;
 
     public HomePage() {
         // Required empty public constructor
@@ -111,6 +113,15 @@ public class HomePage extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             loginAccount = (AccountModel) getArguments().get("loginAccount");
+        }
+        if(timer!=null){
+            timer.cancel();
+        }
+        if(handler != null){
+            handler.removeCallbacksAndMessages(null);
+        }
+        if(update!=null){
+            update = null;
         }
         movieListSearchViewModel = new ViewModelProvider(this).get(MovieListViewModel.class);
         ObserveAnyChanges();
@@ -285,8 +296,8 @@ public class HomePage extends Fragment {
             }
         });
 
-        final Handler handler = new Handler();
-        final Runnable update = new Runnable() {
+        handler = new Handler();
+         update = new Runnable() {
             public void run() {
                 if(movie_slider.getAdapter()!=null){
                     if (currentPage == movie_slider.getAdapter().getItemCount()) {
@@ -305,12 +316,25 @@ public class HomePage extends Fragment {
             }
         }, 5000, 3000);
     }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        stopTimer();
+    }
+    public void stopTimer() {
+        if (timer != null) {
+            timer.cancel();
+            timer.purge();
+            timer = null;
+        }
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+        }
+    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (timer != null) {
-            timer.cancel();
-        }
+        stopTimer();
     }
 }

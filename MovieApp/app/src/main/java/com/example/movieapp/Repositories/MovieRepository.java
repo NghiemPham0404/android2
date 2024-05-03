@@ -12,8 +12,8 @@ import java.util.List;
 public class MovieRepository {
     private static MovieRepository instance;
     private MovieApiClient movieApiClient;
-    private String query;
-    private int pageNumber, popularPageNumber, upcommingPageNumber;
+    private String query, with_genres, with_origin_country;
+    private int pageNumber, popularPageNumber, upcommingPageNumber, year;
 
     // LiveData
 
@@ -32,8 +32,8 @@ public class MovieRepository {
         return movieApiClient.getMovies();
     }
     public  LiveData<List<MovieModel>> getFavorMovies(){return  movieApiClient.getPopularMovies();}
-
     public LiveData<List<MovieModel>> getUpcommingMovies(){return  movieApiClient.getUpcommingMovies();}
+    public LiveData<List<MovieModel>> getDicorverMovies(){return  movieApiClient.getDiscoverMovies();}
 
     public void searchMovieApi(String query, int pageNumber){
         this.query = query;
@@ -42,7 +42,7 @@ public class MovieRepository {
     }
 
     public void searchMovieApiNextPage(){
-        searchMovieApi(query, pageNumber+1);
+        searchMovieApi(query, ++pageNumber);
     }
 
     public void searchMovieApi(int list_type, int page){
@@ -67,10 +67,16 @@ public class MovieRepository {
         movieApiClient.searchUpcommingMovieApi(++upcommingPageNumber);
     }
 
-    public void discoverMovieApi(String genre_str, String country ,int year, int pageNumber){
-        movieApiClient.discoverMovieApi(genre_str, country, year, pageNumber);
+    public void discoverMovieApi(String with_genres, String with_origin_country ,int year, int pageNumber){
+        this.with_genres = with_genres;
+        this.with_origin_country = with_origin_country;
+        this.year = year;
+        this.pageNumber = pageNumber;
+        movieApiClient.discoverMovieApi(with_genres, with_origin_country, year, pageNumber);
     }
-
+    public void discoverMovieApiNext() {
+        movieApiClient.discoverMovieApi(with_genres, with_origin_country, year, ++pageNumber);
+    }
     public int getTotalResults(){
         return movieApiClient.getTotalResults();
     }

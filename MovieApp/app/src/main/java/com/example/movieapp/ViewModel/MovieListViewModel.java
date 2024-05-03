@@ -25,10 +25,9 @@ public class MovieListViewModel extends ViewModel {
         return movieRepository.getMovies();
     }
     public LiveData<List<MovieModel>> getFavorMovies(){return movieRepository.getFavorMovies();}
-
     public LiveData<List<MovieModel>> getUpcommingMovies(){return movieRepository.getUpcommingMovies();}
 
-
+    public LiveData<List<MovieModel>> getDiscoverMovies(){return  movieRepository.getDicorverMovies();}
     public int getTotalResults(){
         return movieRepository.getTotalResults();
     }
@@ -62,7 +61,11 @@ public class MovieListViewModel extends ViewModel {
         movieRepository.searchUpcommingMovieApiNextPage();
     }
 
-    public void discoverMovieApi(String genre_str, String country ,int year, int pageNumber){
-        movieRepository.discoverMovieApi(genre_str, country, year, pageNumber);
+    public void discoverMovieApi(String with_genres, String with_origin_country ,int year, int pageNumber){
+        movieRepository.discoverMovieApi(with_genres, with_origin_country, year, pageNumber);
+    }
+
+    public void discoverMovieApiNext() {
+        movieRepository.discoverMovieApiNext();
     }
 }

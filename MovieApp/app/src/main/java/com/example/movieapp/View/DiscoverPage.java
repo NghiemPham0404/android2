@@ -7,6 +7,8 @@ import android.content.res.ColorStateList;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -36,6 +38,7 @@ import com.example.movieapp.Request.ImageLoader;
 import com.example.movieapp.Request.MyService;
 import com.example.movieapp.Response.GenreResponse;
 import com.example.movieapp.Response.MovieSearchResponse;
+import com.example.movieapp.ViewModel.MovieListViewModel;
 import com.example.movieapp.utils.Credentials;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -60,7 +63,6 @@ public class DiscoverPage extends Fragment {
     AccountModel loginAccount;
     List<MovieModel.Genre> genres;
     List<CountryModel> regions;
-    RecyclerView recyclerview_discover;
     Button init_discover_filter_btn;
     FloatingActionButton pre_discover_btn, next_discover_btn;
     PopupWindow discoverFilterPopup;
@@ -79,6 +81,8 @@ public class DiscoverPage extends Fragment {
     ImageView image_view_discover;
     TextView film_title_discover, overview_discover, movie_rating, publish_date_discover,  time_discover, current_pos, max_pos;
 
+    MovieListViewModel movieListViewModel;
+
     public DiscoverPage() {
         // Required empty public constructor
     }
@@ -95,6 +99,41 @@ public class DiscoverPage extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             loginAccount = getArguments().getParcelable("loginAccount");
+        }
+        movieListViewModel = new ViewModelProvider(this).get(MovieListViewModel.class);
+        ObserveAnyChange();
+    }
+
+    public void ObserveAnyChange(){
+        if(movieListViewModel!=null){
+            movieListViewModel.getDiscoverMovies().observe(this, new Observer<List<MovieModel>>() {
+                @Override
+                public void onChanged(List<MovieModel> movieModels) {
+                    if(movieModels!=null){
+                        Log.i("discover list", " not null");
+                        if(movieModels.size()>0){
+                            movies = movieModels;
+                            if(position<movies.size()){
+                                Log.i("discover list", "lenght > 0");
+                                current_pos.setText(""+(position +1));
+                                max_pos.setText(""+movies.size());
+                                initDisplayItem(position);
+                            }
+                            if(position>movies.size()){
+                                position = 0;
+                                current_pos.setText(""+(position +1));
+                                max_pos.setText(""+movies.size());
+                                initDisplayItem(position);
+                            }
+                        }else{
+                            Toast.makeText(getContext(), "There is no results", Toast.LENGTH_SHORT).show();
+                            Log.e("discover list", " length=0");
+                        }
+                    }else{
+                        Log.i("discover list", " null");
+                    }
+                }
+            });
         }
     }
 
@@ -114,7 +153,6 @@ public class DiscoverPage extends Fragment {
 
         init_discover_filter_btn = view.findViewById(R.id.init_discover_filter_btn);
         selected_chip = view.findViewById(R.id.chip_group_discover);
-        recyclerview_discover = view.findViewById(R.id.recycler_discover);
         discover_item = view.findViewById(R.id.discover_item);
         pre_discover_btn = view.findViewById(R.id.pre_discover_btn);
         next_discover_btn = view.findViewById(R.id.next_discover_btn);
@@ -129,6 +167,7 @@ public class DiscoverPage extends Fragment {
     }
 
     public void initFeatures(){
+        position = 0;
         displayNonFilter();
         initGenres();
         initRegion();
@@ -289,6 +328,7 @@ public class DiscoverPage extends Fragment {
             @Override
             public void onClick(View v) {
                 acceptFilter();
+                discoverFilterPopup.dismiss();
             }
         });
     }
@@ -337,28 +377,7 @@ public class DiscoverPage extends Fragment {
 
 
     public void displayFilterSelection(){
-        hideDisplayNonFilter();
-        Call<MovieSearchResponse> call = MyService.getMovieApi().discoverMovie(Credentials.API_KEY, gerne_id_string, selected_country, selected_year, 1);
-        call.enqueue(new Callback<MovieSearchResponse>() {
-            @Override
-            public void onResponse(Call<MovieSearchResponse> call, Response<MovieSearchResponse> response) {
-                if(response.code() == 200){
-                    movies = response.body().getMovies();
-                    if(movies.size() > 0){
-                        position = 0;
-                        current_pos.setText(""+(position +1));
-                        max_pos.setText(""+movies.size());
-                        initDisplayItem(0);
-                    }
-                    Log.i("INIT DISCOVER", "SUCCESSFUL");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MovieSearchResponse> call, Throwable t) {
-                Log.e("INIT DISCOVER", "FAIL");
-            }
-        });
+        movieListViewModel.discoverMovieApi( gerne_id_string, selected_country, selected_year, 1);
     }
     public void initDisplayItem(int pos){
         pre_discover_btn.setOnClickListener(new View.OnClickListener() {
@@ -378,8 +397,8 @@ public class DiscoverPage extends Fragment {
             @Override
             public void onClick(View v) {
                 if(pos == movies.size()-1){
-                    position = 0;
-                    initDisplayItem(position);
+                    displayNextNonFilter();
+                    position =pos+1;
                 }else{
                     position =pos+1;
                     initDisplayItem(position);
@@ -413,40 +432,10 @@ public class DiscoverPage extends Fragment {
     }
 
     public void displayNonFilter(){
-        hideDisplayFilter();
-        Call<MovieSearchResponse> call = MyService.getMovieApi().searchMoviesList(Credentials.BASE_URL
-                +Credentials.NOW_PLAYING, Credentials.API_KEY, 1);
-        call.enqueue(new Callback<MovieSearchResponse>() {
-            @Override
-            public void onResponse(Call<MovieSearchResponse> call, Response<MovieSearchResponse> response) {
-                movies = response.body().getMovies();
-                recyclerview_discover.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-                FilmAdapter filmAdapter = new FilmAdapter(movies,getContext(), loginAccount);
-                recyclerview_discover.setAdapter(filmAdapter);
-            }
-
-            @Override
-            public void onFailure(Call<MovieSearchResponse> call, Throwable t) {
-                Log.e("INIT DEFAULT DISCOVER", "FAIL");
-            }
-        });
-    }
-    public void hideDisplayFilter(){
-        discover_item.setVisibility(View.GONE);
-        next_discover_btn.setVisibility(View.GONE);
-        pre_discover_btn.setVisibility(View.GONE);
-        position_bar.setVisibility(View.GONE);
-
-        recyclerview_discover.setVisibility(View.VISIBLE);
+        movieListViewModel.discoverMovieApi(" ", " ", 2024, 1);
     }
 
-    public void hideDisplayNonFilter(){
-        recyclerview_discover.setVisibility(View.GONE);
-
-        discover_item.setVisibility(View.VISIBLE);
-        next_discover_btn.setVisibility(View.VISIBLE);
-        pre_discover_btn.setVisibility(View.VISIBLE);
-        position_bar.setVisibility(View.VISIBLE);
+    public void displayNextNonFilter(){
+        movieListViewModel.discoverMovieApiNext();
     }
-
 }

@@ -70,6 +70,7 @@ public class HomeActivity extends AppCompatActivity {
         navigationView.setOnNavigationItemReselectedListener(item -> {
             alert_out = 1;
             if(item.getItemId() == R.id.home){
+                adapter.homePage.stopTimer();
                 adapter.homePage.initFeatures();
             }else if(item.getItemId() == R.id.discover){
                 adapter.discoverPage.initFeatures();

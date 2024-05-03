@@ -19,11 +19,13 @@ import retrofit2.Response;
 
 public class MovieApiClient {
     private static MovieApiClient instance;
-    private MutableLiveData<List<MovieModel>> mMovies, popularMovies, upcommingMovies;
+    private MutableLiveData<List<MovieModel>> mMovies, popularMovies, upcommingMovies, discoverMovies;
     private int totalResults;
     private RetrieveMoviesRunnable retrieveMoviesRunnable;
     private RetrieveMoviesRunnable retrievePopularMoviesRunnable;
     private RetrieveMoviesRunnable retrieveUpcommingMoviesRunnable;
+    private RetrieveMoviesRunnable retrieveDiscoverMoviesRunnable;
+    private RetrieveMoviesRunnable retrieveRecommendSearchMoviesRunnable;
 
     public static MovieApiClient getInstance() {
         if (instance == null) {
@@ -36,6 +38,7 @@ public class MovieApiClient {
         mMovies = new MutableLiveData<>();
         popularMovies = new MutableLiveData<>();
         upcommingMovies = new MutableLiveData<>();
+        discoverMovies = new MutableLiveData<>();
     }
 
     public MutableLiveData<List<MovieModel>> getMovies() {
@@ -47,7 +50,9 @@ public class MovieApiClient {
     public MutableLiveData<List<MovieModel>> getUpcommingMovies() {
         return upcommingMovies;
     }
-
+    public MutableLiveData<List<MovieModel>> getDiscoverMovies() {
+        return discoverMovies;
+    }
     public void searchMovieApi(String query, int page) {
         if (retrieveMoviesRunnable != null) {
             retrieveMoviesRunnable = null;
@@ -97,16 +102,27 @@ public class MovieApiClient {
     }
 
     public void discoverMovieApi(String genre_str, String country ,int year, int pageNumber){
-        if(retrieveMoviesRunnable != null) {
-            retrieveMoviesRunnable = null;
+        if(retrieveDiscoverMoviesRunnable != null) {
+            retrieveDiscoverMoviesRunnable = null;
         }
-        retrieveMoviesRunnable = new RetrieveMoviesRunnable(genre_str, country, year, pageNumber);
-        final Future myHandler = AppExecutors.getInstance().networkIO().submit(new Runnable() {
+        retrieveDiscoverMoviesRunnable = new RetrieveMoviesRunnable(genre_str, country, year, pageNumber);
+        final Future myHandler = AppExecutors.getInstance().networkIO().submit(retrieveDiscoverMoviesRunnable);
+
+        AppExecutors.getInstance().networkIO().schedule(new Runnable() {
             @Override
             public void run() {
-
+                // Hủy lời gọi Retrofit
+                myHandler.cancel(true);
             }
-        });
+        }, 10, TimeUnit.SECONDS);
+    }
+
+    public void searchRecommendMovieApi(String search_text){
+        if(retrieveRecommendSearchMoviesRunnable!=null){
+            retrieveRecommendSearchMoviesRunnable = null;
+        }
+        retrieveRecommendSearchMoviesRunnable = new RetrieveMoviesRunnable("", 1);
+        final Future myHandler = AppExecutors.getInstance().networkIO().submit( retrieveRecommendSearchMoviesRunnable);
 
         AppExecutors.getInstance().networkIO().schedule(new Runnable() {
             @Override
@@ -165,6 +181,7 @@ public class MovieApiClient {
                 // discover
                 if(genre_str!=null){
                     response = getMovies(genre_str, country, year, pageNumber).execute();
+                    parseDataIntoList(response, discoverMovies);
                 }else{
                     //search
                     if (list_type == 0) {
