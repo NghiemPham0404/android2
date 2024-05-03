@@ -9,8 +9,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,12 +51,10 @@ public class ReviewApdater extends RecyclerView.Adapter<ReviewApdater.ViewHolder
             DetailModel detailModel = detailModels.get(i);
             try {
                 Float.parseFloat(detailModel.getRating());
-                Toast.makeText(context, "rating : "+detailModel.getRating(), Toast.LENGTH_SHORT).show();
             }catch (Exception e){
                 detailModels.remove(i);
             }
         }
-        Toast.makeText(context, "total rating : "+detailModels.size(), Toast.LENGTH_SHORT).show();
     }
 
     @NonNull

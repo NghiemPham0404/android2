@@ -35,7 +35,7 @@ public class Credentials {
     public static final String functionname_detail = "detail";
     public static final String functionname_video = "movies";
 
-    public static final String deleteDetail = "deleteDetail";
+    public static final String functionname_delete_detail = "deleteDetail";
     public static final String functionname_login = "login";
 
     public static final String functionname_regis = "regis";

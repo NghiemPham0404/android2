@@ -34,13 +34,8 @@ public class MovieInteraction {
         context.startActivity(play_movie_intent);
     }
 
-    public static void initVideoMovie(Button play_btn, Button favor_btn, MovieModel movie, AccountModel loginAccount, Context context){
 
-    }
 
-    public static void initVideoMovie(Button play_btn, Button play_trailer_btn, Button favor_btn, MovieModel movie, AccountModel loginAccount, Context context){
-
-    }
 
     public static void subcribeToNotification(int movie_id){
         FirebaseMessaging.getInstance().subscribeToTopic("notification"+movie_id)
