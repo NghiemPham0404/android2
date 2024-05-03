@@ -16,7 +16,6 @@ import com.example.movieapp.Model.CreditModel;
 import com.example.movieapp.R;
 import com.example.movieapp.View.Movie_infomation;
 
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -34,8 +33,22 @@ public class CareerAdapter extends RecyclerView.Adapter<CareerAdapter.ViewHolder
         this.creditModelList = creditModelList;
         this.creditModelList.sort(Comparator.reverseOrder());
         this.loginAccount = loginAccount;
+        shortenList();
+        decideToDisplayYear();
+    }
 
-       decideToDisplayYear();
+    public void shortenList(){
+        for(int i =0; i<creditModelList.size()-1; i++){
+            for(int j=i+1; j<creditModelList.size(); j++){
+                if(creditModelList.get(i).getTitle().equalsIgnoreCase(creditModelList.get(j).getTitle())){
+                    String role1 = creditModelList.get(i).getCharacter()!=null?creditModelList.get(i).getCharacter():creditModelList.get(i).getJob();
+                    String role2 = creditModelList.get(j).getCharacter()!=null?creditModelList.get(j).getCharacter():creditModelList.get(j).getJob();
+                    creditModelList.get(i).setCharacter(role1 + "," + role2);
+                    creditModelList.remove(j);
+                    j--;
+                }
+            }
+        }
     }
 
     public void decideToDisplayYear(){
@@ -50,7 +63,6 @@ public class CareerAdapter extends RecyclerView.Adapter<CareerAdapter.ViewHolder
             }
         }
     }
-
 
     @NonNull
     @Override

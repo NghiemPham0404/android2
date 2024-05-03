@@ -88,7 +88,7 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
     private RecyclerView recommendRecycler;
     private Button reviewButton;
     private ToggleButton favorButton;
-    private boolean full_screen, volume = true, turnOffLight = false;
+    private boolean full_screen, volume = true;
     private PopupWindow reviewSessionPopup, continuePlaybackPopup, resolutionChangePopup;
     private RecyclerView reviewsRecyclerView;
     private Call<DetailResponse> detailResponseCall;
@@ -102,7 +102,7 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
     private ReviewApdater reviewApdater;
 
     // các biến hỗ trợ phóng to màn hình
-    RelativeLayout zoom_layout;
+    View zoom_layout;
     ScaleGestureDetector scaleDetector;
     GestureDetectorCompat gestureDetector;
     private static final float MIN_ZOOM = 1.0f;
@@ -134,6 +134,7 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        Log.i("touch", "true");
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 if (scale > MIN_ZOOM) {
@@ -163,14 +164,14 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
         scaleDetector.onTouchEvent(event);
         gestureDetector.onTouchEvent(event);
         if((mode == Mode.DRAG) && scale >= MIN_ZOOM || mode == Mode.ZOOM){
-            zoom_layout.requestDisallowInterceptTouchEvent(true);
+//            zoom_layout.requestDisallowInterceptTouchEvent(true);
             float maxDx = (child().getWidth() - (child().getWidth()/scale)) / 2 * scale;
             float maxDy = (child().getHeight() - (child().getHeight()/scale))/2 * scale;
             dx = Math.min(Math.max(dx, -maxDx), maxDx);
             dy = Math.min(Math.max(dy, -maxDy) ,maxDy);
             applyScaleAndTranslation();
         }
-        return true;
+        return false;
     }
     private void applyScaleAndTranslation(){
         child().setScaleX(scale);
@@ -243,10 +244,8 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
         public boolean onSingleTapConfirmed(@NonNull MotionEvent e) {
             if (isEnable) {
                 isEnable = false;
-                hidePlayerControl();
             } else {
                 isEnable = true;
-                showPlayerControl();
             }
             return super.onSingleTapConfirmed(e);
         }
@@ -319,7 +318,7 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
     }
 
     public void initComponentsLandcaspe() {
-        zoom_layout = findViewById(R.id.zoom_layout);
+        zoom_layout = playerView;
         display = getWindowManager().getDefaultDisplay();
         size = new Point();
         display.getSize(size);
@@ -529,14 +528,7 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
         playerView = findViewById(R.id.playing_film_window);
         initializePlayer();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
-        if (getWindow().getDecorView() != null) {
-            View decorView = getWindow().getDecorView();
-            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                    WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-        }
+       hideSystemUI();
         maximize_btn.setBackgroundResource(R.drawable.exit_maximize_ic);
         pic_in_pic_btn.setVisibility(View.GONE);
         initComponentsLandcaspe();
@@ -580,8 +572,13 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        player.release();
+        if(full_screen){
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            full_screen = false;
+        }else{
+            super.onBackPressed();
+            player.release();
+        }
     }
 
     @Override
@@ -909,14 +906,16 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
         resolutionChangePopup.dismiss();
     }
     private void hideSystemUI() {
-        View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        // Hide the status bar and navigation bar
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
     private void showSystemUI() {
         View decorView = getWindow().getDecorView();

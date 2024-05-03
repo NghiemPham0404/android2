@@ -8,7 +8,9 @@
     android:layout_gravity="bottom"
     android:background="@drawable/gradient_darken_black"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    app:layout_maxHeight="410dp"
+    app:layout_maxWidth="1600dp">
 
     <!-- Playback controls -->
     <LinearLayout

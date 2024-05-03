@@ -1,6 +1,5 @@
 package com.example.movieapp.Response;
 
-import com.example.movieapp.Model.CastModel;
 import com.example.movieapp.Model.MovieModel;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

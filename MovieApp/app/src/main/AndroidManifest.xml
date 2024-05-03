@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.MANAGE_DEVICE_POLICY_MICROPHONE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission-sdk-23 android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"/>
 
     <application
         android:allowBackup="true"
@@ -64,7 +65,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".View.UserPackage.UserInfomation.UpdateUser_Information"
-            android:exported="false"
+            android:exported="true"
             android:screenOrientation="portrait" />
         <activity
             android:name=".View.UserPackage.UserInfomation.User_Infomation"
@@ -114,11 +115,20 @@
 
         <service
             android:name=".Services.MyFirebaseMessagingService"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <receiver
+            android:name=".Services.DownloadReceiver"
+            android:exported="false"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="DownloadManager.ACTION_DOWNLOAD_COMPLETE" />
+            </intent-filter>
+        </receiver>
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"

@@ -2,7 +2,7 @@ package com.example.movieapp.Repositories;
 
 import androidx.lifecycle.LiveData;
 
-import com.example.movieapp.Model.CastModel;
+import com.example.movieapp.Model.PersonModel;
 import com.example.movieapp.Request.PersonApiClient;
 
 import java.util.List;
@@ -12,6 +12,7 @@ public class PersonRepository {
     private PersonApiClient personApiClient;
     private String query;
     private int page;
+    private int person_id;
     public static PersonRepository getInstance(){
         if(instance == null){
             instance = new PersonRepository();
@@ -28,7 +29,16 @@ public class PersonRepository {
       searchPeople(query, page+1);
     }
 
-    public LiveData<List<CastModel>> getPeople(){
+    public LiveData<List<PersonModel>> getPeople(){
         return personApiClient.getPeople();
+    }
+
+    public void searchPerson(int person_id) {
+        this.person_id = person_id;
+        personApiClient.searchPerson(person_id);
+    }
+
+    public LiveData<PersonModel> getPerson(){
+        return personApiClient.getPerson();
     }
 }

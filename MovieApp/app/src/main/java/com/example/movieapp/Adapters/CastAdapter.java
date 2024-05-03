@@ -6,14 +6,13 @@ import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.movieapp.Model.AccountModel;
-import com.example.movieapp.Model.CastModel;
+import com.example.movieapp.Model.PersonModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
 import com.example.movieapp.View.PersonActivity;
@@ -25,12 +24,12 @@ import java.util.List;
 
 public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder> {
 
-    List<CastModel> castModels;
+    List<PersonModel> castModels;
     Context context;
     AccountModel loginAccount;
 
     boolean isRoleShown = true;
-    public CastAdapter(Context context, List<CastModel> castModels, AccountModel loginAccount) {
+    public CastAdapter(Context context, List<PersonModel> castModels, AccountModel loginAccount) {
         this.context = context;
         this.castModels = castModels;
         this.loginAccount = loginAccount;
@@ -44,7 +43,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder> {
     }
 
 
-    public void setCasts(List<CastModel> castModels){
+    public void setCasts(List<PersonModel> castModels){
         this.castModels = castModels;
         shortenRole();
     }
@@ -70,7 +69,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull CastAdapter.ViewHolder holder, int position) {
-        CastModel castModel = castModels.get(position);
+        PersonModel castModel = castModels.get(position);
         if(isRoleShown){
             if (castModel.getCharacter() != null) {
                 holder.charater_cast.setText(castModel.getCharacter());

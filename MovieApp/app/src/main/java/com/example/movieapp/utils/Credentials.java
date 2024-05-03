@@ -27,9 +27,7 @@ public class Credentials {
     //todo: TÌM KIẾM NGƯỜI HOẠT ĐỘNG NGHỆ THUẬT
     //https://api.themoviedb.org/3/person/{person_id}
     public static final String search_person = "3/search/person";
-
-
-
+    public static final String append_person = "external_ids,movie_credits";
     // TODO : SIGNIN, SIGNUP
     public static final String signup_link = "https://script.google.com/macros/s/AKfycbztDFqDQ27AEJtc7HR5PQa_Jtj1sTYum8yyP94FOqhRzT_nPiu5ySlHsQ3c3oll77cA/exec";
 

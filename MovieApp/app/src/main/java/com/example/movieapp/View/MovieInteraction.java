@@ -2,6 +2,7 @@ package com.example.movieapp.View;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Movie;
 import android.os.Parcelable;
 import android.util.Log;
 import android.widget.Button;
@@ -24,7 +25,20 @@ public class MovieInteraction {
         context.startActivity(movie_info_intent);
     }
 
-    public static void initPlayMovieButton(Context context, String url, String url720, Button playButton, MovieModel movie, AccountModel loginAccount){
+    public static void playMovie(Context context, MovieModel movie, AccountModel loginAccount, String url, String url720){
+        Intent play_movie_intent = new Intent(context, PlayingFilm.class);
+        play_movie_intent.putExtra("movie", movie);
+        play_movie_intent.putExtra("loginAccount", (Parcelable) loginAccount);
+        play_movie_intent.putExtra("videoUrl", url);
+        play_movie_intent.putExtra("videoUrl720", url720);
+        context.startActivity(play_movie_intent);
+    }
+
+    public static void initVideoMovie(Button play_btn, Button favor_btn, MovieModel movie, AccountModel loginAccount, Context context){
+
+    }
+
+    public static void initVideoMovie(Button play_btn, Button play_trailer_btn, Button favor_btn, MovieModel movie, AccountModel loginAccount, Context context){
 
     }
 
