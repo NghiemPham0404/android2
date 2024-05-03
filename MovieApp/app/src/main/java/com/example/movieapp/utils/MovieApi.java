@@ -1,6 +1,6 @@
 package com.example.movieapp.utils;
 
-import com.example.movieapp.Model.CastModel;
+import com.example.movieapp.Model.PersonModel;
 import com.example.movieapp.Model.CountryModel;
 import com.example.movieapp.Model.ExternalLinkModel;
 import com.example.movieapp.Model.MovieModel;
@@ -58,24 +58,12 @@ public interface MovieApi {
     );
 
     @GET("3/person/{person_id}") // get person infomation
-    Call<CastModel> searchPersonByID(
+    Call<PersonModel> searchPersonByID(
             @Path("person_id") int person_id,
+            @Query("append_to_response") String append_to_response,
             @Query("api_key") String key
     );
 
-    // Person Credits by id
-    @GET("3/person/{person_id}/movie_credits")
-    Call<CreditResponse> searchPersonCreditByID(
-            @Path("person_id") int person_id,
-            @Query("api_key") String key
-    );
-
-    // External Link by id
-    @GET("3/person/{person_id}/external_ids")
-    Call<ExternalLinkModel> searchPersonExternalIdByID(
-            @Path("person_id") int person_id,
-            @Query("api_key") String key
-    );
 
     //https://api.themoviedb.org/3/search/person
     @GET("3/search/person")
@@ -105,7 +93,7 @@ public interface MovieApi {
     Call<MovieModel> searchMovieDetail(
             @Path("movie_id") int movie_id,
             @Query("api_key") String key,
-            @Query("append_to_response") String append_to_ressponse
+            @Query("append_to_response") String append_to_response
     );
 
     @GET("3/movie/{movie_id}/recommendations")

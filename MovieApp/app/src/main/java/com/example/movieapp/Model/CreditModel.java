@@ -3,10 +3,10 @@ package com.example.movieapp.Model;
 import java.util.Date;
 
 public class CreditModel implements  Comparable<CreditModel>{
-    public CreditModel(int id, String title, String credit_id, String character,String known_for_department, String release_date, float vote_average) {
+    public CreditModel(int id, String title, String credit_id, String character,String job, String release_date, float vote_average) {
         this.credit_id = credit_id;
         this.character = character;
-        this.known_for_department = known_for_department;
+        this.job = job;
         this.release_date = release_date;
         this.vote_average = vote_average;
         this.id = id;
@@ -15,13 +15,18 @@ public class CreditModel implements  Comparable<CreditModel>{
 
     private int id;
     private String credit_id;
-    private String character;
 
-    public String getKnown_for_department() {
-        return known_for_department;
+    public void setCharacter(String character) {
+        this.character = character;
     }
 
-    private String known_for_department;
+    private String character;
+
+    public String getJob() {
+        return job;
+    }
+
+    private String job;
     private String release_date;
     private float vote_average;
 

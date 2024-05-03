@@ -2,7 +2,7 @@ package com.example.movieapp.Response;
 
 import androidx.annotation.NonNull;
 
-import com.example.movieapp.Model.CastModel;
+import com.example.movieapp.Model.PersonModel;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -11,7 +11,7 @@ import java.util.List;
 public class PeopleResponse {
     @SerializedName("results")
     @Expose
-    List<CastModel> people;
+    List<PersonModel> people;
 
     @SerializedName("total_results")
     @Expose
@@ -20,7 +20,7 @@ public class PeopleResponse {
         return totalResults;
     }
 
-    public List<CastModel> getPeople(){
+    public List<PersonModel> getPeople(){
      return people;
     }
 

@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
@@ -32,7 +31,7 @@ import android.widget.ToggleButton;
 import com.example.movieapp.Adapters.CastAdapter;
 import com.example.movieapp.Adapters.ReviewApdater;
 import com.example.movieapp.Model.AccountModel;
-import com.example.movieapp.Model.CastModel;
+import com.example.movieapp.Model.PersonModel;
 import com.example.movieapp.Model.DetailModel;
 import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.R;
@@ -134,18 +133,15 @@ public class Movie_infomation extends AppCompatActivity {
         youtube_btn = findViewById(R.id.youtube_info);
         instagram_btn = findViewById(R.id.instagram_info);
         tiktok_btn = findViewById(R.id.tiktok_info);
-
-
-        downloadReceiver = new DownloadReceiver(download_btn);
     }
 
     private void initCast() {
-        List<CastModel> castModels = movie.getCredits().getCast();
+        List<PersonModel> castModels = movie.getCredits().getCast();
         castAdapter = new CastAdapter(Movie_infomation.this, castModels, loginAccount);
     }
 
     private void initCrew() {
-        List<CastModel> crewModels = movie.getCredits().getCrew();
+        List<PersonModel> crewModels = movie.getCredits().getCrew();
         crewAdapter = new CastAdapter(Movie_infomation.this, crewModels, loginAccount);
     }
 
@@ -489,6 +485,7 @@ public class Movie_infomation extends AppCompatActivity {
     }
 
     public void downloadMovie(String url) {
+        downloadReceiver = new DownloadReceiver(download_btn, this);
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
         request.setTitle(movie.getTitle());
         request.setDescription(movie.getTitle() + "Downloaded Movie : " + movie.getTitle());
@@ -497,19 +494,18 @@ public class Movie_infomation extends AppCompatActivity {
 
         DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         downloadManager.enqueue(request);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         registerReceiver(downloadReceiver, filter);
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(downloadReceiver);
     }
 
 }

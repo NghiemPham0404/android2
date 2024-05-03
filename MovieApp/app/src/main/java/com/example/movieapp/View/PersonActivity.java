@@ -1,6 +1,8 @@
 package com.example.movieapp.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -9,26 +11,23 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.movieapp.Adapters.CareerAdapter;
-import com.example.movieapp.Adapters.CastAdapter;
 import com.example.movieapp.Model.AccountModel;
-import com.example.movieapp.Model.CastModel;
 import com.example.movieapp.Model.CreditModel;
+import com.example.movieapp.Model.PersonModel;
 import com.example.movieapp.Model.ExternalLinkModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
 import com.example.movieapp.Request.MyService;
-import com.example.movieapp.Response.CreditResponse;
+import com.example.movieapp.ViewModel.PersonViewModel;
 import com.example.movieapp.utils.Credentials;
 import com.example.movieapp.utils.MovieApi;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.List;
 
@@ -38,8 +37,8 @@ import retrofit2.Response;
 
 public class PersonActivity extends AppCompatActivity {
 
-    private int cast_id;
-    private CastModel cast;
+    private int person_id;
+    private PersonModel personModel;
     private MovieApi movieApi = MyService.getMovieApi();
     ImageView avatar;
     ImageButton twitter_x, facebook, instagram, tiktok, youtube;
@@ -52,7 +51,7 @@ public class PersonActivity extends AppCompatActivity {
     AccountModel loginAccount;
 
     ImageButton back_btn;
-
+    private PersonViewModel personViewModel;
 
 
     @Override
@@ -60,12 +59,29 @@ public class PersonActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person);
 
-        cast_id = getIntent().getIntExtra("cast_id", -1);
+        person_id = getIntent().getIntExtra("cast_id", -1);
         loginAccount = getIntent().getParcelableExtra("loginAccount");
-
+        personViewModel = new ViewModelProvider(this).get(PersonViewModel.class);
+        ObserveAnyChange();
         initComponents();
+        initFeatures();
     }
-    public void initComponents(){
+
+    public void ObserveAnyChange() {
+        if (personViewModel != null) {
+            personViewModel.getPerson().observe(this, new Observer<PersonModel>() {
+                @Override
+                public void onChanged(PersonModel person) {
+                    if (person != null) {
+                        personModel = person;
+                        initInformation();
+                    }
+                }
+            });
+        }
+    }
+
+    public void initComponents() {
         back_btn = findViewById(R.id.backBtn_person);
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,7 +99,7 @@ public class PersonActivity extends AppCompatActivity {
         pg_up_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                scrollView.scrollTo(0,0);
+                scrollView.scrollTo(0, 0);
             }
         });
 
@@ -100,99 +116,64 @@ public class PersonActivity extends AppCompatActivity {
         biography = findViewById(R.id.biography_person);
 
         career_recyclerView = findViewById(R.id.career_recyclerview_person);
-        initInformation();
+    }
+    public void initFeatures(){
+        personViewModel.searchPerson(person_id);
+    }
+    public void initInformation() {
         initCareer();
         initExternalLink();
+        name.setText(personModel.getName());
+        know_for.setText(personModel.getKnown_for_department());
+        String gender_str = (personModel.getGender() == 0) ? "Male" : "Female";
+        gender.setText(gender_str);
+        date_of_birth.setText(personModel.getBirthday());
+        place_of_birth.setText(personModel.getPlace_of_birth());
+        biography.setText(personModel.getBiography());
+        new ImageLoader().loadImageIntoImageView(PersonActivity.this, Credentials.BASE_IMAGE_URL + personModel.getProfile_path(), avatar);
+        new ImageLoader().loadImageIntoImageView(PersonActivity.this, Credentials.BASE_IMAGE_URL + personModel.getProfile_path(), findViewById(R.id.imageView6));
     }
 
+    public void initExternalLink() {
+        ExternalLinkModel externalLinkModel = personModel.getExternal_ids();
+        if (externalLinkModel.getFacebook_id() != null)
+            initExternalLinkButtons(externalLinkModel.getFacebook_id(), 0);
+        else
+            facebook.setVisibility(View.GONE);
 
-    public void initInformation(){
-        Call<CastModel> personResponseCall = movieApi.searchPersonByID(cast_id, Credentials.API_KEY);
-        personResponseCall.enqueue(new Callback<CastModel>() {
-            @Override
-            public void onResponse(Call<CastModel> call, Response<CastModel> response) {
-                cast = response.body();
-                    name.setText(cast.getName());
-                    know_for.setText(cast.getKnown_for_department());
-                    String gender_str = (cast.getGender()==0)?"Male":"Female";
-                    gender.setText(gender_str);
-                    date_of_birth.setText(cast.getBirthday());
-                    place_of_birth.setText(cast.getPlace_of_birth());
-                    biography.setText(cast.getBiography());
-                    new ImageLoader().loadImageIntoImageView(PersonActivity.this ,Credentials.BASE_IMAGE_URL + cast.getProfile_path(), avatar);
-            }
+        if (externalLinkModel.getInstagram_id() != null)
+            initExternalLinkButtons(externalLinkModel.getInstagram_id(), 1);
+        else
+            instagram.setVisibility(View.GONE);
 
-            @Override
-            public void onFailure(Call<CastModel> call, Throwable t) {
-                Log.e("ERROR CAST", "error : false to load Person");
-            }
-        });
-    }
-    public void initExternalLink(){
-        Call<ExternalLinkModel> externalLinkModelCall = movieApi.searchPersonExternalIdByID(cast_id, Credentials.API_KEY);
-        externalLinkModelCall.enqueue(new Callback<ExternalLinkModel>() {
-            @Override
-            public void onResponse(Call<ExternalLinkModel> call, Response<ExternalLinkModel> response) {
-                if(response.code() == 200){
-                    ExternalLinkModel externalLinkModel = response.body();
-                    if(externalLinkModel.getFacebook_id()!=null)
-                        initExternalLinkButtons(externalLinkModel.getFacebook_id(), 0);
-                    else
-                       facebook.setVisibility(View.GONE);
+        if (externalLinkModel.getTwitter_id() != null)
+            initExternalLinkButtons(externalLinkModel.getTwitter_id(), 2);
+        else
+            twitter_x.setVisibility(View.GONE);
 
-                    if(externalLinkModel.getInstagram_id()!=null)
-                        initExternalLinkButtons(externalLinkModel.getInstagram_id(), 1);
-                    else
-                        instagram.setVisibility(View.GONE);
+        if (externalLinkModel.getYoutube_id() != null)
+            initExternalLinkButtons(externalLinkModel.getYoutube_id(), 3);
+        else
+            youtube.setVisibility(View.GONE);
 
-                    if(externalLinkModel.getTwitter_id()!=null)
-                        initExternalLinkButtons(externalLinkModel.getTwitter_id(), 2);
-                    else
-                        twitter_x.setVisibility(View.GONE);
-
-                    if(externalLinkModel.getYoutube_id()!=null)
-                        initExternalLinkButtons(externalLinkModel.getYoutube_id(), 3);
-                    else
-                        youtube.setVisibility(View.GONE);
-
-                    if(externalLinkModel.getTiktok_id()!=null)
-                        initExternalLinkButtons(externalLinkModel.getTiktok_id(), 4);
-                    else
-                       tiktok.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ExternalLinkModel> call, Throwable t) {
-
-            }
-        });
+        if (externalLinkModel.getTiktok_id() != null)
+            initExternalLinkButtons(externalLinkModel.getTiktok_id(), 4);
+        else
+            tiktok.setVisibility(View.GONE);
     }
 
-    public void initCareer(){
-        Call<CreditResponse> creditListResponseCall = movieApi.searchPersonCreditByID(cast_id, Credentials.API_KEY);
-        creditListResponseCall.enqueue(new Callback<CreditResponse>() {
-            @Override
-            public void onResponse(Call<CreditResponse> call, Response<CreditResponse> response) {
-                if(response.code()==200){
-                    List<CreditModel> creditModelList = response.body().getCreditModelList();
-                    CareerAdapter careerAdapter = new CareerAdapter(PersonActivity.this, creditModelList, loginAccount);
+    public void initCareer() {
+        List<CreditModel> creditModelList = personModel.getMovie_credits().getCast();
+        creditModelList.addAll(personModel.getMovie_credits().getCrew());
+        CareerAdapter careerAdapter = new CareerAdapter(PersonActivity.this, creditModelList, loginAccount);
 
-                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(PersonActivity.this);
-                     career_recyclerView.setAdapter(careerAdapter);
-                     career_recyclerView.setLayoutManager(linearLayoutManager);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CreditResponse> call, Throwable t) {
-                Log.e("ERROR CAST", "error : false to load Person Credit");
-            }
-        });
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(PersonActivity.this);
+        career_recyclerView.setAdapter(careerAdapter);
+        career_recyclerView.setLayoutManager(linearLayoutManager);
     }
 
-    public void initExternalLinkButtons(String url, int type){
-        switch (type){
+    public void initExternalLinkButtons(String url, int type) {
+        switch (type) {
             case 0:
                 facebook.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -202,7 +183,7 @@ public class PersonActivity extends AppCompatActivity {
                     }
                 });
                 break;
-            case 1 :
+            case 1:
                 instagram.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -220,7 +201,7 @@ public class PersonActivity extends AppCompatActivity {
                     }
                 });
                 break;
-            case 3 :
+            case 3:
                 youtube.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -229,8 +210,8 @@ public class PersonActivity extends AppCompatActivity {
                     }
                 });
                 break;
-            case 4 :
-               tiktok.setOnClickListener(new View.OnClickListener() {
+            case 4:
+                tiktok.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent tiktok_intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tiktok.com/@" + url));
@@ -240,6 +221,4 @@ public class PersonActivity extends AppCompatActivity {
                 break;
         }
     }
-
-
 }

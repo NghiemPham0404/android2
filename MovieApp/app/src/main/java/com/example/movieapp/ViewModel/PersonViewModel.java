@@ -3,7 +3,7 @@ package com.example.movieapp.ViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.movieapp.Model.CastModel;
+import com.example.movieapp.Model.PersonModel;
 import com.example.movieapp.Repositories.PersonRepository;
 
 import java.util.List;
@@ -21,8 +21,11 @@ public class PersonViewModel extends ViewModel {
     public void searchPeopleNext(){
         personRepository.searchPeopleNextPage();
     }
-
-    public LiveData<List<CastModel>> getPeople(){
+    public void searchPerson(int person_id){
+        personRepository.searchPerson(person_id);
+    }
+    public LiveData<List<PersonModel>> getPeople(){
         return personRepository.getPeople();
     }
+    public LiveData<PersonModel> getPerson(){return personRepository.getPerson();}
 }

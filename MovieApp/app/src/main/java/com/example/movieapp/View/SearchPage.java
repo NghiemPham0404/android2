@@ -2,13 +2,10 @@ package com.example.movieapp.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.compose.ui.text.input.ImeAction;
-import androidx.compose.ui.text.input.ImeOptions;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -16,7 +13,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -27,18 +23,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.movieapp.Adapters.CastAdapter;
-import com.example.movieapp.Adapters.FilmAdapter;
 import com.example.movieapp.Adapters.MovieSearchAdapter;
 import com.example.movieapp.Adapters.SearchRecommendAdapter;
 import com.example.movieapp.Interfaces.Edittext_interface;
 import com.example.movieapp.Model.AccountModel;
-import com.example.movieapp.Model.CastModel;
+import com.example.movieapp.Model.PersonModel;
 import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.SearchRecommendRequest;
 import com.example.movieapp.ViewModel.MovieListViewModel;
 import com.example.movieapp.ViewModel.PersonViewModel;
-import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,9 +112,9 @@ public class SearchPage extends AppCompatActivity implements Edittext_interface 
 
         // Hiển thị kết quả tìm kiếm người
         if(personViewModel != null){
-            personViewModel.getPeople().observe(this, new Observer<List<CastModel>>() {
+            personViewModel.getPeople().observe(this, new Observer<List<PersonModel>>() {
                 @Override
-                public void onChanged(List<CastModel> castModels) {
+                public void onChanged(List<PersonModel> castModels) {
                     if(castModels!=null){
                         peopleAdapter.setCasts(castModels);
                         peopleAdapter.notifyDataSetChanged();

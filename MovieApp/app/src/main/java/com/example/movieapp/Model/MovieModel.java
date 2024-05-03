@@ -2,8 +2,6 @@ package com.example.movieapp.Model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -388,19 +386,19 @@ public class MovieModel implements Parcelable, Comparable<MovieModel> {
     }
 
     public class Credits{
-        public List<CastModel> cast;
+        public List<PersonModel> cast;
 
-        public Credits(List<CastModel> cast, List<CastModel> crew) {
+        public Credits(List<PersonModel> cast, List<PersonModel> crew) {
             this.cast = cast;
             this.crew = crew;
         }
 
-        public List<CastModel> crew;
-        public List<CastModel> getCast() {
+        public List<PersonModel> crew;
+        public List<PersonModel> getCast() {
             return cast;
         }
 
-        public List<CastModel> getCrew() {
+        public List<PersonModel> getCrew() {
             return crew;
         }
     }
