@@ -37,6 +37,9 @@ public class DetailModel {
 
     private String url;
     private boolean favor;
+    public void setFavor(boolean favor){
+        this.favor  = favor;
+    }
 
     public String getUrl() {
         return url;

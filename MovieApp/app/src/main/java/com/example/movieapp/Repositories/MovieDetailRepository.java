@@ -2,11 +2,16 @@ package com.example.movieapp.Repositories;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.movieapp.Model.DetailModel;
 import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.Request.MovieDetailApiClient;
+import com.example.movieapp.utils.Credentials;
+
+import java.util.List;
 
 public class MovieDetailRepository {
     int id;
+    String user_id;
     public static  MovieDetailRepository instance;
     MovieDetailApiClient movieDetailApiClient;
     public LiveData<MovieModel> movie;
@@ -29,4 +34,27 @@ public class MovieDetailRepository {
         return movieDetailApiClient.getMovie();
     }
 
+    public void searchMovieDetail(int id, String user_id, String function_name){
+        this.id = id;
+        this.user_id = user_id;
+        movieDetailApiClient.searchMovieDetailApi(id, user_id, Credentials.functionname_video);
+    }
+    public LiveData<DetailModel> getMovieDetail(){
+        return movieDetailApiClient.getMovieDetail();
+    }
+    public void changeFavor(){
+        movieDetailApiClient.changeFavor(id, user_id, Credentials.functionname_detail);
+    }
+
+    public void getReviews(int id){
+        this.id = id;
+        movieDetailApiClient.getReviews(id);
+    }
+    public LiveData<List<DetailModel>> getMovieReviews(){
+        return movieDetailApiClient.getMovieReviews();
+    }
+
+    public void deleteReview(){
+        movieDetailApiClient.deleteReview(id, user_id, Credentials.functionname_delete_detail);
+    }
 }

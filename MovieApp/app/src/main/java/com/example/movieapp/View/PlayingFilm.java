@@ -16,18 +16,15 @@ import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Rational;
 import android.view.Display;
-import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,7 +33,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RatingBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -357,7 +353,7 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
                     ReviewApdater.DeleteInterface deleteInterface = new ReviewApdater.DeleteInterface() {
                         @Override
                         public void delete() {
-                            Call<DetailModel> detailModelCall = MyService2.getApi().deleteReview(Credentials.deleteDetail, loginAccount.getUser_id(), movie.getId());
+                            Call<DetailModel> detailModelCall = MyService2.getApi().deleteReview(Credentials.functionname_delete_detail, loginAccount.getUser_id(), movie.getId());
                             detailModelCall.enqueue(new Callback<DetailModel>() {
                                 @Override
                                 public void onResponse(Call<DetailModel> call, Response<DetailModel> response) {

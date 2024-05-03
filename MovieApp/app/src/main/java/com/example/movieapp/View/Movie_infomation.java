@@ -25,7 +25,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.movieapp.Adapters.CastAdapter;
@@ -36,13 +35,10 @@ import com.example.movieapp.Model.DetailModel;
 import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
-import com.example.movieapp.Request.MyService;
 import com.example.movieapp.Request.MyService2;
-import com.example.movieapp.Response.DetailResponse;
 import com.example.movieapp.Services.DownloadReceiver;
 import com.example.movieapp.ViewModel.MovieViewModel;
 import com.example.movieapp.utils.Credentials;
-import com.example.movieapp.utils.MovieApi;
 import com.google.android.material.chip.Chip;
 
 import java.io.File;
@@ -62,15 +58,13 @@ public class Movie_infomation extends AppCompatActivity {
     ToggleButton favorButton;
     ImageButton facebook_btn, twitter_btn, youtube_btn, instagram_btn, tiktok_btn;
     MovieModel movie;
+    DetailModel movie_detail;
+    List<DetailModel> movie_reviews;
     MovieViewModel movieViewModel;
     int movieId;
-
     private AccountModel loginAccount;
     RecyclerView cast_crew_recycler_view;
-    private MovieApi movieApi;
     private ImageView imageView2;
-
-    Call<DetailModel> changeFavorCall;
     private CastAdapter castAdapter, crewAdapter;
     Chip crewChip, castChip;
     private String url360, url720;
@@ -79,36 +73,48 @@ public class Movie_infomation extends AppCompatActivity {
     private ReviewApdater reviewApdater;
     private RecyclerView reviewsRecyclerView;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_film_infomation);
         movieId = getIntent().getIntExtra("film_id", -1);
         loginAccount = (AccountModel) getIntent().getParcelableExtra("loginAccount");
+        initComponent();
         movieViewModel = new ViewModelProvider(this).get(MovieViewModel.class);
         ObserveAnyChange();
-        init();
+        initFeatures();
     }
-
     public void ObserveAnyChange() {
         if (movieViewModel != null) {
             movieViewModel.getMovie().observe(this, new Observer<MovieModel>() {
                 @Override
                 public void onChanged(MovieModel movieModel) {
                     movie = movieModel;
+                    initDetails();
+                }
+            });
+
+            movieViewModel.getDetailMovie().observe(this, new Observer<DetailModel>() {
+                @Override
+                public void onChanged(DetailModel detailModel) {
+                    if (movieId == detailModel.getMovieId()) {
+                        movie_detail = detailModel;
+                        initVideo();
+                    }
+                }
+            });
+
+            movieViewModel.getMovieReviews().observe(this, new Observer<List<DetailModel>>() {
+                @Override
+                public void onChanged(List<DetailModel> detailModels) {
+                    movie_reviews = detailModels;
+                    initReview();
                 }
             });
         }
     }
-
-    public void init() {
-        movieViewModel.searchMovieDetail(movieId);
-        initComponent();
-        initDetails();
-    }
-
     public void initComponent() {
-        movieApi = MyService.getMovieApi();
         poster_image = findViewById(R.id.filmImage);
         backBtn = findViewById(R.id.backBtn_info);
         film_title = findViewById(R.id.film_title_info);
@@ -134,6 +140,11 @@ public class Movie_infomation extends AppCompatActivity {
         instagram_btn = findViewById(R.id.instagram_info);
         tiktok_btn = findViewById(R.id.tiktok_info);
     }
+    public void initFeatures() {
+        movieViewModel.searchMovie(movieId);
+        movieViewModel.searchMovieDetail(movieId, loginAccount.getUser_id(), Credentials.functionname_video);
+        movieViewModel.getReviews(movieId);
+    }
 
     private void initCast() {
         List<PersonModel> castModels = movie.getCredits().getCast();
@@ -147,54 +158,44 @@ public class Movie_infomation extends AppCompatActivity {
 
 
     private void initDetails() {
-        Call<MovieModel> detailsResponseCall = movieApi.searchMovieDetail(
-                movieId,
-                Credentials.API_KEY,
-                "credits,videos,external_ids"
-        );
+//        initVideo();
+        initCastCrew();
+        initSocialNetwork();
 
-        detailsResponseCall.enqueue(new Callback<MovieModel>() {
+        rating.setText(movie.getRating());
+        date_info.setText("(" + movie.getPublishDate() + ")");
+        time_info.setText(movie.getMaxDurationTime());
+        country_info.setText(movie.getProductionCountry());
+        genres_info.setText(movie.getGenresString());
+        new ImageLoader().loadImageIntoImageView(Movie_infomation.this, Credentials.BASE_IMAGE_URL + movie.getPoster_path(), poster_image, findViewById(R.id.shimmerLayout_info));
+        new ImageLoader().loadImageIntoImageView(Movie_infomation.this, Credentials.BASE_IMAGE_URL + movie.getPoster_path(), imageView2);
+
+        film_title.setText(movie.getTitle());
+        film_overview.setText(movie.getOverview());
+        backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
-                if (response.code() == 200) {
-                    movie = response.body();
-                    initCastCrew();
-                    initVideo();
-                    initSocialNetwork();
-//                        Log.i("TAG DETAIL", movie.getGenres().get(0).getName());
-
-                    rating.setText(movie.getRating());
-                    date_info.setText("(" + movie.getPublishDate() + ")");
-                    time_info.setText(movie.getMaxDurationTime());
-                    country_info.setText(movie.getProductionCountry());
-                    genres_info.setText(movie.getGenresString());
-                    new ImageLoader().loadImageIntoImageView(Movie_infomation.this, Credentials.BASE_IMAGE_URL + movie.getPoster_path(), poster_image, findViewById(R.id.shimmerLayout_info));
-                    new ImageLoader().loadImageIntoImageView(Movie_infomation.this, Credentials.BASE_IMAGE_URL + movie.getPoster_path(), imageView2);
-                    initVideo();
-
-                    film_title.setText(movie.getTitle());
-                    film_overview.setText(movie.getOverview());
-                    backBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            onBackPressed();
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MovieModel> call, Throwable t) {
-                Toast.makeText(getBaseContext(), "Failure Details", Toast.LENGTH_SHORT).show();
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
 
         review_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initReview();
+                showReviewPopup();
             }
         });
+    }
+
+    private void showReviewPopup() {
+        if(reviewSessionPopup!=null){
+            findViewById(R.id.info_layout).post(new Runnable() {
+                @Override
+                public void run() {
+                    reviewSessionPopup.showAtLocation(findViewById(R.id.info_layout), Gravity.BOTTOM, 0, 0);
+                }
+            });
+        }
     }
 
     private void initCastCrew() {
@@ -222,54 +223,34 @@ public class Movie_infomation extends AppCompatActivity {
     private void initVideo() {
         playButton.setEnabled(false);
         playButton.setText("Loading...");
-
         favorButton = findViewById(R.id.favorBtn);
         favorButton.setEnabled(false);
-        Call<DetailModel> videoModelCall = MyService2.getApi().getMovieVideo(Credentials.functionname_video, movieId, loginAccount.getUser_id());
-        videoModelCall.enqueue(new Callback<DetailModel>() {
-            @Override
-            public void onResponse(Call<DetailModel> call, Response<DetailModel> response) {
-                if (response.code() == 200) {
-                    //favor button
-                    initFavor(response.body().isFavor());
-                    if (response.body().getUrl() != null || response.body().getUrl720() != null) {
-                        playButton.setText("Watch now");
-                        playButton.setEnabled(true);
-                        Intent playMovieIntent = new Intent(Movie_infomation.this, PlayingFilm.class);
-                        playMovieIntent.putExtra("movie", movie);
+        //favor button
+        initFavor(movie_detail.isFavor());
+        if (movie_detail.getUrl() != null || movie_detail.getUrl720() != null) {
+            playButton.setText("Watch now");
+            playButton.setEnabled(true);
+            Intent playMovieIntent = new Intent(Movie_infomation.this, PlayingFilm.class);
+            playMovieIntent.putExtra("movie", movie);
+            url360 = movie_detail.getUrl();
+            playMovieIntent.putExtra("videoUrl", movie_detail.getUrl());
+            url720 = movie_detail.getUrl720();
+            playMovieIntent.putExtra("videoUrl720", movie_detail.getUrl720());
 
-                        url360 = response.body().getUrl();
-                        playMovieIntent.putExtra("videoUrl", response.body().getUrl());
-
-                        url720 = response.body().getUrl720();
-                        playMovieIntent.putExtra("videoUrl720", response.body().getUrl720());
-
-                        playMovieIntent.putExtra("loginAccount", (Parcelable) loginAccount);
-                        playButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                startActivity(playMovieIntent);
-                            }
-                        });
-
-                        initDownloadButton();
-                        movie.setDuration(response.body().getDuration());
-                    } else {
-                        playButton.setText("Coming soon");
-                    }
-                } else {
-                    playButton.setText("Coming soon");
-                    download_btn.setEnabled(false);
+            playMovieIntent.putExtra("loginAccount", (Parcelable) loginAccount);
+            playButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(playMovieIntent);
                 }
-                findViewById(R.id.loadingLayout).setVisibility(View.GONE);
-            }
+            });
 
-            @Override
-            public void onFailure(Call<DetailModel> call, Throwable t) {
-                Log.e("VIDEO TASK", "FAILURE");
-                findViewById(R.id.loadingLayout).setVisibility(View.GONE);
-            }
-        });
+            initDownloadButton();
+            movie.setDuration(movie_detail.getDuration());
+        } else {
+            playButton.setText("Coming soon");
+        }
+
 
         if (movie.getTrailer() != null) {
             playTrailerButton.setOnClickListener(new View.OnClickListener() {
@@ -281,20 +262,19 @@ public class Movie_infomation extends AppCompatActivity {
                 }
             });
         }
+        findViewById(R.id.loadingLayout).setVisibility(View.GONE);
     }
 
     private void initDownloadButton() {
         if (url360 == null && url720 == null) {
             download_btn.setVisibility(View.GONE);
         }
-
         String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MovieApp/" + movie.getId() + ".mp4";
         if (new File(filePath).exists()) {
             download_btn.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.download_done_icon), null, null);
             download_btn.setEnabled(false);
             return;
         }
-
         // download btn
         if (url720 != null) {
             download_btn.setOnClickListener(new View.OnClickListener() {
@@ -382,6 +362,11 @@ public class Movie_infomation extends AppCompatActivity {
 
     public void initFavor(boolean isfavor) {
         favorButton.setChecked(isfavor);
+        if (isfavor) {
+            MovieInteraction.subcribeToNotification(movie.getId());
+        } else {
+            MovieInteraction.unsubcribeToNotification(movie.getId());
+        }
         favorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -406,82 +391,36 @@ public class Movie_infomation extends AppCompatActivity {
 
         TextView totalRating = popupReviewView.findViewById(R.id.total_rating_rv);
 
-        Call<DetailResponse> detailResponseCall = MyService2.getApi().getReviewByFilmId("detail", movie.getId());
-        detailResponseCall.enqueue(new Callback<DetailResponse>() {
+        ReviewApdater.DeleteInterface deleteInterface = new ReviewApdater.DeleteInterface() {
             @Override
-            public void onResponse(Call<DetailResponse> call, Response<DetailResponse> response) {
-                if (response.code() == 200) {
-                    List<DetailModel> detailModels = response.body().getAllReviews();
-                    ReviewApdater.DeleteInterface deleteInterface = new ReviewApdater.DeleteInterface() {
-                        @Override
-                        public void delete() {
-                            Call<DetailModel> detailModelCall = MyService2.getApi().deleteReview(Credentials.deleteDetail, loginAccount.getUser_id(), movie.getId());
-                            detailModelCall.enqueue(new Callback<DetailModel>() {
-                                @Override
-                                public void onResponse(Call<DetailModel> call, Response<DetailModel> response) {
-                                    Log.i("delete review", "success");
-                                    popupReviewView.findViewById(R.id.comment_box).setVisibility(View.VISIBLE);
-                                }
+            public void delete() {
+                movieViewModel.delete_review();
+            }
+        };
 
-                                @Override
-                                public void onFailure(Call<DetailModel> call, Throwable t) {
-                                    Log.i("delete review", "" + t);
-                                }
-                            });
-                        }
-                    };
-                    reviewApdater = new ReviewApdater(Movie_infomation.this, detailModels, loginAccount.getUser_id(), deleteInterface);
-                    reviewApdater.removeEmpty();
-                    reviewApdater.notifyDataSetChanged();
-                    for(int i= 0;i < detailModels.size(); i++){
-                        if(detailModels.get(i).getUserId() == loginAccount.getUser_id())
-                            popupReviewView.findViewById(R.id.comment_box).setVisibility(View.GONE);
-                    }
-                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(Movie_infomation.this);
-                    reviewsRecyclerView = popupReviewView.findViewById(R.id.recyclerView);
-                    reviewsRecyclerView.setLayoutManager(linearLayoutManager);
-                    reviewsRecyclerView.setAdapter(reviewApdater);
-                    loadinglayout.setVisibility(View.GONE);
-                    error_layout.setVisibility(View.GONE);
-                    totalRating.setText("" + response.body().getAllReviews().size());
+        if(movie_reviews!=null){
+            reviewApdater = new ReviewApdater(Movie_infomation.this, movie_reviews, loginAccount.getUser_id(), deleteInterface);
+            reviewApdater.removeEmpty();
+            reviewApdater.notifyDataSetChanged();
+            for (int i = 0; i < movie_reviews.size(); i++) {
+                if (movie_reviews.get(i).getUserId().equalsIgnoreCase(loginAccount.getUser_id())) {
+                    popupReviewView.findViewById(R.id.comment_box).setVisibility(View.GONE);
                 }
             }
-            @Override
-            public void onFailure(Call<DetailResponse> call, Throwable t) {
-                Log.e("GET REVIEWs", "FAIL" + t.toString());
-                error_layout.setVisibility(View.VISIBLE);
-                loadinglayout.setVisibility(View.GONE);
-            }
-        });
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(Movie_infomation.this);
+            reviewsRecyclerView = popupReviewView.findViewById(R.id.recyclerView);
+            reviewsRecyclerView.setLayoutManager(linearLayoutManager);
+            reviewsRecyclerView.setAdapter(reviewApdater);
 
-        findViewById(R.id.info_layout).post(new Runnable() {
-            @Override
-            public void run() {
-                reviewSessionPopup.showAtLocation(findViewById(R.id.info_layout), Gravity.BOTTOM, 0, 0);
-            }
-        });
+            error_layout.setVisibility(View.GONE);
+        }
+        loadinglayout.setVisibility(View.GONE);
+        totalRating.setText("" + movie_reviews.size());
     }
 
     public void changeFavorite() {
-        changeFavorCall = MyService2.getApi().addToFavor("detail", loginAccount.getUser_id(), movieId);
-        changeFavorCall.enqueue(new Callback<DetailModel>() {
-            @Override
-            public void onResponse(Call<DetailModel> call, Response<DetailModel> response) {
-                if (response.code() == 200) {
-                    if(response.body().isFavor()){
-                        MovieInteraction.subcribeToNotification(movie.getId());
-                    }else{
-                        MovieInteraction.unsubcribeToNotification(movie.getId());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DetailModel> call, Throwable t) {
-                Log.e("FAVOR TASK", "change favor fail");
-                favorButton.setEnabled(true);
-            }
-        });
+        favorButton.setEnabled(false);
+        movieViewModel.changeFavor();
     }
 
     public void downloadMovie(String url) {
@@ -497,15 +436,4 @@ public class Movie_infomation extends AppCompatActivity {
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         registerReceiver(downloadReceiver, filter);
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
 }
