@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.movieapp.Adapters.FavorAdapter;
 import com.example.movieapp.Adapters.HistoryAdapter;
 import com.example.movieapp.Interfaces.FavorInterface;
 import com.example.movieapp.Model.AccountModel;
@@ -23,6 +26,7 @@ import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.MyService;
 import com.example.movieapp.Request.MyService2;
+import com.example.movieapp.ViewModel.MovieViewModel;
 import com.example.movieapp.utils.Credentials;
 
 import java.util.ArrayList;
@@ -40,9 +44,11 @@ import retrofit2.Response;
 public class HistoryFragment extends Fragment {
 
     AccountModel loginAccount;
+    MovieViewModel movieViewModel;
     private RecyclerView historyRecyclerView;
     private ConstraintLayout loadingScreen;
 
+    List<DetailModel> favHisMovies;
     public List<MovieModel> movies;
     HistoryAdapter historyAdapter;
 
@@ -53,10 +59,7 @@ public class HistoryFragment extends Fragment {
     FavorInterface favor_click = new FavorInterface() {
         @Override
         public void openMovie(int movieId) {
-            Intent openMovieIntent = new Intent(getContext(), Movie_infomation.class);
-            openMovieIntent.putExtra("film_id", movieId);
-            openMovieIntent.putExtra("loginAccount", (Parcelable) loginAccount);
-            startActivity(openMovieIntent);
+            MovieInteraction.openMovieInformation(getContext(), movieId, loginAccount);
         }
 
         @Override
@@ -104,7 +107,6 @@ public class HistoryFragment extends Fragment {
 
                     }
                 }
-
                 @Override
                 public void onFailure(Call<DetailModel> call, Throwable t) {
                     Log.e("FAVOR TASK", "change favor fail");
@@ -127,12 +129,23 @@ public class HistoryFragment extends Fragment {
         if (getArguments() != null) {
             loginAccount = getArguments().getParcelable("loginAccount");
         }
+        movieViewModel = new ViewModelProvider(this).get(MovieViewModel.class);
+        ObserveAnyChange();
+        movies = new ArrayList<MovieModel>();
+    }
+    public void ObserveAnyChange(){
+        movieViewModel.getFavorMovies().observe(this, new Observer<List<DetailModel>>() {
+            @Override
+            public void onChanged(List<DetailModel> detailModels) {
+                favHisMovies = detailModels;
+                initHistoryList();
+            }
+        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        initFeatures();
     }
 
     @Override
@@ -141,37 +154,12 @@ public class HistoryFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_history_page, container, false);
         initComponents(view);
+        onConfigureRecycler();
+        initFeatures();
         return view;
     }
-
-    public void initComponents(View view) {
-        historyRecyclerView = view.findViewById(R.id.historyRecycleView);
-        loadingScreen = view.findViewById(R.id.loadingLayout);
-    }
-
-    public void initFeatures() {
-        loadingScreen.setVisibility(View.VISIBLE);
-        movies = new ArrayList<MovieModel>();
-
-        Call<List<DetailModel>> favorListCall = MyService2.getApi().getFavorListByUserId(Credentials.functionname_detail, loginAccount.getUser_id());
-        favorListCall.enqueue(new Callback<List<DetailModel>>() {
-            @Override
-            public void onResponse(Call<List<DetailModel>> call, Response<List<DetailModel>> response) {
-                if (response.code() == 200) {
-                    for (DetailModel movie : response.body()) {
-                        initListItem(movie.getMovieId(), movie.getDuration(), movie.getUrl(), movie.getTimeFavor());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<DetailModel>> call, Throwable t) {
-                Log.e("HISTORY TASK", t.toString());
-            }
-        });
-    }
-
-    public void initList() {
+    public void onConfigureRecycler() {
+        historyAdapter = new HistoryAdapter(getContext(), movies, favor_click);
         Log.e("ERROR adapter is null : ", " " + (historyAdapter == null));
         historyRecyclerView.setAdapter(historyAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -179,6 +167,22 @@ public class HistoryFragment extends Fragment {
         Log.i("HISTORY TASK", "history list size : " + historyAdapter.history_list.size());
         Log.i("HISTORY TASK", "movies list size : " + historyAdapter.movies_lists.size());
         Log.i("HISTORY TASK", "movies size : " + historyAdapter.movies.size());
+    }
+    public void initComponents(View view) {
+        historyRecyclerView = view.findViewById(R.id.historyRecycleView);
+        loadingScreen = view.findViewById(R.id.loadingLayout);
+    }
+
+    public void initFeatures() {
+       movieViewModel.searchFavorMovies(loginAccount.getUser_id());
+    }
+
+    public void initHistoryList() {
+        loadingScreen.setVisibility(View.VISIBLE);
+        movies.clear();
+        for (DetailModel movie : favHisMovies) {
+            initListItem(movie.getMovieId(), movie.getDuration(), movie.getUrl(), movie.getTimeFavor());
+        }
     }
 
     public void initListItem(int movieId, String duration, String videoUrl, String favorTime) {
@@ -191,9 +195,8 @@ public class HistoryFragment extends Fragment {
                 movie.setVideoUrl(videoUrl);
                 movie.setFavorTime(favorTime);
                 movies.add(movie);
+                historyAdapter.setHistoryMovies(movies);
                 Log.i("Favor movie : ", movie.getTitle());
-                historyAdapter = new HistoryAdapter(getContext(), movies, favor_click);
-                initList();
                 loadingScreen.setVisibility(View.GONE);
             }
 
@@ -203,6 +206,4 @@ public class HistoryFragment extends Fragment {
             }
         });
     }
-
-
 }

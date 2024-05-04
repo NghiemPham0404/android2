@@ -389,8 +389,9 @@
         android:layout_height="40dp"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
-        android:background="@drawable/back_icon"
+        android:background="@null"
         android:rotationY="180"
+        android:src="@drawable/back_icon"
         android:text="Button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

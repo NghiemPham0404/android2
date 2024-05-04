@@ -1,10 +1,15 @@
 package com.example.movieapp.View;
 
+import androidx.activity.EdgeToEdge;
+import androidx.activity.SystemBarStyle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GestureDetectorCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
@@ -12,8 +17,8 @@ import android.app.PictureInPictureParams;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -25,29 +30,26 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.example.movieapp.Adapters.FilmAdapter;
-import com.example.movieapp.Adapters.ReviewApdater;
 import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.DetailModel;
 import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.R;
-import com.example.movieapp.Request.ImageLoader;
 import com.example.movieapp.Request.MyService;
 import com.example.movieapp.Request.MyService2;
-import com.example.movieapp.Response.DetailResponse;
 import com.example.movieapp.Response.MovieSearchResponse;
+import com.example.movieapp.ViewModel.MovieViewModel;
 import com.example.movieapp.utils.Credentials;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -61,42 +63,25 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PlayingFilm extends AppCompatActivity implements View.OnTouchListener, ScaleGestureDetector.OnScaleGestureListener {
-
-    ConstraintLayout layout;
-    private static final String PLAYBACK_POSITION_KEY = "playback_position";
-    private final boolean playWhenReady = true;
-
-    SimpleExoPlayer player;
-    PlayerView playerView;
-
-    TextView totalRating;
-    private ImageButton postReviewBtn;
-    ImageView avatar;
-    EditText reviewBox;
-    RatingBar reviewRating;
-    TextView movie_title_playing, movie_rating, publish_date, duration;
-    private Drawable check_icon;
-    private ImageView maximize_btn, pic_in_pic_btn, volume_btn, setting_btn, back_btn;
     private MovieModel movie;
-    private int current_id;
+    private int current_id = -1;
     private AccountModel loginAccount;
     private String videoUrl, videoUrl720;
+    RelativeLayout layout;
+    private final boolean playWhenReady = true;
+    SimpleExoPlayer player;
+    PlayerView playerView;
+    TextView movie_title_playing;
+    private ImageView maximize_btn, pic_in_pic_btn, volume_btn, setting_btn, back_btn;
     private RecyclerView recommendRecycler;
-    private Button reviewButton;
-    private ToggleButton favorButton;
     private boolean full_screen, volume = true;
-    private PopupWindow reviewSessionPopup, continuePlaybackPopup, resolutionChangePopup;
-    private RecyclerView reviewsRecyclerView;
-    private Call<DetailResponse> detailResponseCall;
-    private ConstraintLayout error_layout, loadinglayout;
-    private View popupReviewView, popupView2, popupView3;
+    private PopupWindow continuePlaybackPopup, resolutionChangePopup;
+    private View popupView2, popupView3;
     private FilmAdapter filmAdapter;
     private Call<MovieSearchResponse> recommendationsMovieslCall;
     private TextView btn_360;
     private LinearLayout btn_720;
     public int current_resolution = 720;
-    private ReviewApdater reviewApdater;
-
     // các biến hỗ trợ phóng to màn hình
     View zoom_layout;
     ScaleGestureDetector scaleDetector;
@@ -106,6 +91,7 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
     boolean intLeft, intRight;
     private Display display;
     private Point size;
+    private TextView recommend_title;
 
     private enum Mode {
         NONE,
@@ -128,6 +114,32 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
     private float preDx = 0f;
     private float preDy = 0f;
 
+    public class GestureDetector extends android.view.GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onDoubleTap(@NonNull MotionEvent e) {
+            if (e.getX() < (swidth / 2)) {
+                intLeft = true;
+                intRight = false;
+                player.seekForward();
+                Toast.makeText(getApplicationContext(), "rewind 5 s", Toast.LENGTH_SHORT);
+            } else if (e.getX() > (swidth / 2)) {
+                intLeft = false;
+                intRight = true;
+                player.seekBack();
+            }
+            return super.onDoubleTap(e);
+        }
+
+        @Override
+        public boolean onSingleTapConfirmed(@NonNull MotionEvent e) {
+            if (isEnable) {
+                isEnable = false;
+            } else {
+                isEnable = true;
+            }
+            return super.onSingleTapConfirmed(e);
+        }
+    }
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         Log.i("touch", "true");
@@ -194,126 +206,26 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
         }
         return true;
     }
-
     @Override
     public boolean onScaleBegin(@NonNull ScaleGestureDetector detector) {
         return true;
     }
-
     @Override
     public void onScaleEnd(@NonNull ScaleGestureDetector detector) {
 
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        check_icon = getResources().getDrawable(R.drawable.check_icon);
+        hideSystemUI();
         setContentView(R.layout.activity_playing_film);
         setVideoView(getIntent());
-        current_id = movie.getId();
+        ObserveAnyChange();
     }
+    public void ObserveAnyChange(){
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putLong(PLAYBACK_POSITION_KEY, player.getCurrentPosition());
     }
-
-    public class GestureDetector extends android.view.GestureDetector.SimpleOnGestureListener {
-        @Override
-        public boolean onDoubleTap(@NonNull MotionEvent e) {
-            if (e.getX() < (swidth / 2)) {
-                intLeft = true;
-                intRight = false;
-                player.seekTo((player.getCurrentPosition() >= 5000) ? player.getCurrentPosition() - 5000 : 0);
-                Toast.makeText(getApplicationContext(), "rewind 5 s", Toast.LENGTH_SHORT);
-            } else if (e.getX() > (swidth / 2)) {
-                intLeft = false;
-                intRight = true;
-                player.seekTo((player.getCurrentPosition() < player.getDuration() - 5000) ? player.getCurrentPosition() + 5000 : player.getDuration());
-            }
-            return super.onDoubleTap(e);
-        }
-
-        @Override
-        public boolean onSingleTapConfirmed(@NonNull MotionEvent e) {
-            if (isEnable) {
-                isEnable = false;
-            } else {
-                isEnable = true;
-            }
-            return super.onSingleTapConfirmed(e);
-        }
-    }
-
-    public void initComponent_Potral() {
-        movie_title_playing = findViewById(R.id.film_title_playing);
-        movie_title_playing.setText(movie.getTitle());
-
-
-        movie_rating = findViewById(R.id.movie_rating);
-        float rate = Math.round(movie.getVote_average() * 100) * 1.0f / 100;
-        movie_rating.setText(rate + "");
-
-        publish_date = findViewById(R.id.publish_date_playing);
-        try {
-            String year = movie.getRelease_date().split("-")[0];
-            publish_date.setText("(" + year + ")");
-        } catch (Exception ex) {
-            publish_date.setText(movie.getRelease_date() + "");
-        }
-
-        duration = findViewById(R.id.time_playing);
-        duration.setText(movie.getMaxDurationTime());
-
-        TextView recommend_title = findViewById(R.id.relative_movie_film_group).findViewById(R.id.groupTitle);
-        recommend_title.setText("Recommendation");
-
-        favorButton = findViewById(R.id.favorBtn_playing);
-
-        Call<List<DetailModel>> favorListCall = MyService2.getApi().getFavorListByUserId(Credentials.functionname_detail, loginAccount.getUser_id());
-        favorListCall.enqueue(new Callback<List<DetailModel>>() {
-            @Override
-            public void onResponse(Call<List<DetailModel>> call, Response<List<DetailModel>> response) {
-                if (response.code() == 200) {
-                    for (DetailModel favor : response.body()) {
-                        if (favor.getMovieId() == movie.getId()) {
-                            favorButton.setChecked(true);
-                            favorButton.setEnabled(true);
-                            return;
-                        }
-                    }
-                    favorButton.setChecked(false);
-                    favorButton.setEnabled(true);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<DetailModel>> call, Throwable t) {
-                Log.e("FAVOR TASK", "Cant init favor");
-            }
-        });
-
-        favorButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeFavorite();
-            }
-        });
-
-        initRecommendations();
-
-        reviewButton = findViewById(R.id.rating_btn);
-        reviewButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                initReview();
-            }
-        });
-    }
-
-    public void initComponentsLandcaspe() {
+    public void initTouchZoomAction() {
         zoom_layout = playerView;
         display = getWindowManager().getDefaultDisplay();
         size = new Point();
@@ -326,88 +238,7 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
         scaleDetector = new ScaleGestureDetector(getApplicationContext(), this);
         gestureDetector = new GestureDetectorCompat(getApplicationContext(), new GestureDetector());
     }
-
-    private void initReview() {
-        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        popupReviewView = inflater.inflate(R.layout.comment_session, null);
-
-        boolean focusable = true;
-        reviewSessionPopup = new PopupWindow(popupReviewView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT, focusable);
-        reviewSessionPopup.setAnimationStyle(R.style.PopupAnimation);
-
-        layout = findViewById(R.id.playing_layout);
-
-        loadinglayout = popupReviewView.findViewById(R.id.loadingLayout);
-        loadinglayout.setVisibility(View.VISIBLE);
-
-        error_layout = popupReviewView.findViewById(R.id.error_loading);
-
-        totalRating = popupReviewView.findViewById(R.id.total_rating_rv);
-
-        detailResponseCall = MyService2.getApi().getReviewByFilmId("detail", movie.getId());
-        detailResponseCall.enqueue(new Callback<DetailResponse>() {
-            @Override
-            public void onResponse(Call<DetailResponse> call, Response<DetailResponse> response) {
-                if (response.code() == 200) {
-                    List<DetailModel> detailModels = response.body().getAllReviews();
-                    ReviewApdater.DeleteInterface deleteInterface = new ReviewApdater.DeleteInterface() {
-                        @Override
-                        public void delete() {
-                            Call<DetailModel> detailModelCall = MyService2.getApi().deleteReview(Credentials.functionname_delete_detail, loginAccount.getUser_id(), movie.getId());
-                            detailModelCall.enqueue(new Callback<DetailModel>() {
-                                @Override
-                                public void onResponse(Call<DetailModel> call, Response<DetailModel> response) {
-                                    Log.i("delete review", "success");
-                                    popupReviewView.findViewById(R.id.comment_box).setVisibility(View.VISIBLE);
-                                }
-
-                                @Override
-                                public void onFailure(Call<DetailModel> call, Throwable t) {
-                                    Log.i("delete review", "" + t);
-                                }
-                            });
-                        }
-                    };
-                    reviewApdater = new ReviewApdater(PlayingFilm.this, detailModels, loginAccount.getUser_id(), deleteInterface);
-                    reviewApdater.removeEmpty();
-                    reviewApdater.notifyDataSetChanged();
-                    for (int i = 0; i < detailModels.size(); i++) {
-                        if (detailModels.get(i).getUserId() == loginAccount.getUser_id())
-                            popupReviewView.findViewById(R.id.comment_box).setVisibility(View.GONE);
-                    }
-                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(PlayingFilm.this);
-                    reviewsRecyclerView = popupReviewView.findViewById(R.id.recyclerView);
-                    reviewsRecyclerView.setLayoutManager(linearLayoutManager);
-                    reviewsRecyclerView.setAdapter(reviewApdater);
-                    loadinglayout.setVisibility(View.GONE);
-                    error_layout.setVisibility(View.GONE);
-                    totalRating.setText("" + response.body().getAllReviews().size());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DetailResponse> call, Throwable t) {
-                Log.e("GET REVIEWs", "FAIL" + t.toString());
-                error_layout.setVisibility(View.VISIBLE);
-                loadinglayout.setVisibility(View.GONE);
-            }
-        });
-        layout.post(new Runnable() {
-            @Override
-            public void run() {
-                reviewSessionPopup.showAtLocation(layout, Gravity.BOTTOM, 0, 0);
-            }
-        });
-
-        initUserReviewBox();
-    }
-
     private void initRecommendations() {
-        recommendRecycler = findViewById(R.id.relative_movie_film_group).findViewById(R.id.movieGroup_recyclerview);
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(PlayingFilm.this, RecyclerView.HORIZONTAL, false);
-        recommendRecycler.setLayoutManager(linearLayoutManager);
-
         recommendationsMovieslCall = MyService.getMovieApi().searchMovieRelativeRecommendation(movie.getId(), Credentials.API_KEY);
         recommendationsMovieslCall.enqueue(new Callback<MovieSearchResponse>() {
             @Override
@@ -464,6 +295,7 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
     }
 
     private void initializePlayer() {
+        playerView = findViewById(R.id.playing_film_window);
         if (player == null) {
             player = new SimpleExoPlayer.Builder(this).build();
             MediaItem mediaItem;
@@ -483,15 +315,13 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
         playerView.setPlayer(player);
 
         movie_title_playing = playerView.findViewById(R.id.film_title_playing_2);
-        if (full_screen) {
-            movie_title_playing.setText(movie.getTitle());
-        } else {
-            movie_title_playing.setText("");
-        }
+        movie_title_playing.setText(movie.getTitle());
         initPlayerButton();
+        initTouchZoomAction();
     }
 
     private void reInitPlayer() {
+        playerView = findViewById(R.id.playing_film_window);
         player.release();
         player = new SimpleExoPlayer.Builder(this).build();
         MediaItem mediaItem;
@@ -511,49 +341,24 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
         playerView.setPlayer(player);
 
         movie_title_playing = playerView.findViewById(R.id.film_title_playing_2);
-        if (full_screen) {
-            movie_title_playing.setText(movie.getTitle());
-        } else {
-            movie_title_playing.setText("");
-        }
+        movie_title_playing.setText(movie.getTitle());
         initPlayerButton();
     }
 
     private void switchToFullScreen() {
         setContentView(R.layout.activity_playing_film_landcaspe);
-        playerView = findViewById(R.id.playing_film_window);
         initializePlayer();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-       hideSystemUI();
         maximize_btn.setBackgroundResource(R.drawable.exit_maximize_ic);
         pic_in_pic_btn.setVisibility(View.GONE);
-        initComponentsLandcaspe();
     }
 
     private void switchToPortrait() {
         setContentView(R.layout.activity_playing_film);
-        playerView = findViewById(R.id.playing_film_window);
         initializePlayer();
-        showSystemUI();
         maximize_btn.setBackgroundResource(R.drawable.maximize_ic);
-        initComponent_Potral();
         pic_in_pic_btn.setVisibility(View.VISIBLE);
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        initializePlayer();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (player == null) {
-            initializePlayer();
-        }
-    }
-
     @Override
     public void onStop() {
         super.onStop();
@@ -592,11 +397,7 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
     @Override
     public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode);
-        if (!isInPictureInPictureMode) {
-            hidePlayerControl();
-        } else {
-          showPlayerControl();
-        }
+        hidePlayerControl();
     }
 
     public void initPlayerButton() {
@@ -660,55 +461,6 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
             }
         });
     }
-
-    public void changeFavorite() {
-        Call<DetailModel> changeFavorCall = MyService2.getApi().addToFavor("detail", loginAccount.getUser_id(), movie.getId());
-        changeFavorCall.enqueue(new Callback<DetailModel>() {
-            @Override
-            public void onResponse(Call<DetailModel> call, Response<DetailModel> response) {
-                if (response.code() == 200) {
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DetailModel> call, Throwable t) {
-                Log.e("FAVOR TASK", "change favor fail");
-                favorButton.setEnabled(true);
-            }
-        });
-    }
-
-    public void initUserReviewBox() {
-        avatar = popupReviewView.findViewById(R.id.imageAvatar);
-        new ImageLoader().loadAvatar(PlayingFilm.this, loginAccount.getAvatar(), avatar, popupReviewView.findViewById(R.id.avatarText), loginAccount.getUsername());
-        reviewRating = popupReviewView.findViewById(R.id.ratingBar_comment_box);
-        reviewBox = popupReviewView.findViewById(R.id.commentBox);
-
-
-        postReviewBtn = popupReviewView.findViewById(R.id.send_comment_box);
-        postReviewBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                postReview(reviewRating.getRating(), reviewBox.getText().toString().trim());
-            }
-        });
-    }
-
-    public void postReview(float rating, String review) {
-        Call<DetailModel> detailModelCall = MyService2.getApi().addReview(Credentials.functionname_detail, loginAccount.getUser_id(), movie.getId(), rating + "", review);
-        detailModelCall.enqueue(new Callback<DetailModel>() {
-            @Override
-            public void onResponse(Call<DetailModel> call, Response<DetailModel> response) {
-                initReview();
-            }
-
-            @Override
-            public void onFailure(Call<DetailModel> call, Throwable t) {
-                Toast.makeText(PlayingFilm.this, "posting review is fail,", Toast.LENGTH_LONG).show();
-            }
-        });
-    }
     public void postPlayBackDuration() {
         String history = new SimpleDateFormat("yyyy/M/dd").format(System.currentTimeMillis());
         long current_position = player.getCurrentPosition();
@@ -731,21 +483,13 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
     }
     @Override
     public void onUserLeaveHint() {
-        enterPictureInPictureMode();
+       PictureInPictureMode();
     }
     private void PictureInPictureMode() {
         Rational aspectRatio = new Rational(16, 9);
         PictureInPictureParams.Builder pipBuilder = new PictureInPictureParams.Builder();
         pipBuilder.setAspectRatio(aspectRatio);
         enterPictureInPictureMode(pipBuilder.build());
-        if (reviewSessionPopup != null) {
-            reviewSessionPopup.dismiss();
-        }
-
-        if (resolutionChangePopup != null) {
-            reviewSessionPopup.dismiss();
-        }
-
         if (continuePlaybackPopup != null) {
             continuePlaybackPopup.dismiss();
         }
@@ -757,12 +501,10 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
     }
     @SuppressLint("InvalidWakeLockTag")
     public void setVideoView(Intent intent) {
-        movie = (MovieModel) intent.getParcelableExtra("movie");
+        movie = intent.getParcelableExtra("movie");
         loginAccount = (AccountModel) intent.getParcelableExtra("loginAccount");
         videoUrl = intent.getStringExtra("videoUrl");
         videoUrl720 = intent.getStringExtra("videoUrl720");
-
-        playerView = findViewById(R.id.playing_film_window);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             full_screen = true;
@@ -776,7 +518,6 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
             reInitPlayer();
             current_id = movie.getId();
         }
-
         continuePlayBackPostion();
     }
     public void continuePlayBackPostion() {
@@ -865,7 +606,6 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
             }
         });
         resolutionChangePopup.showAtLocation(playerView, Gravity.TOP, 0, 0);
-        hideSystemUI();
     }
     public void changeResolution(int resolution) {
         if (resolution == 720) {
@@ -902,26 +642,20 @@ public class PlayingFilm extends AppCompatActivity implements View.OnTouchListen
         resolutionChangePopup.dismiss();
     }
     private void hideSystemUI() {
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        // Hide the status bar and navigation bar
         getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_FULLSCREEN |
+                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
     private void showSystemUI() {
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_VISIBLE);
     }
-
     private void hidePlayerControl(){
         playerView.findViewById(R.id.player_control).setVisibility(View.GONE);
     }
-
     private void showPlayerControl(){
         playerView.findViewById(R.id.player_control).setVisibility(View.VISIBLE);
     }

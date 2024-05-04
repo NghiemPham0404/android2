@@ -23,12 +23,9 @@ import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder>{
     Context context;
-
     public List<MovieModel> movies;
     FavorInterface favor_click;
-
     public List<List<MovieModel>> movies_lists;
-
     public List<String> history_list;
 
     public HistoryAdapter(Context context, List<MovieModel> movies, FavorInterface favor_click){
@@ -42,6 +39,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         initMoviesHistory();
     }
 
+    public void setHistoryMovies(List<MovieModel> movies){
+        this.movies = movies;
+        history_list = new ArrayList<String>();
+        movies_lists = new ArrayList<List<MovieModel>>();
+        filterNonHistory();
+        Collections.sort(movies, (o1,o2) -> o2.getHistoryDate().compareTo(o1.getHistoryDate()));
+        initMoviesHistory();
+        notifyDataSetChanged();
+    }
     public void initMoviesHistory(){
         if(movies.size()>0){
             Log.i("HISTORY TASK", "movie > 1");

@@ -97,6 +97,19 @@
 
     </LinearLayout>
 
+    <!-- Progress bar and duration -->
+
+    <com.google.android.exoplayer2.ui.DefaultTimeBar
+        android:id="@id/exo_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+
+        app:buffered_color="@color/bright_gray_blur"
+        app:played_color="@color/neon_pink"
+        app:scrubber_color="@color/neon_pink" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -181,16 +194,4 @@
         </LinearLayout>
 
     </LinearLayout>
-
-    <!-- Progress bar and duration -->
-    <com.google.android.exoplayer2.ui.DefaultTimeBar
-        android:id="@id/exo_progress"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:focusable="false"
-
-        app:buffered_color="@color/bright_gray_blur"
-        app:played_color="@color/neon_pink"
-        app:scrubber_color="@color/neon_pink" />
 </LinearLayout>
