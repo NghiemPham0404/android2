@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/playing_layout"
@@ -11,8 +11,8 @@
 
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/playing_film_window"
-        android:layout_width="0dp"
-        android:layout_height="216dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:keepScreenOn="true"
         app:controller_layout_id="@layout/exo_playback_control_view"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,130 +22,4 @@
 
     </com.google.android.exoplayer2.ui.PlayerView>
 
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/playing_film_window">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="5dp">
-
-            <TextView
-                android:id="@+id/film_title_playing"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter"
-                android:paddingLeft="10dp"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                tools:visibility="visible" />
-
-            <LinearLayout
-                android:id="@+id/info_bar_playing"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                tools:visibility="visible">
-
-                <include
-                    layout="@layout/rating_bagde"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"></include>
-
-                <View
-                    android:id="@+id/divider7"
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/white" />
-
-                <TextView
-                    android:id="@+id/publish_date_playing"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:text="9999"
-                    android:textAlignment="center"
-                    android:textColor="@color/light_gray"
-                    android:textSize="18sp" />
-
-                <View
-                    android:id="@+id/divider9"
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/white" />
-
-                <TextView
-                    android:id="@+id/time_playing"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:text="runtime"
-                    android:textAlignment="center"
-                    android:textColor="@color/light_gray"
-                    android:textSize="18sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/button_bar_playing"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                tools:visibility="visible">
-
-                <Button
-                    android:id="@+id/rating_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/nomal_stroke"
-                    android:drawableRight="@drawable/baseline_comment_24"
-                    android:fontFamily="@font/inter"
-                    android:text="Reviews"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <ToggleButton
-                    android:id="@+id/favorBtn_playing"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/favor_btn_corner"
-                    android:drawableRight="@drawable/favor_toggle_btn_bg"
-                    android:textAllCaps="false"
-                    android:textColor="@drawable/favor_btn_text_color"
-                    android:textOff="mark favor"
-                    android:textOn="mark favor" />
-
-            </LinearLayout>
-
-            <include
-                android:id="@+id/relative_movie_film_group"
-                layout="@layout/film_group"
-                tools:visibility="visible"></include>
-
-        </LinearLayout>
-    </ScrollView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

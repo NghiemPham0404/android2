@@ -21,10 +21,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.movieapp.Adapters.CastAdapter;
@@ -72,6 +75,9 @@ public class Movie_infomation extends AppCompatActivity {
     private View popupReviewView;
     private ReviewApdater reviewApdater;
     private RecyclerView reviewsRecyclerView;
+    private RatingBar rating_bar;
+    private EditText review_text;
+    private ImageView send_btn;
 
 
     @Override
@@ -142,7 +148,7 @@ public class Movie_infomation extends AppCompatActivity {
     }
     public void initFeatures() {
         movieViewModel.searchMovie(movieId);
-        movieViewModel.searchMovieDetail(movieId, loginAccount.getUser_id(), Credentials.functionname_video);
+        movieViewModel.searchMovieDetail(movieId, loginAccount.getUser_id());
         movieViewModel.getReviews(movieId);
     }
 
@@ -158,10 +164,8 @@ public class Movie_infomation extends AppCompatActivity {
 
 
     private void initDetails() {
-//        initVideo();
         initCastCrew();
         initSocialNetwork();
-
         rating.setText(movie.getRating());
         date_info.setText("(" + movie.getPublishDate() + ")");
         time_info.setText(movie.getMaxDurationTime());
@@ -236,7 +240,6 @@ public class Movie_infomation extends AppCompatActivity {
             playMovieIntent.putExtra("videoUrl", movie_detail.getUrl());
             url720 = movie_detail.getUrl720();
             playMovieIntent.putExtra("videoUrl720", movie_detail.getUrl720());
-
             playMovieIntent.putExtra("loginAccount", (Parcelable) loginAccount);
             playButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -373,6 +376,7 @@ public class Movie_infomation extends AppCompatActivity {
                 changeFavorite();
             }
         });
+        favorButton.setText("favor");
         favorButton.setEnabled(true);
     }
 
@@ -395,6 +399,7 @@ public class Movie_infomation extends AppCompatActivity {
             @Override
             public void delete() {
                 movieViewModel.delete_review();
+                popupReviewView.findViewById(R.id.comment_box).setVisibility(View.VISIBLE);
             }
         };
 
@@ -414,15 +419,33 @@ public class Movie_infomation extends AppCompatActivity {
 
             error_layout.setVisibility(View.GONE);
         }
+        rating_bar =  popupReviewView.findViewById(R.id.comment_box).findViewById(R.id.ratingBar_comment_box);
+        review_text = popupReviewView.findViewById(R.id.comment_box).findViewById(R.id.commentBox);
+        send_btn = popupReviewView.findViewById(R.id.send_comment_box);
+        ImageView avatar_image = popupReviewView.findViewById(R.id.imageAvatar);
+        TextView avatar_text = popupReviewView.findViewById(R.id.avatarText);
+
+        new ImageLoader().loadAvatar(this, loginAccount.getAvatar(), avatar_image, avatar_text, loginAccount.getUsername());
+        send_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float rating = rating_bar.getRating();
+                String review = review_text.getText().toString().trim();
+                postReview(rating, review);
+            }
+        });
+
         loadinglayout.setVisibility(View.GONE);
         totalRating.setText("" + movie_reviews.size());
     }
 
     public void changeFavorite() {
-        favorButton.setEnabled(false);
         movieViewModel.changeFavor();
     }
-
+    public void postReview(float rating, String review) {
+        movieViewModel.post_review(movie.getId(), loginAccount.getUser_id(), rating+"", review);
+        popupReviewView.findViewById(R.id.comment_box).setVisibility(View.GONE);
+    }
     public void downloadMovie(String url) {
         downloadReceiver = new DownloadReceiver(download_btn, this);
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));

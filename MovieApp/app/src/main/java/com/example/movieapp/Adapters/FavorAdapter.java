@@ -33,7 +33,10 @@ public class FavorAdapter extends RecyclerView.Adapter<FavorAdapter.ViewHolder>{
         this.movies = movies;
         this.favor_click = favor_click;
     }
-
+    public void setFavorHistoryMovies(List<MovieModel> favHisMovies){
+        this.movies = favHisMovies;
+        notifyDataSetChanged();
+    }
     public void sort_by_release_date(int sort){
         if(getItemCount() > 0){
             if(sort ==1){
@@ -57,8 +60,6 @@ public class FavorAdapter extends RecyclerView.Adapter<FavorAdapter.ViewHolder>{
             }
         }
     }
-
-
 
     @NonNull
     @Override

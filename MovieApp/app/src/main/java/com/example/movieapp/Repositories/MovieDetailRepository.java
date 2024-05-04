@@ -34,16 +34,16 @@ public class MovieDetailRepository {
         return movieDetailApiClient.getMovie();
     }
 
-    public void searchMovieDetail(int id, String user_id, String function_name){
+    public void searchMovieDetail(int id, String user_id){
         this.id = id;
         this.user_id = user_id;
-        movieDetailApiClient.searchMovieDetailApi(id, user_id, Credentials.functionname_video);
+        movieDetailApiClient.searchMovieDetailApi(id, user_id);
     }
     public LiveData<DetailModel> getMovieDetail(){
         return movieDetailApiClient.getMovieDetail();
     }
     public void changeFavor(){
-        movieDetailApiClient.changeFavor(id, user_id, Credentials.functionname_detail);
+        movieDetailApiClient.changeFavor(id, user_id);
     }
 
     public void getReviews(int id){
@@ -55,6 +55,15 @@ public class MovieDetailRepository {
     }
 
     public void deleteReview(){
-        movieDetailApiClient.deleteReview(id, user_id, Credentials.functionname_delete_detail);
+        movieDetailApiClient.deleteReview(id, user_id);
+    }
+    public void postReview(int id, String user_id, String rating, String review){
+        movieDetailApiClient.postReview(id, user_id, rating, review);
+    }
+    public void searchFavHisMovies(String user_id){
+        movieDetailApiClient.searchFavHisMovies(user_id);
+    }
+    public LiveData<List<DetailModel>> getFavHisMovies(){
+        return movieDetailApiClient.getFavHisMovies();
     }
 }

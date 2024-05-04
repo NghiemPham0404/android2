@@ -23,8 +23,8 @@ public class MovieViewModel extends ViewModel {
     public LiveData<MovieModel> getMovie(){
         return movieDetailRepository.getMovie();
     }
-    public void searchMovieDetail(int id, String user_id, String function_name){
-        movieDetailRepository.searchMovieDetail(id,user_id, function_name);
+    public void searchMovieDetail(int id, String user_id){
+        movieDetailRepository.searchMovieDetail(id,user_id);
     }
     public LiveData<DetailModel> getDetailMovie(){
         return movieDetailRepository.getMovieDetail();
@@ -40,5 +40,12 @@ public class MovieViewModel extends ViewModel {
     }
     public void delete_review(){
         movieDetailRepository.deleteReview();
+    }
+    public void post_review(int id, String user_id, String rating, String review){movieDetailRepository.postReview(id, user_id, rating, review);}
+    public  void searchFavorMovies(String user_id){
+        movieDetailRepository.searchFavHisMovies(user_id);
+    }
+    public LiveData<List<DetailModel>> getFavorMovies(){
+        return movieDetailRepository.getFavHisMovies();
     }
 }

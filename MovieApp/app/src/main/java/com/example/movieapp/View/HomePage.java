@@ -147,9 +147,6 @@ public class HomePage extends Fragment {
                 @Override
                 public void onChanged(List<MovieModel> movieModels) {
                     if(movieModels != null){
-                        for (MovieModel movie : movieModels) {
-                            Log.i("Movie favor", movie.getTitle());
-                        }
                         film_adapter_popular.setMovies(movieModels);
                         film_adapter_popular.notifyDataSetChanged();
                     }
