@@ -6,11 +6,13 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.movieapp.AppExecutors;
 import com.example.movieapp.Model.MovieModel;
+import com.example.movieapp.R;
 import com.example.movieapp.Response.MovieSearchResponse;
 import com.example.movieapp.utils.Credentials;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -229,7 +231,7 @@ public class MovieApiClient {
         }
 
         private Call<MovieSearchResponse> getMovies(String query, int pageNumber) {
-            return MyService.getMovieApi().searchMovie(Credentials.API_KEY, query, pageNumber);
+            return MyService.getMovieApi().searchMovie(Credentials.API_KEY, query, pageNumber, Locale.getDefault().getLanguage());
         }
 
         private Call<MovieSearchResponse> getMovies(int list_type, int pageNumber) {
@@ -237,18 +239,18 @@ public class MovieApiClient {
             switch (list_type) {
                 case 1:
                     Log.i("movielist","finding 6");
-                    return MyService.getMovieApi().searchMoviesList(Credentials.BASE_URL + Credentials.NOW_PLAYING, Credentials.API_KEY, pageNumber);
+                    return MyService.getMovieApi().searchMoviesList(Credentials.BASE_URL + Credentials.NOW_PLAYING, Credentials.API_KEY, pageNumber, Locale.getDefault().getLanguage());
                 case 2:
-                    return MyService.getMovieApi().searchMoviesList(Credentials.BASE_URL + Credentials.POPULAR, Credentials.API_KEY, pageNumber);
+                    return MyService.getMovieApi().searchMoviesList(Credentials.BASE_URL + Credentials.POPULAR, Credentials.API_KEY, pageNumber, Locale.getDefault().getLanguage());
                 case 3:
-                    return MyService.getMovieApi().searchMoviesList(Credentials.BASE_URL + Credentials.TOP_RATED, Credentials.API_KEY, pageNumber);
+                    return MyService.getMovieApi().searchMoviesList(Credentials.BASE_URL + Credentials.TOP_RATED, Credentials.API_KEY, pageNumber, Locale.getDefault().getLanguage());
                 case 4:
-                    return MyService.getMovieApi().searchMoviesList(Credentials.BASE_URL + Credentials.UPCOMING, Credentials.API_KEY, pageNumber);
+                    return MyService.getMovieApi().searchMoviesList(Credentials.BASE_URL + Credentials.UPCOMING, Credentials.API_KEY, pageNumber, Locale.getDefault().getLanguage());
             }
             return null;
         }
         private Call<MovieSearchResponse> getMovies(String genre_str, String country ,int year, int pageNumber) {
-            return MyService.getMovieApi().discoverMovie(Credentials.API_KEY, genre_str, country, year, pageNumber);
+            return MyService.getMovieApi().discoverMovie(Credentials.API_KEY, genre_str, country, year, pageNumber, Locale.getDefault().getLanguage());
         }
 
 

@@ -11,6 +11,7 @@ import com.example.movieapp.Response.DetailResponse;
 import com.example.movieapp.utils.Credentials;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -165,6 +166,21 @@ public class MovieDetailApiClient {
         }, 10, TimeUnit.SECONDS);
     }
 
+    public void searchHisMovies(String user_id) {
+        if (retrieveFavHisMovieRunnable != null) {
+            retrieveFavHisMovieRunnable = null;
+        }
+        retrieveFavHisMovieRunnable = new RetrieveMovieRunnable(user_id, Credentials.functionname_history);
+        final Future myHandler = AppExecutors.getInstance().networkIO().submit(retrieveFavHisMovieRunnable);
+        AppExecutors.getInstance().networkIO().schedule(new Runnable() {
+            @Override
+            public void run() {
+                // Hủy lời gọi Retrofit
+                myHandler.cancel(true);
+            }
+        }, 10, TimeUnit.SECONDS);
+    }
+
 
     private class RetrieveMovieRunnable implements Runnable {
         int id = -1;
@@ -234,7 +250,8 @@ public class MovieDetailApiClient {
                                     boolean flag = false;
                                     for(int i = 0; i<currentFavHisList.size(); i++){
                                         if(currentFavHisList.get(i).getMovieId() == currentDetailModel.getMovieId()){
-                                            currentFavHisList.get(i).setFavor(!currentDetailModel.isFavor());
+                                            currentFavHisList.remove(i);
+                                            i--;
                                             flag = true;
                                         }
                                     }
@@ -284,6 +301,14 @@ public class MovieDetailApiClient {
                             Response response = deleteReview().execute();
                             if (response.isSuccessful()) {
                                 Log.i("delete review", "success");
+                            }
+                        }else if(function_name.equalsIgnoreCase(Credentials.functionname_history)){
+                            //get history, favor list
+                            Response reponse = getHistoryList().execute();
+                            if (reponse.isSuccessful()) {
+                                List<DetailModel> favHisList = ((Response<List<DetailModel>>) reponse).body();
+                                favor_history_movies.postValue(favHisList);
+                                Log.i("Get history favor list", "sucesses");
                             }
                         }
                     }
@@ -369,7 +394,7 @@ public class MovieDetailApiClient {
 
         public Call<MovieModel> getMovie() {
             return MyService.getMovieApi().searchMovieDetail(id, Credentials.API_KEY,
-                    "credits,videos,external_ids");
+                    "credits,videos,external_ids", Locale.getDefault().getLanguage());
         }
 
         public Call<DetailModel> getMovieDetail() {
@@ -396,6 +421,9 @@ public class MovieDetailApiClient {
 
         public Call<List<DetailModel>> getFavorHistoryList() {
             return MyService2.getApi().getFavorListByUserId(Credentials.functionname_detail, user_id);
+        }
+        public Call<List<DetailModel>> getHistoryList(){
+            return MyService2.getApi().getFavorListByUserId(Credentials.functionname_history, user_id);
         }
     }
 

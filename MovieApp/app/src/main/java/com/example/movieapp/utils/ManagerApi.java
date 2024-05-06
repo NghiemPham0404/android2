@@ -4,6 +4,7 @@ import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.DetailModel;
 import com.example.movieapp.Model.LoginModel;
 import com.example.movieapp.Model.VideoModel;
+import com.example.movieapp.Request.UserApiClient;
 import com.example.movieapp.Response.DetailResponse;
 
 import java.io.File;
@@ -127,5 +128,12 @@ public interface ManagerApi {
     Call<DetailModel> deleteReview(
             @Query("functionname") String functionname,
             @Query("userId") String userId,
-            @Query("movieId") int movieId);
+            @Query("movieId") int movieId
+    );
+
+    @POST(Credentials.manage_url)
+    Call<UserApiClient.ForgotPassModel> getForgotPass(
+        @Query("functionname") String functionname,
+        @Query("email") String email
+    );
 }

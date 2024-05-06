@@ -47,6 +47,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -185,7 +186,7 @@ public class DiscoverPage extends Fragment {
     }
 
     public void initGenres(){
-        Call<GenreResponse> genreResponseCall = MyService.getMovieApi().getAllGenre(Credentials.API_KEY);
+        Call<GenreResponse> genreResponseCall = MyService.getMovieApi().getAllGenre(Credentials.API_KEY, Locale.getDefault().getLanguage());
         genreResponseCall.enqueue(new Callback<GenreResponse>() {
             @Override
             public void onResponse(Call<GenreResponse> call, Response<GenreResponse> response) {
@@ -201,7 +202,7 @@ public class DiscoverPage extends Fragment {
         });
     }
     public void initRegion(){
-        Call<List<CountryModel>> regionResponseCall = MyService.getMovieApi().getAllRegion(Credentials.API_KEY);
+        Call<List<CountryModel>> regionResponseCall = MyService.getMovieApi().getAllRegion(Credentials.API_KEY, Locale.getDefault().getLanguage());
         regionResponseCall.enqueue(new Callback<List<CountryModel>>() {
             @Override
             public void onResponse(Call<List<CountryModel>> call, Response<List<CountryModel>> response) {

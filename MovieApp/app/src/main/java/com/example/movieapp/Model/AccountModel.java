@@ -66,6 +66,35 @@ public class AccountModel implements Parcelable, Serializable{
     public void setAvatar(String avatar){
         this.avatar = avatar;
     }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setSms(String sms) {
+        this.sms = sms;
+    }
+
+    public void setGoogle_id(String google_id) {
+        this.google_id = google_id;
+    }
+
+    public void setFacebook_id(String facebook_id) {
+        this.facebook_id = facebook_id;
+    }
+
     String user_id;
     String username;
     String email;

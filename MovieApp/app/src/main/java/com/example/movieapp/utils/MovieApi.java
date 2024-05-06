@@ -28,7 +28,8 @@ public interface MovieApi {
     Call<MovieSearchResponse> searchMovie(
         @Query("api_key") String key,
         @Query("query") String query,
-        @Query("page") int page
+        @Query("page") int page,
+        @Query("language") String language
         );
 
 
@@ -37,7 +38,8 @@ public interface MovieApi {
     Call<MovieSearchResponse> searchMoviesList(
             @Url()  String url,
             @Query("api_key") String key,
-            @Query("page") int page
+            @Query("page") int page,
+            @Query("language") String language
     );
 
     @GET
@@ -61,7 +63,8 @@ public interface MovieApi {
     Call<PersonModel> searchPersonByID(
             @Path("person_id") int person_id,
             @Query("append_to_response") String append_to_response,
-            @Query("api_key") String key
+            @Query("api_key") String key,
+            @Query("language") String language
     );
 
 
@@ -70,7 +73,8 @@ public interface MovieApi {
     Call<PeopleResponse> searchPerson(
             @Query("api_key") String key,
             @Query("query") String query,
-            @Query("page") int page
+            @Query("page") int page,
+            @Query("language") String language
     );
 
     // EXTERNAL LINK : https://api.themoviedb.org/3/person/1172108/external_ids?api_key=cf32372af846ed46863011b283bdcba1
@@ -93,7 +97,8 @@ public interface MovieApi {
     Call<MovieModel> searchMovieDetail(
             @Path("movie_id") int movie_id,
             @Query("api_key") String key,
-            @Query("append_to_response") String append_to_response
+            @Query("append_to_response") String append_to_response,
+            @Query("language") String language
     );
 
     @GET("3/movie/{movie_id}/recommendations")
@@ -113,12 +118,14 @@ public interface MovieApi {
     //https://api.themoviedb.org/3/genre/movie/list
     @GET("3/genre/movie/list")
     Call<GenreResponse> getAllGenre(
-            @Query("api_key") String key
+            @Query("api_key") String key,
+            @Query("language") String language
     );
 
     @GET("3/configuration/countries")
     Call<List<CountryModel>> getAllRegion(
-            @Query("api_key") String key
+            @Query("api_key") String key,
+            @Query("language") String language
     );
 
     @GET("3/discover/movie")
@@ -127,6 +134,7 @@ public interface MovieApi {
             @Query("with_genres") String with_genres,
             @Query("with_origin_country") String with_origin_country,
             @Query("year") int year,
-            @Query("page") int page
+            @Query("page") int page,
+            @Query("language") String language
     );
 }

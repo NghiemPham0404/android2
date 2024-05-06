@@ -65,7 +65,7 @@ public class FavorAdapter extends RecyclerView.Adapter<FavorAdapter.ViewHolder>{
     @Override
     public FavorAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.favor_history_item, parent, false);
-       ViewHolder viewHolder = new ViewHolder(view);
+        ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
 

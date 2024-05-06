@@ -41,7 +41,7 @@
             app:hintTextColor="@color/white">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/username_login_txt"
+                android:id="@+id/email_forgot_pass"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@null"
@@ -113,7 +113,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/forgot_pass_btn"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="51dp"

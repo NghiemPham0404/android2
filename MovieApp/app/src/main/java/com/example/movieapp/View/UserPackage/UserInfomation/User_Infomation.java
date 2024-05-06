@@ -3,18 +3,21 @@ package com.example.movieapp.View.UserPackage.UserInfomation;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +26,7 @@ import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
 import com.example.movieapp.Request.MyAvatarService;
 import com.example.movieapp.Response.AvatarResponse;
+import com.example.movieapp.ViewModel.UserViewModel;
 import com.example.movieapp.utils.ApiAvatarService;
 
 import org.jetbrains.annotations.Nullable;
@@ -53,29 +57,65 @@ public class User_Infomation extends AppCompatActivity {
     private ImageButton back_btn;
     private ImageView avatar_display;
     private TextView avatar_text;
-
     private Uri selectedImageUri;
-
+    private LinearLayout username_btn, email_btn, password_btn,sms_btn, facebook_btn, google_btn;
+    private TextView username_txt, email_txt, password_txt, sms_txt, facebook_txt, google_txt;
+    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_infomation);
-
         loginAccount = (AccountModel) getIntent().getParcelableExtra(getAccount);
-
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        initComponents();
+        initFeature();
+        initInfo();
+    }
+    public void initComponents(){
         back_btn = findViewById(R.id.backBtn_lg_setting);
+        avatar_text = findViewById(R.id.avatarText);
+        avatar_display = findViewById(R.id.avatar_user_info);
+        choose_avatar_btn = findViewById(R.id.choose_avatar_btn);
+        apply_avatar_btn = findViewById(R.id.apply_avatar);
+
+        username_btn = findViewById(R.id.user_btn);
+        email_btn = findViewById(R.id.email_btn);
+        password_btn = findViewById(R.id.password_btn);
+        sms_btn = findViewById(R.id.sms_btn);
+        google_btn = findViewById(R.id.google_btn);
+        facebook_btn = findViewById(R.id.facebook_btn);
+
+        username_txt = findViewById(R.id.user_txt);
+        email_txt = findViewById(R.id.email_txt);
+        password_txt = findViewById(R.id.password_txt);
+        sms_txt = findViewById(R.id.sms_txt);
+        google_txt = findViewById(R.id.google_txt);
+        facebook_txt = findViewById(R.id.facebook_txt);
+    }
+    public void initInfo(){
+        loadAvatar();
+        username_txt.setText(loginAccount.getUsername());
+        if(loginAccount.getEmail()!=null && loginAccount.getEmail().length() >0){
+            email_txt.setText(loginAccount.getEmail().charAt(1)+"*******");
+        }else{
+            email_txt.setText("");
+        }
+        password_txt.setText("******");
+        if(loginAccount.getSms()!=null && loginAccount.getSms().length()>2){
+            sms_txt.setText("*****" + loginAccount.getSms().charAt(loginAccount.getSms().length()-1)  + loginAccount.getSms().charAt(loginAccount.getSms().length()-2));
+        }else {
+            sms_txt.setText("");
+        }
+    }
+
+    public void initFeature(){
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
-
-        avatar_text = findViewById(R.id.avatarText);
-        avatar_display = findViewById(R.id.avatar_user_info);
-
-        choose_avatar_btn = findViewById(R.id.choose_avatar_btn);
         choose_avatar_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,7 +123,6 @@ public class User_Infomation extends AppCompatActivity {
             }
         });
 
-        apply_avatar_btn = findViewById(R.id.apply_avatar);
         apply_avatar_btn.setVisibility(View.GONE);
         apply_avatar_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,10 +130,40 @@ public class User_Infomation extends AppCompatActivity {
                 sendImageToServer(selectedImageUri);
             }
         });
-        initInfo();
+
+        username_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToUpdate("username");
+            }
+        });
+
+        password_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToUpdate("password");
+            }
+        });
+
+        email_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToUpdate("email");
+            }
+        });
+
+        sms_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToUpdate("sms");
+            }
+        });
     }
-    public void initInfo(){
-        loadAvatar();
+    public void goToUpdate(String updateInfo){
+        Intent update_info_intent = new Intent(this, UpdateUser_Information.class);
+        update_info_intent.putExtra("loginAccount", (Parcelable) loginAccount);
+        update_info_intent.putExtra("updateInfo", updateInfo);
+        startActivity(update_info_intent);
     }
 
     public void chooseAvatar(){
@@ -108,6 +177,7 @@ public class User_Infomation extends AppCompatActivity {
             startActivityForResult(intent, PICK_IMAGE_REQUEST);
         }
     }
+    // Lấy hình ảnh từ thư viện
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -115,7 +185,6 @@ public class User_Infomation extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             selectedImageUri = data.getData();
             apply_avatar_btn.setVisibility(View.VISIBLE);
-
             avatar_display.setImageURI(selectedImageUri);
         }
     }
@@ -132,8 +201,9 @@ public class User_Infomation extends AppCompatActivity {
             @Override
             public void onResponse(Call<AvatarResponse> call, Response<AvatarResponse> response) {
                 if(response.isSuccessful()){
-                        Toast.makeText(User_Infomation.this, "Đường link hình nè :" +response.body().getAvatarModel().getUrl() ,  Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(User_Infomation.this, "Đường link hình nè :" +response.body().getAvatarModel().getUrl() ,  Toast.LENGTH_SHORT).show();
                         loginAccount.setAvatar(response.body().getAvatarModel().getUrl());
+                        userViewModel.update(loginAccount);
                         apply_avatar_btn.setVisibility(View.GONE);
                 }else{
                     try {

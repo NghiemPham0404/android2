@@ -45,7 +45,13 @@ public class MovieViewModel extends ViewModel {
     public  void searchFavorMovies(String user_id){
         movieDetailRepository.searchFavHisMovies(user_id);
     }
+    public void searchHistoryMovies(String user_id){
+        movieDetailRepository.searchHistoryMovies(user_id);
+    }
     public LiveData<List<DetailModel>> getFavorMovies(){
+        return movieDetailRepository.getFavHisMovies();
+    }
+    public LiveData<List<DetailModel>> getHistoryMovies(){
         return movieDetailRepository.getFavHisMovies();
     }
 }

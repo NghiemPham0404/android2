@@ -93,6 +93,7 @@ public class Movie_infomation extends AppCompatActivity {
     }
     public void ObserveAnyChange() {
         if (movieViewModel != null) {
+            findViewById(R.id.loadingLayout).setVisibility(View.VISIBLE);
             movieViewModel.getMovie().observe(this, new Observer<MovieModel>() {
                 @Override
                 public void onChanged(MovieModel movieModel) {
@@ -271,15 +272,23 @@ public class Movie_infomation extends AppCompatActivity {
     private void initDownloadButton() {
         if (url360 == null && url720 == null) {
             download_btn.setVisibility(View.GONE);
+            return;
         }
         String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MovieApp/" + movie.getId() + ".mp4";
         if (new File(filePath).exists()) {
             download_btn.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.download_done_icon), null, null);
-            download_btn.setEnabled(false);
+            download_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent playMovieIntent = new Intent(Movie_infomation.this, PlayingFilm.class);
+                    playMovieIntent.putExtra("movie", movie);
+                    playMovieIntent.putExtra("videoUrl720", movie_detail.getUrl720());
+                    playMovieIntent.putExtra("loginAccount", (Parcelable) loginAccount);
+                    startActivity(playMovieIntent);
+                }
+            });
             return;
-        }
-        // download btn
-        if (url720 != null) {
+        }else if (url720 != null) {
             download_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -376,7 +385,7 @@ public class Movie_infomation extends AppCompatActivity {
                 changeFavorite();
             }
         });
-        favorButton.setText("favor");
+        favorButton.setText(getResources().getText(R.string.add_favor));
         favorButton.setEnabled(true);
     }
 

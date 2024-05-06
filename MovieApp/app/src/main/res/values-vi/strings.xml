@@ -1,5 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" translatable="false">
-    <string name="now_playing">đang chiếu</string>
+    <string name="app_name">MovieApp</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="default_web_client_id">200497617735-a5t4rrpnglvid5i5a0d9fd6kteqfnn5t.apps.googleusercontent.com</string>
+    <string name="facebook_app_id">25382099161403392</string>
+    <string name="fb_login_protocol_scheme">fb25382099161403392</string>
+    <string name="facebook_client_token">dd2977452a4b97cf5cac994e9a56da27</string>
 
+    <string name="connection_err">Lỗi kết nối</string>
+    <string name="try_again">Thử lại</string>
+
+    <string name="nav_home">trang chủ</string>
+    <string name="nav_discover">khám phá</string>
+    <string name="nav_favor">yêu thích</string>
+    <string name="nav_user">bạn</string>
+
+    <string name="language">vi</string>
+    <string name="Lastest">Latest</string>
+    <string name="now_playing">Đang chiếu</string>
+    <string name="popular">Thịnh hành</string>
+    <string name="upcomming">Sắp chiếu</string>
+
+    <string name="search_box_hint">phim, diễn viên,...</string>
+    <string name="search_box_err">không tìm thấy kết quả nào</string>
+    <string name="search_box_err_2">không tìm thấy lịch sử nào </string>
+
+    <string name="loading">đang tải....</string>
+    <string name="coming_soon">sắp có...</string>
+    <string name="watch_now">xem ngay</string>
+    <string name="play_trailer">xem trailer</string>
+    <string name="add_favor">yêu thích</string>
+    <string name="download">tải xuống</string>
+    <string name="downloading">đang tải...</string>
+    <string name="review">review</string>
+    <string name="social_media">mạng xã hội :</string>
+    <string name="overview">Tóm tắt nội dung</string>
+    <string name="genres">Thể loại</string>
+    <string name="cast">diễn viên</string>
+    <string name="crew">sản xuất</string>
+
+    <string name="personal_info">Thông tin cá nhân</string>
+    <string name="know_for">Nổi tiếng với vai trò</string>
+    <string name="gender">Giới tính</string>
+    <string name="birthday">Ngày sinh</string>
+    <string name="biography">Tiểu sử</string>
+    <string name="career">Sự nghiệp</string>
+    <string name="year">năm</string>
+    <string name="movie_role">Phim / vai trò</string>
+    <string name="rating">đánh giá</string>
+
+    <string name="filter_btn">Lọc</string>
+    <string name="filter_apply_btn">Áp dụng</string>
+    <string name="filter_cancel_btn">Hủy bỏ</string>
+    <string name="country">quốc gia</string>
+
+    <string name="history">lịch sử</string>
+    <string name="latest">mới nhất</string>
+    <string name="available">có sắn</string>
+    <string name="trailer">trailer</string>
+
+    <string name="your_information">Thông tin tài khoản</string>
+    <string name="notification">Thông báo</string>
+    <string name="privacy_policy">Chính sách bảo mật</string>
+    <string name="report">Báo cáo</string>
+    <string name="help">Hỗ trợ</string>
+    <string name="setting">Cài đặt</string>
+    <string name="logout">Đăng xuất</string>
+
+    <string name="people_may_know">Người bạn có thể biết</string>
+    <string name="Result">Kết quả</string>
+    <string name="clear_history">Xóa lịch sử</string>
 </resources>

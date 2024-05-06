@@ -33,6 +33,7 @@ import com.example.movieapp.utils.Credentials;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -90,6 +91,7 @@ public class FavorFragment extends Fragment {
                     public void onClick(View v) {
                         Intent intent = new Intent(getContext(), PlayingFilm.class);
                         intent.putExtra("videoUrl", movie.getVideoUrl());
+                        intent.putExtra("videoUrl720", movie.getVideoUrl());
                         intent.putExtra("movie", movie);
                         intent.putExtra("loginAccount", (Parcelable) loginAccount);
                         startActivity(intent);
@@ -243,7 +245,7 @@ public class FavorFragment extends Fragment {
         fav_movies.clear();
         for (int i = 0; i<favHisMovies.size() ; i++) {
             DetailModel movie = favHisMovies.get(i);
-            initListItem(movie.getMovieId(), movie.getDuration(), movie.getUrl(), movie.getTimeFavor());
+            initListItem(movie.getMovieId(), movie.getDuration(), movie.getUrl(),movie.getUrl720(), movie.getTimeFavor());
         }
         filter_trailer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -253,29 +255,11 @@ public class FavorFragment extends Fragment {
                 }
             }
         });
-        filter_trailer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(filter_trailer.isChecked()){
-                    filter_trailer.setChecked(false);
-                    initFavHisList();
-                }
-            }
-        });
         filter_available.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     filter_available();
-                }
-            }
-        });
-        filter_available.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(filter_available.isChecked()){
-                    filter_available.setChecked(false);
-                    initFavHisList();
                 }
             }
         });
@@ -311,6 +295,9 @@ public class FavorFragment extends Fragment {
             if (fav_movies.get(i).getVideoUrl() != null) {
                 filter_list.add(fav_movies.get(i));
             }
+            if(i == fav_movies.size()-1){
+                loadingScreen.setVisibility(View.GONE);
+            }
         }
         favorAdapter.setFavorHistoryMovies(filter_list);
         favorAdapter.sort_by_rating(sort_rating);
@@ -323,23 +310,29 @@ public class FavorFragment extends Fragment {
             if (fav_movies.get(i).getVideoUrl() == null && fav_movies.get(i).getTrailer() != null) {
                 filter_list.add(fav_movies.get(i));
             }
+            if(i == fav_movies.size()-1){
+                loadingScreen.setVisibility(View.GONE);
+            }
         }
         favorAdapter.setFavorHistoryMovies(filter_list);
         favorAdapter.sort_by_rating(sort_rating);
         favorAdapter.sort_by_release_date(sort_time);
     }
-    public void initListItem(int movieId, String duration, String videoUrl, String favorTime) {
-        Call<MovieModel> movieCall = MyService.getMovieApi().searchMovieDetail(movieId, Credentials.API_KEY, "videos");
+    public void initListItem(int movieId, String duration, String videoUrl,String videoUrl720, String favorTime) {
+        Call<MovieModel> movieCall = MyService.getMovieApi().searchMovieDetail(movieId, Credentials.API_KEY, "videos", Locale.getDefault().getLanguage());
         movieCall.enqueue(new Callback<MovieModel>() {
             @Override
             public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
                 MovieModel movie = response.body();
                 movie.setVideoUrl(videoUrl);
+                movie.setVideoUrl720(videoUrl720);
                 movie.setDuration(duration);
                 movie.setFavorTime(favorTime);
                 fav_movies.add(movie);
                 favorAdapter.sort_by_rating(0);
-                favorAdapter.notifyDataSetChanged();
+                if(fav_movies.size() == favHisMovies.size()){
+                    favorAdapter.notifyDataSetChanged();
+                }
 //                Log.i("Favor movie : " , movie.getTitle());
             }
 

@@ -3,10 +3,72 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="default_web_client_id">200497617735-a5t4rrpnglvid5i5a0d9fd6kteqfnn5t.apps.googleusercontent.com</string>
-
     <string name="facebook_app_id">25382099161403392</string>
     <string name="fb_login_protocol_scheme">fb25382099161403392</string>
     <string name="facebook_client_token">dd2977452a4b97cf5cac994e9a56da27</string>
 
+    <string name="connection_err">Connection error</string>
+    <string name="try_again">Try again</string>
+
+    <string name="nav_home">home</string>
+    <string name="nav_discover">discover</string>
+    <string name="nav_favor">favor</string>
+    <string name="nav_user">user</string>
+
+    <string name="language">en</string>
+    <string name="Latest">Latest</string>
     <string name="now_playing">Now playing</string>
+    <string name="popular">Popular</string>
+    <string name="upcomming">Upcomming</string>
+
+    <string name="search_box_hint">movie, actors....</string>
+    <string name="search_box_err">No result found</string>
+    <string name="search_box_err_2">No history found </string>
+
+    <string name="loading">loading</string>
+    <string name="coming_soon">coming soon...</string>
+    <string name="watch_now">watch now</string>
+    <string name="play_trailer">play trailer</string>
+    <string name="add_favor">favor</string>
+    <string name="download">download</string>
+    <string name="downloading">downloading...</string>
+    <string name="review">review</string>
+    <string name="social_media">social network :</string>
+    <string name="overview">Overview</string>
+    <string name="genres">Genres</string>
+    <string name="cast">cast</string>
+    <string name="crew">crew</string>
+
+    <string name="personal_info">Personal info</string>
+    <string name="know_for">Knowing for</string>
+    <string name="gender">Gender</string>
+    <string name="birthday">Date of birth</string>
+    <string name="place_of_birth">Place of birth</string>
+    <string name="biography">Biography</string>
+    <string name="career">Career</string>
+    <string name="year">Year</string>
+    <string name="movie_role">movie / role</string>
+    <string name="rating">rating</string>
+
+    <string name="filter_btn">Filter</string>
+    <string name="filter_apply_btn">Apply </string>
+    <string name="filter_cancel_btn">Cancel</string>
+    <string name="country">Country</string>
+
+    <string name="history">history</string>
+    <string name="latest">latest</string>
+    <string name="available">available</string>
+    <string name="trailer">trailer</string>
+
+    <string name="your_information">Your infomation</string>
+    <string name="notification">Notifications</string>
+    <string name="privacy_policy">Our privacy policy</string>
+    <string name="report">Report</string>
+    <string name="help">Help</string>
+    <string name="setting">Setting</string>
+    <string name="logout">Logout</string>
+
+    <string name="people_may_know">People you may know</string>
+    <string name="Result">Result</string>
+    <string name="clear_history">clear history</string>
 </resources>

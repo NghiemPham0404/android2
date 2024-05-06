@@ -63,6 +63,9 @@ public class MovieDetailRepository {
     public void searchFavHisMovies(String user_id){
         movieDetailApiClient.searchFavHisMovies(user_id);
     }
+    public void searchHistoryMovies(String user_id){
+        movieDetailApiClient.searchHisMovies(user_id);
+    }
     public LiveData<List<DetailModel>> getFavHisMovies(){
         return movieDetailApiClient.getFavHisMovies();
     }

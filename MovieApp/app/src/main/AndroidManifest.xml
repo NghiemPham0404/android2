@@ -10,7 +10,8 @@
     <uses-permission android:name="android.permission.MANAGE_DEVICE_POLICY_MICROPHONE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission-sdk-23 android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"/>
+
+    <uses-permission-sdk-23 android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -24,6 +25,15 @@
         android:theme="@style/Theme.MovieApp"
         android:usesCleartextTraffic="true"
         tools:targetApi="30">
+        <activity
+            android:name=".View.LoginPackage.ForgetPassActivity"
+            android:exported="false" />
+        <activity
+            android:name=".View.UserPackage.Notification.NotificationContentView"
+            android:exported="false" />
+        <activity
+            android:name=".View.UserPackage.Notification.NotificationsView"
+            android:exported="false" />
         <activity
             android:name=".View.SearchPage"
             android:exported="false" />
@@ -123,8 +133,8 @@
 
         <receiver
             android:name=".Services.DownloadReceiver"
-            android:exported="false"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="false">
             <intent-filter>
                 <action android:name="DownloadManager.ACTION_DOWNLOAD_COMPLETE" />
             </intent-filter>

@@ -46,7 +46,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:backgroundTint="@color/black"
-                    android:hint="movie name |  actors.."
+                    android:hint="@string/search_box_hint"
                     android:imeOptions="actionSearch"
                     android:inputType="text"
                     android:textColor="@color/white"
@@ -89,7 +89,8 @@
                 android:text="Not result found"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/no_history_err"
@@ -100,7 +101,8 @@
                 android:text="There is no history yet"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/delete_search_history_btn"
