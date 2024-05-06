@@ -28,7 +28,7 @@
                 android:drawableRight="@drawable/baseline_keyboard_arrow_down_24"
                 android:fontFamily="@font/inter"
                 android:paddingLeft="10dp"
-                android:text="Genre"
+                android:text="@string/genres"
                 android:textAlignment="viewStart"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
@@ -59,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="15dp"
                     android:background="@drawable/nomal_stroke"
-                    android:hint="Country"
+                    android:hint="@string/country"
                     android:textColorHint="@color/white"
                     app:boxStrokeColor="@null"
                     app:hintTextColor="@color/white">
@@ -85,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="15dp"
                     android:background="@drawable/nomal_stroke"
-                    android:hint="Year"
+                    android:hint="@string/year"
                     android:textColorHint="@color/white"
                     app:boxStrokeColor="@null"
                     app:hintTextColor="@color/white">
@@ -117,7 +117,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/neon_blue_corner"
-                android:text="reset"
+                android:text="@string/filter_cancel_btn"
                 android:textColor="@color/blue" />
 
             <Button
@@ -128,7 +128,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/gradient_corner_bg"
-                android:text="Filter"
+                android:text="@string/filter_apply_btn"
                 android:textColor="@color/white" />
         </LinearLayout>
     </LinearLayout>

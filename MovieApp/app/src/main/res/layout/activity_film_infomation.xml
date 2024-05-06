@@ -208,8 +208,8 @@
                 android:drawableTop="@drawable/favor_toggle_btn_bg"
                 android:textAllCaps="false"
                 android:textColor="@drawable/favor_btn_text_color"
-                android:textOff="favor"
-                android:textOn="favor"
+                android:textOff="@string/add_favor"
+                android:textOn="@string/add_favor"
                 android:textSize="16sp" />
 
             <Button
@@ -218,7 +218,7 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:drawableTop="@drawable/download_icon"
-                android:text="Download"
+                android:text="@string/download"
                 android:textAllCaps="false"
                 android:textColor="@color/neon_pink" />
 
@@ -228,7 +228,7 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:drawableTop="@drawable/baseline_comment_24"
-                android:text="review"
+                android:text="@string/review"
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
 
@@ -246,7 +246,7 @@
                 android:id="@+id/textView10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Social media :"
+                android:text="@string/social_media"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -309,7 +309,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/inter"
-                android:text="Overview"
+                android:text="@string/overview"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -328,7 +328,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/inter"
-                android:text="Genres"
+                android:text="@string/genres"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -352,7 +352,7 @@
                     android:layout_height="wrap_content"
                     android:checkable="true"
                     android:checked="true"
-                    android:text="Cast"
+                    android:text="@string/cast"
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     app:checkedIcon="@null"
@@ -363,7 +363,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checkable="true"
-                    android:text="Crew"
+                    android:text="@string/crew"
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     app:checkedIcon="@null"

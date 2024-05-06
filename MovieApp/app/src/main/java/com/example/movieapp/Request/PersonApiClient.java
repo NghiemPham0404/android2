@@ -11,6 +11,7 @@ import com.example.movieapp.utils.Credentials;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -118,11 +119,11 @@ public class PersonApiClient {
             }
         }
         public Call<PeopleResponse>  getPeople() {
-            return MyService.getMovieApi().searchPerson(Credentials.API_KEY,query, page);
+            return MyService.getMovieApi().searchPerson(Credentials.API_KEY,query, page, Locale.getDefault().getLanguage());
         }
 
         public Call<PersonModel> getPerson(){
-            return MyService.getMovieApi().searchPersonByID(person_id, Credentials.append_person,Credentials.API_KEY);
+            return MyService.getMovieApi().searchPersonByID(person_id, Credentials.append_person,Credentials.API_KEY, Locale.getDefault().getLanguage());
         }
         private void cancelRequest() {
             Log.v("QUERY TASK", "Canceled request");

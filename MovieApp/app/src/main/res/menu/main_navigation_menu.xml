@@ -5,19 +5,18 @@
     <item
         android:id="@+id/home"
         android:icon="@drawable/nav_item_home"
-        android:title="Home"
-        />
+        android:title="@string/nav_home" />
     <item
         android:id="@+id/discover"
         android:icon="@drawable/nav_item_discover"
-        android:title="Discover"
-        />
+        android:title="@string/nav_discover" />
     <item
         android:id="@+id/favor"
-        android:title="Favor"
-        android:icon="@drawable/nav_item_favor"/>
+        android:icon="@drawable/nav_item_favor"
+        android:title="@string/add_favor" />
 
-    <item android:title="You"
+    <item
         android:id="@+id/user"
-        android:icon="@drawable/nav_item_user"/>
+        android:icon="@drawable/nav_item_user"
+        android:title="@string/nav_user" />
 </menu>

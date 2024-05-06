@@ -31,6 +31,7 @@ import com.example.movieapp.utils.Credentials;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -134,7 +135,7 @@ public class HistoryFragment extends Fragment {
         movies = new ArrayList<MovieModel>();
     }
     public void ObserveAnyChange(){
-        movieViewModel.getFavorMovies().observe(this, new Observer<List<DetailModel>>() {
+        movieViewModel.getHistoryMovies().observe(this, new Observer<List<DetailModel>>() {
             @Override
             public void onChanged(List<DetailModel> detailModels) {
                 favHisMovies = detailModels;
@@ -174,30 +175,37 @@ public class HistoryFragment extends Fragment {
     }
 
     public void initFeatures() {
-       movieViewModel.searchFavorMovies(loginAccount.getUser_id());
+       movieViewModel.searchHistoryMovies(loginAccount.getUser_id());
     }
 
     public void initHistoryList() {
         loadingScreen.setVisibility(View.VISIBLE);
         movies.clear();
+        if(favHisMovies.size()==0){
+            loadingScreen.setVisibility(View.GONE);
+        }
         for (DetailModel movie : favHisMovies) {
-            initListItem(movie.getMovieId(), movie.getDuration(), movie.getUrl(), movie.getTimeFavor());
+            initListItem(movie.getMovieId(), movie.getDuration(), movie.getUrl(), movie.getUrl720(), movie.getTimeFavor());
         }
     }
 
-    public void initListItem(int movieId, String duration, String videoUrl, String favorTime) {
-        Call<MovieModel> movieCall = MyService.getMovieApi().searchMovieDetail(movieId, Credentials.API_KEY, "videos");
+    public void initListItem(int movieId, String duration, String videoUrl,String videoUrl720, String favorTime) {
+        Call<MovieModel> movieCall = MyService.getMovieApi().searchMovieDetail(movieId, Credentials.API_KEY, "videos", Locale.getDefault().getLanguage());
         movieCall.enqueue(new Callback<MovieModel>() {
             @Override
             public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
                 MovieModel movie = response.body();
-                movie.setDuration(duration);
                 movie.setVideoUrl(videoUrl);
+                movie.setVideoUrl720(videoUrl720);
+                movie.setDuration(duration);
                 movie.setFavorTime(favorTime);
                 movies.add(movie);
-                historyAdapter.setHistoryMovies(movies);
-                Log.i("Favor movie : ", movie.getTitle());
-                loadingScreen.setVisibility(View.GONE);
+                if(movies.size() == favHisMovies.size()){
+                    historyAdapter.setHistoryMovies(movies);
+                    historyAdapter.notifyDataSetChanged();
+                    loadingScreen.setVisibility(View.GONE);
+                }
+//                Log.i("Favor movie : " , movie.getTitle());
             }
 
             @Override

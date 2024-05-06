@@ -210,7 +210,7 @@ public class HomePage extends Fragment {
         MovieApi movieApi = MyService.getMovieApi();
         Call<MovieSearchResponse> NowplayingResponseCall =
                 movieApi.searchMoviesList(Credentials.BASE_URL
-                        + Credentials.NOW_PLAYING, Credentials.API_KEY, 1);
+                        + Credentials.NOW_PLAYING, Credentials.API_KEY, 1, Locale.getDefault().getLanguage());
 
         NowplayingResponseCall.enqueue(new Callback<MovieSearchResponse>() {
             @Override

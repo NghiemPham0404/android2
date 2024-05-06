@@ -3,6 +3,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,21 +12,18 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.movieapp.Interfaces.Edittext_interface;
 import com.example.movieapp.Interfaces.Form_validate;
-import com.example.movieapp.MainActivity;
 import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.LoginModel;
 import com.example.movieapp.R;
-import com.example.movieapp.Request.ImageLoader;
-import com.example.movieapp.Request.LoginAccountRequest;
-import com.example.movieapp.Request.MyService2;
 import com.example.movieapp.View.HomeActivity;
-import com.example.movieapp.utils.Credentials;
-import com.example.movieapp.utils.ManagerApi;
+import com.example.movieapp.ViewModel.UserViewModel;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -44,86 +43,77 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.UserInfo;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.security.Provider;
 import java.util.Arrays;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
-public class LoginViewActivity extends AppCompatActivity implements Form_validate {
+public class LoginViewActivity extends AppCompatActivity implements Form_validate, Edittext_interface {
     TextInputEditText email_txt, password_txt;
     TextView email_err_signin, password_err_signin;
     Button loginBtn, loginBtn_gg, forgot_passBtn, loginBtn_sms, signupBtn;
     Button loginBtn_face;
     ConstraintLayout loadingScreen;
-
     private SignInClient onTapClient;
     private BeginSignInRequest signInRequest;
-
     private static final int REQ_ONE_TAP = 100;
     private static final String TAG = "LOGIN TASK";
     private CallbackManager callbackManager;
     private FirebaseAuth mAuth;
 
+    private LoginModel loginAccount;
+    private UserViewModel userViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_view);
-
         mAuth = FirebaseAuth.getInstance();
-
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         initComponents();
+        ObserveAnyChange();
         initFeature();
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        if(currentUser!=null){
-//            Toast.makeText(getBaseContext(), ""+currentUser.getDisplayName(), Toast.LENGTH_SHORT).show();
-//             Log.i("User UID", currentUser.getUid());
-//            for (UserInfo userInfo : currentUser.getProviderData()) {
-//                String providerId = userInfo.getProviderId();
-//                if (providerId.equals("google.com")) {
-//                    Log.i("User UID", "Google");
-//                    loginToAccountWithGoogle(currentUser.getUid());
-//                } else if (providerId.equals("facebook.com")) {
-//                    Log.i("User UID", "Facebook");
-//                    loginToAccountWithFB(currentUser.getUid());
-//                }
-//            }
-//        }
+    public void ObserveAnyChange(){
+        if(userViewModel!=null){
+            userViewModel.getAccount().observe(this, new Observer<LoginModel>() {
+                @Override
+                public void onChanged(LoginModel loginModel) {
+                    loginAccount = loginModel;
+                    if(loginAccount.getSuccess().equalsIgnoreCase("true")){
+                        navigateToHomeActivity(loginAccount);
+                    }else{
+                        String error = loginAccount.getError();
+                        if(error.equalsIgnoreCase("Wrong Password")){
+                            password_err_signin.setText(error);
+                            password_err_signin.setVisibility(View.VISIBLE);
+                        }else{
+                            Toast.makeText(LoginViewActivity.this, "Lỗi : "+loginAccount.getError(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    loadingScreen.setVisibility(View.GONE);
+                }
+            });
+        }
     }
-
-
     public void initComponents() {
-        email_txt = findViewById(R.id.username_login_txt);
+        email_txt = findViewById(R.id.email_forgot_pass);
         password_txt = findViewById(R.id.password_login_txt);
         email_err_signin = findViewById(R.id.email_err_signin);
         password_err_signin = findViewById(R.id.password_err_signin);
 
 
         loginBtn = findViewById(R.id.sign_in_btn);
+        forgot_passBtn = findViewById(R.id.forgot_pass_btn);
         loginBtn_gg = findViewById(R.id.login_google);
         loginBtn_face = findViewById(R.id.loginFbButton);
         signupBtn = findViewById(R.id.sign_up_btn_login);
@@ -132,6 +122,13 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
 
     public void initFeature() {
         callbackManager = CallbackManager.Factory.create();
+        forgot_passBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginViewActivity.this, ForgetPassActivity.class);
+                startActivity(intent);
+            }
+        });
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,7 +165,6 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
                 });
             }
         });
-
         signupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -180,50 +176,10 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
     }
 
     public void signInDefault() {
-
         String email = email_txt.getText().toString().trim();
         String password = password_txt.getText().toString().trim();
         loadingScreen.setVisibility(View.VISIBLE);
-        try {
-            ManagerApi managerApi = MyService2.getApi();
-            Call<LoginModel> loginModelCall = managerApi.loginWithAccount(Credentials.functionname_login,email, password);
-            loginModelCall.enqueue(new Callback<LoginModel>() {
-                @Override
-                public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
-                   if(response.code() == 200){
-                       LoginModel result = response.body();
-                       if(result!=null){
-                           if (result.getSuccess().equalsIgnoreCase("true")) {
-                             navigateToHomeActivity(result);
-                           } else {
-                               String error = result.getError();
-                               if (error.equalsIgnoreCase("Wrong Password") && password_err_signin != null) {
-                                   password_err_signin.setText(error);
-                                   password_err_signin.setVisibility(View.VISIBLE);
-                                   email_err_signin.setVisibility(View.GONE);
-                               } else if (email_err_signin != null) {
-                                   email_err_signin.setText(error);
-                                   password_err_signin.setVisibility(View.GONE);
-                                   email_err_signin.setVisibility(View.VISIBLE);
-                               }
-                           }
-                       }
-                       loadingScreen.setVisibility(View.GONE);
-                   }
-
-                }
-
-                @Override
-                public void onFailure(Call<LoginModel> call, Throwable t) {
-                    Log.i(TAG, "Fail"+t.toString());
-                    if(loadingScreen!=null){
-                        loadingScreen.setVisibility(View.GONE);
-                    }
-                }
-            });
-        } catch (Exception e) {
-            Log.e(TAG, "Error posting data", e);
-        }
+        userViewModel.login(email, password);
     }
 
     public void signInWithGoogle() {
@@ -269,9 +225,7 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
                 try {
                     SignInCredential credential = onTapClient.getSignInCredentialFromIntent(data);
                     String google_id = credential.getId();
-
                     if (google_id != null) {
-
                         AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(credential.getGoogleIdToken(), null);
                         mAuth.signInWithCredential(firebaseCredential)
                                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -352,136 +306,20 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
                 });
     }
 
-    public void loginToAccountWithGoogle(String google_id){
-        loadingScreen.setVisibility(View.VISIBLE);
-        Call<LoginModel> loginModelCall = MyService2.getApi().loginWithGoogle(Credentials.functionname_login,google_id);
-        loginModelCall.enqueue(new Callback<LoginModel>() {
-            @Override
-            public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
-                if(response.code() == 200){
-                    LoginModel loginModel = response.body();
-                    if(loginModel.getSuccess().equalsIgnoreCase("true")){
-                        navigateToHomeActivity(loginModel);
-                    }else{
-                        Log.e("LOGIN TASK", "Fail to login with google");
-                        loadingScreen.setVisibility(View.GONE);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<LoginModel> call, Throwable t) {
-                Log.e("LOGIN TASK", "Fail to login with google");
-            }
-        });
-    }
-
     public void loginToAccountWithGoogle(String google_id,String username, String email, String avatar){
         loadingScreen.setVisibility(View.VISIBLE);
-        Call<LoginModel> loginModelCall = MyService2.getApi().loginWithGoogle(Credentials.functionname_login,google_id);
-        loginModelCall.enqueue(new Callback<LoginModel>() {
-            @Override
-            public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
-                if(response.code() == 200){
-                    LoginModel loginModel = response.body();
-                    if(loginModel.getSuccess().equalsIgnoreCase("true")){
-                        navigateToHomeActivity(loginModel);
-                    }else{
-                        registAccountWithGoogle(google_id, username,email,avatar);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<LoginModel> call, Throwable t) {
-                Log.e("LOGIN TASK", "Fail to login with google");
-            }
-        });
-    }
-
-    public void registAccountWithGoogle(String google_id,String username, String email,  String avatar){
-        Call<LoginModel> loginModelCall = MyService2.getApi().regisWithGoogle(Credentials.functionname_regis, google_id, email, username, avatar);
-        loginModelCall.enqueue(new Callback<LoginModel>() {
-            @Override
-            public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
-                if(response.code() == 200){
-                    LoginModel loginModel = response.body();
-                    navigateToHomeActivity(loginModel);
-                }else{
-                    Log.e("REGIS TASK", "fail to regist and login");
-                }
-            }
-            @Override
-            public void onFailure(Call<LoginModel> call, Throwable t) {
-                Log.e("LOGIN TASK", "fail to regist and login with fb" + t);
-            }
-        });
-    }
-    public void loginToAccountWithFB(String fb_id){
-        loadingScreen.setVisibility(View.VISIBLE);
-        Call<LoginModel> loginModelCall = MyService2.getApi().loginWithFacebook(Credentials.functionname_login,fb_id);
-        loginModelCall.enqueue(new Callback<LoginModel>() {
-            @Override
-            public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
-                if(response.code() == 200){
-                    LoginModel loginAccount = response.body();
-                    navigateToHomeActivity(loginAccount);
-                }else{
-                    Log.e("LOGIN TASK", "Fail to login with fb");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<LoginModel> call, Throwable t) {
-                Log.e("LOGIN TASK", "Fail to login with fb");
-            }
-        });
+        userViewModel.loginWithGoogle(email, username, google_id, avatar);
     }
 
     public void loginToAccountWithFB(String fb_id, String username, String avatar){
         loadingScreen.setVisibility(View.VISIBLE);
-        Call<LoginModel> loginModelCall = MyService2.getApi().loginWithFacebook(Credentials.functionname_login,fb_id);
-        loginModelCall.enqueue(new Callback<LoginModel>() {
-            @Override
-            public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
-                if(response.isSuccessful()) {
-                    LoginModel loginModel = response.body();
-                    if (loginModel.getSuccess().equalsIgnoreCase("true")){
-                        navigateToHomeActivity(loginModel);
-                }else{
-                        Log.e("LOGIN TASK", "Fail to login with FB");
-                        regisWithFB(fb_id, username, avatar);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<LoginModel> call, Throwable t) {
-                Log.e("LOGIN TASK", "Fail to login with FB");
-            }
-        });
-    }
-
-    public void regisWithFB(String fb_id, String username, String avatar){
-        Call<LoginModel> loginModelCall = MyService2.getApi().regisWithFacebook(Credentials.functionname_regis, fb_id, username, avatar);
-        loginModelCall.enqueue(new Callback<LoginModel>() {
-            @Override
-            public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
-                LoginModel loginModel = response.body();
-                navigateToHomeActivity(loginModel);
-            }
-
-            @Override
-            public void onFailure(Call<LoginModel> call, Throwable t) {
-                Log.e("LOGIN TASK", "fail to regist  with fb" + t);
-            }
-        });
+        userViewModel.loginWithFacebook(username, fb_id, avatar);
     }
 
     public void navigateToHomeActivity(LoginModel loginModel){
         loadingScreen.setVisibility(View.GONE);
         AccountModel loginAccount = (AccountModel) loginModel;
-        LoginAccountRequest.saveUserToFile(loginAccount, this);
+        userViewModel.storeAccount(this, loginAccount);
         Intent loginSuccessIntent = new Intent(LoginViewActivity.this, HomeActivity.class);
         loginSuccessIntent.putExtra("loginAccount", (Parcelable) loginAccount);
         subcribeToNotification();
@@ -518,5 +356,13 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
                         Toast.makeText(LoginViewActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    @Override
+    public void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(password_txt.getWindowToken(), 0);
+        }
     }
 }

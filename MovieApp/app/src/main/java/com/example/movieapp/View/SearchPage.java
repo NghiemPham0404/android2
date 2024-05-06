@@ -40,6 +40,7 @@ import java.util.List;
 public class SearchPage extends AppCompatActivity implements Edittext_interface {
     EditText search_box;
     Button search_btn;
+    private TextView delete_search_history_btn;
     ImageButton back_btn;
     TextView search_movie_tilte;
     RecyclerView search_movie_recycler, people_recycler, recommend_search_recycler;
@@ -65,6 +66,8 @@ public class SearchPage extends AppCompatActivity implements Edittext_interface 
             search_box.setText(search_txt);
         }
     };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,6 +139,7 @@ public class SearchPage extends AppCompatActivity implements Edittext_interface 
         search_box = findViewById(R.id.searchBox);
         search_btn = findViewById(R.id.searchBtn);
         search_movie_tilte = findViewById(R.id.movie_result_title);
+        delete_search_history_btn = findViewById(R.id.delete_search_history_btn);
 
         search_movie_recycler = findViewById(R.id.movie_search_recycler);
         people_recycler = findViewById(R.id.person_search_recycler);
@@ -240,6 +244,12 @@ public class SearchPage extends AppCompatActivity implements Edittext_interface 
                 hideKeyboard();
                 SearchRecommendRequest.addSearchTextIntoFile(search_text, SearchPage.this);
                 search_box.clearFocus();
+            }
+        });
+        delete_search_history_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SearchRecommendRequest.deleteSearchTextsFromFile(getBaseContext());
             }
         });
         search_box.requestFocus();

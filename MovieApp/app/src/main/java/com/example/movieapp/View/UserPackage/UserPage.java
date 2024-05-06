@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Parcelable;
 import android.view.LayoutInflater;
@@ -14,11 +16,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.movieapp.Model.AccountModel;
+import com.example.movieapp.Model.LoginModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
 import com.example.movieapp.Request.LoginAccountRequest;
 import com.example.movieapp.View.LoginPackage.LoginViewActivity;
+import com.example.movieapp.View.UserPackage.Notification.NotificationsView;
 import com.example.movieapp.View.UserPackage.UserInfomation.User_Infomation;
+import com.example.movieapp.ViewModel.UserViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**
@@ -32,6 +37,8 @@ public class UserPage extends Fragment {
     public static final String getAccount = "loginAccount";
     ImageView user_avatar;
     TextView avatar_text, user_name;
+    private UserViewModel userViewModel;
+    private Button  noti_btn;
 
     public UserPage() {
         // Required empty public constructor
@@ -49,6 +56,16 @@ public class UserPage extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        userViewModel.getAccount().observe(this, new Observer<LoginModel>() {
+            @Override
+            public void onChanged(LoginModel loginModel) {
+                if(loginModel!=null){
+                    loginAccount = loginModel;
+                    initFeature();
+                }
+            }
+        });
         if (getArguments() != null) {
            loginAccount = (AccountModel) getArguments().getParcelable(getAccount);
         }
@@ -69,6 +86,7 @@ public class UserPage extends Fragment {
         user_avatar = view.findViewById(R.id.user_avatar);
         avatar_text = view.findViewById(R.id.avatarText);
         user_infomation_btn = view.findViewById(R.id.user_info_button);
+        noti_btn = view.findViewById(R.id.noti_button);
         logout_btn = view.findViewById(R.id.logout_btn);
     }
 
@@ -84,10 +102,19 @@ public class UserPage extends Fragment {
             }
         });
 
+        noti_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), NotificationsView.class);
+                intent.putExtra("loginAccount", (Parcelable) loginAccount);
+                startActivity(intent);
+            }
+        });
         logout_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
+                userViewModel.logOut();
                 Intent intent = new Intent(getContext(), LoginViewActivity.class);
                 startActivity(intent);
                 LoginAccountRequest.saveUserToFile(null,getContext());

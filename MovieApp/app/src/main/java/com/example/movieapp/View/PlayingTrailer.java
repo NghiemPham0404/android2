@@ -40,8 +40,7 @@ public class PlayingTrailer extends AppCompatActivity {
                 video_string+
                 "  </body>\n" +
                 "</html>\n";
-        if(trailer_window==null){
-            trailer_window = findViewById(R.id.trailer_window);
+           trailer_window = findViewById(R.id.trailer_window);
             trailer_window.loadData(html_string, "text/html","utf-8");
             trailer_window.getSettings().setJavaScriptEnabled(true);
 
@@ -58,7 +57,6 @@ public class PlayingTrailer extends AppCompatActivity {
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 }
             });
-        }
     }
 
     @Override

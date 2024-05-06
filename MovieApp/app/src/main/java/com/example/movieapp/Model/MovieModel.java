@@ -41,8 +41,22 @@ public class MovieModel implements Parcelable, Comparable<MovieModel> {
 
     public String videoUrl;
 
+    public String getVideoUrl720() {
+        return videoUrl720;
+    }
+
+    public void setVideoUrl720(String videoUrl720) {
+        this.videoUrl720 = videoUrl720;
+    }
+
+    public String videoUrl720;
+
+
     public String getFavorTime() {
-        return favorTime;
+        if(favorTime!=null)
+            return favorTime;
+        else
+            return new Date(System.currentTimeMillis()).toGMTString();
     }
 
     public void setFavorTime(String favorTime) {
@@ -65,6 +79,7 @@ public class MovieModel implements Parcelable, Comparable<MovieModel> {
         runtime = in.readInt();
         duration = in.readString();
         videoUrl = in.readString();
+        videoUrl720 = in.readString();
     }
 
     public static final Creator<MovieModel> CREATOR = new Creator<MovieModel>() {
@@ -319,6 +334,7 @@ public class MovieModel implements Parcelable, Comparable<MovieModel> {
         dest.writeInt(runtime);
         dest.writeString(duration);
         dest.writeString(videoUrl);
+        dest.writeString(videoUrl720);
     }
 
     @Override

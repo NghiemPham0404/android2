@@ -1,5 +1,6 @@
 package com.example.movieapp;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.accounts.Account;
 import android.content.Context;
@@ -19,6 +20,7 @@ import com.example.movieapp.Model.LoginModel;
 import com.example.movieapp.Request.LoginAccountRequest;
 import com.example.movieapp.View.HomeActivity;
 import com.example.movieapp.View.LoginPackage.LoginViewActivity;
+import com.example.movieapp.ViewModel.UserViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
@@ -30,6 +32,7 @@ import java.io.ObjectInputStream;
 public class MainActivity extends AppCompatActivity {
     Button try_again_btn;
     ProgressBar progressBar;
+    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initComponents();
         initFeatures();
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         load();
     }
 
@@ -73,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void tryToLogin(){
         // relogin
-        AccountModel loginAccount = LoginAccountRequest.readUserFromFile(this);
+        AccountModel loginAccount = userViewModel.loginStored(this);
         if(loginAccount!=null){
             Toast.makeText(this, "logined name :"+loginAccount.getUsername() + " " +loginAccount.getFacebook_id(),  Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(MainActivity.this, HomeActivity.class);

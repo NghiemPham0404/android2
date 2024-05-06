@@ -14,6 +14,9 @@ public class LoginModel extends AccountModel implements Serializable {
     public String getSuccess() {
         return success;
     }
+    public void setSuccess(String success){
+        this.success = success;
+    }
 
     public LoginModel(String user_id, String username, String email, String password, String sms, String google_id, String facebook_id, String avatar, String success, String error) {
         super(user_id, username, email, password, sms, google_id, facebook_id, avatar);
