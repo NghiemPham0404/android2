@@ -75,7 +75,7 @@ public class FavorFragment extends Fragment {
     FavorInterface favor_click = new FavorInterface() {
         @Override
         public void openMovie(int movieId) {
-            Intent openMovieIntent = new Intent(getContext(), Movie_infomation.class);
+            Intent openMovieIntent = new Intent(getContext(), MovieInfomation.class);
             openMovieIntent.putExtra("film_id", movieId);
             openMovieIntent.putExtra("loginAccount", (Parcelable) loginAccount);
             startActivity(openMovieIntent);

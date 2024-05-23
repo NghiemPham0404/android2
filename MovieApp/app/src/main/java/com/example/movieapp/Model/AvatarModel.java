@@ -10,6 +10,4 @@ public class AvatarModel {
     public AvatarModel(String url) {
         this.url = url;
     }
-
-
 }

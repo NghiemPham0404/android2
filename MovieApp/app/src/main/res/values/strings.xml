@@ -71,4 +71,8 @@
     <string name="people_may_know">People you may know</string>
     <string name="Result">Result</string>
     <string name="clear_history">clear history</string>
+
+    <string name="today">Today</string>
+    <string name="this_week">This week</string>
+    <string name="this_month">This month</string>
 </resources>

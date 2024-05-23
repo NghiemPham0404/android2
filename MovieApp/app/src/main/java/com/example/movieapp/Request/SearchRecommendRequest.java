@@ -17,6 +17,9 @@ public class SearchRecommendRequest {
     public static void addSearchTextIntoFile(String search_text, Context context){
         try {
             List<String> searchTextList = getRecommendSearchTextFromFile(context);
+            if(searchTextList == null){
+                searchTextList = new ArrayList<String>();
+            }
             if(searchTextList.size()== 10){
               searchTextList.remove(9);
             }

@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.movieapp.Interfaces.Edittext_interface;
 import com.example.movieapp.Interfaces.Form_validate;
+import com.example.movieapp.Interfaces.LoadingActivity;
 import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.LoginModel;
 import com.example.movieapp.R;
@@ -57,12 +58,12 @@ import org.json.JSONObject;
 import java.util.Arrays;
 
 
-public class LoginViewActivity extends AppCompatActivity implements Form_validate, Edittext_interface {
+public class LoginViewActivity extends AppCompatActivity implements Form_validate, Edittext_interface, LoadingActivity {
     TextInputEditText email_txt, password_txt;
     TextView email_err_signin, password_err_signin;
     Button loginBtn, loginBtn_gg, forgot_passBtn, loginBtn_sms, signupBtn;
     Button loginBtn_face;
-    ConstraintLayout loadingScreen;
+    ConstraintLayout loading_screen;
     private SignInClient onTapClient;
     private BeginSignInRequest signInRequest;
     private static final int REQ_ONE_TAP = 100;
@@ -72,6 +73,7 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
 
     private LoginModel loginAccount;
     private UserViewModel userViewModel;
+    private ConstraintLayout layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,20 +90,22 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
             userViewModel.getAccount().observe(this, new Observer<LoginModel>() {
                 @Override
                 public void onChanged(LoginModel loginModel) {
-                    loginAccount = loginModel;
-                    if(loginAccount.getSuccess().equalsIgnoreCase("true")){
-                        navigateToHomeActivity(loginAccount);
-                    }else{
-                        String error = loginAccount.getError();
-                        if(error.equalsIgnoreCase("Wrong Password")){
-                            password_err_signin.setText(error);
-                            password_err_signin.setVisibility(View.VISIBLE);
+                    if(loginModel!=null){
+                        loginAccount = loginModel;
+                        if(loginAccount.getSuccess().equalsIgnoreCase("true")){
+                            navigateToHomeActivity(loginAccount);
                         }else{
-                            Toast.makeText(LoginViewActivity.this, "Lỗi : "+loginAccount.getError(), Toast.LENGTH_SHORT).show();
+                            String error = loginAccount.getError();
+                            if(error.equalsIgnoreCase("Wrong Password")){
+                                password_err_signin.setText(error);
+                                password_err_signin.setVisibility(View.VISIBLE);
+                            }else{
+                                Toast.makeText(LoginViewActivity.this, "Lỗi : "+loginAccount.getError(), Toast.LENGTH_SHORT).show();
+                            }
                         }
+                       turnOffLoadingScreen();
                     }
-                    loadingScreen.setVisibility(View.GONE);
-                }
+                    }
             });
         }
     }
@@ -117,7 +121,8 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
         loginBtn_gg = findViewById(R.id.login_google);
         loginBtn_face = findViewById(R.id.loginFbButton);
         signupBtn = findViewById(R.id.sign_up_btn_login);
-        loadingScreen = findViewById(R.id.loadingLayout);
+        layout = findViewById(R.id.login_layout);
+        loading_screen = findViewById(R.id.loadingLayout);
     }
 
     public void initFeature() {
@@ -178,7 +183,7 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
     public void signInDefault() {
         String email = email_txt.getText().toString().trim();
         String password = password_txt.getText().toString().trim();
-        loadingScreen.setVisibility(View.VISIBLE);
+        turnOnLoadingScreen();
         userViewModel.login(email, password);
     }
 
@@ -307,17 +312,17 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
     }
 
     public void loginToAccountWithGoogle(String google_id,String username, String email, String avatar){
-        loadingScreen.setVisibility(View.VISIBLE);
+        turnOnLoadingScreen();
         userViewModel.loginWithGoogle(email, username, google_id, avatar);
     }
 
     public void loginToAccountWithFB(String fb_id, String username, String avatar){
-        loadingScreen.setVisibility(View.VISIBLE);
+        turnOnLoadingScreen();
         userViewModel.loginWithFacebook(username, fb_id, avatar);
     }
 
     public void navigateToHomeActivity(LoginModel loginModel){
-        loadingScreen.setVisibility(View.GONE);
+        turnOffLoadingScreen();
         AccountModel loginAccount = (AccountModel) loginModel;
         userViewModel.storeAccount(this, loginAccount);
         Intent loginSuccessIntent = new Intent(LoginViewActivity.this, HomeActivity.class);
@@ -364,5 +369,14 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
         if (imm != null) {
             imm.hideSoftInputFromWindow(password_txt.getWindowToken(), 0);
         }
+    }
+
+    public void turnOnLoadingScreen(){
+        loading_screen.setVisibility(View.VISIBLE);
+        setViewAndChildrenEnabled(layout, false);
+    }
+    public void turnOffLoadingScreen(){
+        loading_screen.setVisibility(View.GONE);
+        setViewAndChildrenEnabled(layout, true);
     }
 }

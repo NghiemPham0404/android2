@@ -90,7 +90,7 @@ public class SearchPage extends AppCompatActivity implements Edittext_interface 
                        movieSearchAdapter.setMovies(movieModels);
                        movieSearchAdapter.notifyDataSetChanged();
 
-                        String search_title = (movieModels.size() > 1) ? (movieModels.size()+1) + "-" + movieListSearchViewModel.getTotalResults() + " results has been found" :
+                        String search_title = (movieModels.size() > 0) ? (movieModels.size()) + "-" + movieListSearchViewModel.getTotalResults() + " results has been found" :
                                 0 + " result has been found";
                         search_movie_tilte.setText(search_title);
 
@@ -250,6 +250,8 @@ public class SearchPage extends AppCompatActivity implements Edittext_interface 
             @Override
             public void onClick(View v) {
                 SearchRecommendRequest.deleteSearchTextsFromFile(getBaseContext());
+                searchRecommendAdapter.setRecommends(null);
+                searchRecommendAdapter.notifyDataSetChanged();
             }
         });
         search_box.requestFocus();

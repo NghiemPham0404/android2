@@ -16,11 +16,10 @@ import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.NotificationModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
-import com.example.movieapp.View.Movie_infomation;
+import com.example.movieapp.View.MovieInfomation;
 import com.example.movieapp.View.UserPackage.Notification.NotificationsView;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
     Context context;
@@ -61,7 +60,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             public void onClick(View v) {
                 Intent click_noti_intent;
                 if(notification.getContent()==null){
-                    click_noti_intent = new Intent(context, Movie_infomation.class);
+                    click_noti_intent = new Intent(context, MovieInfomation.class);
                     click_noti_intent.putExtra("film_id", notification.getMovieId());
                     click_noti_intent.putExtra("loginAccount", (Parcelable) loginAccount);
                 }else{
