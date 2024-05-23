@@ -49,9 +49,7 @@ public class UserRepostitory {
     public LiveData<LoginModel> getAccount(){
         return userApiClient.getAccount();
     }
-    public LiveData<LoginModel> getRegisAccount(){
-        return  userApiClient.getRegisAccount();
-    }
+
     public LiveData<UserApiClient.ForgotPassModel> getForgotPassModel(){
         return userApiClient.getForgotPassModel();
     }

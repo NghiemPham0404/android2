@@ -24,6 +24,7 @@ public class MovieDetailApiClient {
     private MutableLiveData<DetailModel> movie_detail;
     private MutableLiveData<List<DetailModel>> movie_reviews;
     private MutableLiveData<List<DetailModel>> favor_history_movies;
+    private MutableLiveData<List<DetailModel>> history_movies;
     RetrieveMovieRunnable retrieveMovieRunnable;
     RetrieveMovieRunnable retrieveMovieDetailRunnable;
     RetrieveMovieRunnable retrieveMovieReviewsRunnable;
@@ -41,6 +42,7 @@ public class MovieDetailApiClient {
         this.movie_detail = new MutableLiveData<>();
         this.movie_reviews = new MutableLiveData<>();
         this.favor_history_movies = new MutableLiveData<>();
+        this.history_movies = new MutableLiveData<>();
     }
 
     public MutableLiveData<MovieModel> getMovie() {
@@ -59,6 +61,9 @@ public class MovieDetailApiClient {
         return favor_history_movies;
     }
 
+    public MutableLiveData<List<DetailModel>> getHisMovies() {
+        return history_movies;
+    }
     public void searchMovieApi(int id) {
         if (retrieveMovieRunnable != null) {
             retrieveMovieRunnable = null;
@@ -244,8 +249,8 @@ public class MovieDetailApiClient {
                                 // change favor
                                 DetailModel currentDetailModel = movie_detail.getValue();
                                 if (currentDetailModel != null) {
-                                    currentDetailModel.setFavor(!currentDetailModel.isFavor());
-                                    movie_detail.postValue(currentDetailModel);
+//                                    currentDetailModel.setFavor(!currentDetailModel.isFavor());
+//                                    movie_detail.postValue(currentDetailModel);
                                     List<DetailModel> currentFavHisList = favor_history_movies.getValue();
                                     boolean flag = false;
                                     for(int i = 0; i<currentFavHisList.size(); i++){
@@ -307,81 +312,12 @@ public class MovieDetailApiClient {
                             Response reponse = getHistoryList().execute();
                             if (reponse.isSuccessful()) {
                                 List<DetailModel> favHisList = ((Response<List<DetailModel>>) reponse).body();
-                                favor_history_movies.postValue(favHisList);
+                                history_movies.postValue(favHisList);
                                 Log.i("Get history favor list", "sucesses");
                             }
                         }
                     }
                 }
-//                //---------------------------------------------------------------------
-//                // get movie detail info
-//                if (function_name == null) {
-//                    Response response = getMovie().execute();
-//                    if (response.isSuccessful()) {
-//                        MovieModel movieModel = ((Response<MovieModel>) response).body();
-//                        movie.postValue(movieModel);
-//                    }
-//                } else {
-//                    // get movie videos
-//                    if (function_name.equalsIgnoreCase(Credentials.functionname_video)) {
-//                        Response response = getMovieDetail().execute();
-//                        if (response.isSuccessful()) {
-//                            DetailModel detailModel = ((Response<DetailModel>) response).body();
-//                            movie_detail.postValue(detailModel);
-//                        }
-//                    } else if (function_name.equalsIgnoreCase(Credentials.functionname_detail)) {
-//                        if (this.user_id != null) {
-//                            if (rating == null) {
-//                                // change favor
-//                                Response response = changeFavor().execute();
-//                                if (response.isSuccessful()) {
-//                                    DetailModel detailModel = ((Response<DetailModel>) response).body();
-//                                    DetailModel currentDetailModel = movie_detail.getValue();
-//                                    if (currentDetailModel == null) {
-//                                        movie_detail.postValue(detailModel);
-//                                    } else {
-//                                        currentDetailModel.setFavor(detailModel.isFavor());
-//                                        movie_detail.postValue(currentDetailModel);
-//                                    }
-//                                }
-//                            } else {
-//                                if (!(id + "").equalsIgnoreCase("")) {
-//                                    // add review
-//                                    Response response = postReview().execute();
-//                                    if (response.isSuccessful()) {
-//                                        DetailModel my_review = ((Response<DetailModel>) response).body();
-//                                        List<DetailModel> currentReviews = movie_reviews.getValue();
-//                                        currentReviews.add(my_review);
-//                                        movie_reviews.postValue(currentReviews);
-//                                        Log.i("post review", "success");
-//                                    } else {
-//                                        Log.i("post review", "fail");
-//                                    }
-//                                } else {
-//                                    //get history, favor list
-//                                    Response reponse = getFavorHistoryList().execute();
-//                                    if (reponse.isSuccessful()) {
-//                                        List<DetailModel> favHisList = ((Response<List<DetailModel>>) reponse).body();
-//                                        favor_history_movies.postValue(favHisList);
-//                                        Log.i("Get history favor list", "sụcesses");
-//                                    } else {
-//                                        Log.i("Get history favor list", "fail");
-//                                    }
-//                                }
-//                            }
-//                        }else {
-//
-//                        }
-//                    } else if (function_name.equalsIgnoreCase(Credentials.functionname_delete_detail)) {
-//                        // delete review
-//                        Response response = deleteReview().execute();
-//                        if (response.isSuccessful()) {
-//                            Log.i("delete review", "success");
-//                        } else {
-//                            Log.e("delete review", "fail");
-//                        }
-//                    }
-//                }
 
                 if (cancelRequest) {
                     cancelRequest();

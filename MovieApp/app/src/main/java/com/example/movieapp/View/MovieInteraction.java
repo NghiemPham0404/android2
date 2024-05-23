@@ -2,24 +2,21 @@ package com.example.movieapp.View;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Movie;
 import android.os.Parcelable;
 import android.util.Log;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 
 import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.MovieModel;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MovieInteraction {
 
     public static void openMovieInformation(Context context, int movie_id,AccountModel loginAccount){
-        Intent movie_info_intent = new Intent(context, Movie_infomation.class);
+        Intent movie_info_intent = new Intent(context, MovieInfomation.class);
         movie_info_intent.putExtra("film_id", movie_id);
         movie_info_intent.putExtra("loginAccount", (Parcelable) loginAccount);
         context.startActivity(movie_info_intent);

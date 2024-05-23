@@ -69,4 +69,7 @@ public class MovieDetailRepository {
     public LiveData<List<DetailModel>> getFavHisMovies(){
         return movieDetailApiClient.getFavHisMovies();
     }
+    public LiveData<List<DetailModel>> getHistoryMovies(){
+        return  movieDetailApiClient.getHisMovies();
+    }
 }

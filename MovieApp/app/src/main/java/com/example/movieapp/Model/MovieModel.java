@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import com.example.movieapp.R;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -184,7 +186,11 @@ public class MovieModel implements Parcelable, Comparable<MovieModel> {
 
     public String getProductionCountry(){
         if(production_countries!=null){
-            return production_countries.get(0).getName();
+            if(production_countries.size()>0){
+                return production_countries.get(0).getName();
+            }else{
+                return "";
+            }
         }else{
             return null;
         }

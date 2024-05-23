@@ -1,6 +1,7 @@
 package com.example.movieapp.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.movieapp.Adapters.CareerAdapter;
+import com.example.movieapp.Interfaces.LoadingActivity;
 import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.CreditModel;
 import com.example.movieapp.Model.PersonModel;
@@ -35,14 +37,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PersonActivity extends AppCompatActivity {
+public class PersonActivity extends AppCompatActivity implements LoadingActivity {
 
     private int person_id;
     private PersonModel personModel;
-    private MovieApi movieApi = MyService.getMovieApi();
     ImageView avatar;
     ImageButton twitter_x, facebook, instagram, tiktok, youtube;
-
+ConstraintLayout loading_screen, layout;
     TextView know_for, gender, date_of_birth, place_of_birth, biography, name;
     RecyclerView career_recyclerView;
     FloatingActionButton pg_up_button;
@@ -82,27 +83,13 @@ public class PersonActivity extends AppCompatActivity {
     }
 
     public void initComponents() {
+        loading_screen = findViewById(R.id.loadingLayout);
+        layout = findViewById(R.id.person_layout);
         back_btn = findViewById(R.id.backBtn_person);
-        back_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
         avatar = findViewById(R.id.avatar_person);
         name = findViewById(R.id.person_name_lbl);
-
         scrollView = findViewById(R.id.scrollView_person);
         pg_up_button = findViewById(R.id.pg_up_btn);
-
-        pg_up_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scrollView.scrollTo(0, 0);
-            }
-        });
-
         twitter_x = findViewById(R.id.twitter_x_person);
         facebook = findViewById(R.id.facebook_person);
         instagram = findViewById(R.id.instagram_person);
@@ -116,9 +103,23 @@ public class PersonActivity extends AppCompatActivity {
         biography = findViewById(R.id.biography_person);
 
         career_recyclerView = findViewById(R.id.career_recyclerview_person);
+
+        back_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        pg_up_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scrollView.scrollTo(0, 0);
+            }
+        });
     }
     public void initFeatures(){
-        personViewModel.searchPerson(person_id);
+        turnOnLoadingScreen();
+       personViewModel.searchPerson(person_id);
     }
     public void initInformation() {
         initCareer();
@@ -132,6 +133,7 @@ public class PersonActivity extends AppCompatActivity {
         biography.setText(personModel.getBiography());
         new ImageLoader().loadImageIntoImageView(PersonActivity.this, Credentials.BASE_IMAGE_URL + personModel.getProfile_path(), avatar);
         new ImageLoader().loadImageIntoImageView(PersonActivity.this, Credentials.BASE_IMAGE_URL + personModel.getProfile_path(), findViewById(R.id.imageView6));
+        turnOffLoadingScreen();
     }
 
     public void initExternalLink() {
@@ -220,5 +222,14 @@ public class PersonActivity extends AppCompatActivity {
                 });
                 break;
         }
+    }
+
+    public void turnOnLoadingScreen(){
+        loading_screen.setVisibility(View.VISIBLE);
+        setViewAndChildrenEnabled(layout, false);
+    }
+    public void turnOffLoadingScreen(){
+        loading_screen.setVisibility(View.GONE);
+        setViewAndChildrenEnabled(layout, true);
     }
 }

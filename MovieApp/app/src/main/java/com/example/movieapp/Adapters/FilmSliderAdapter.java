@@ -15,7 +15,7 @@ import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
-import com.example.movieapp.View.Movie_infomation;
+import com.example.movieapp.View.MovieInfomation;
 import com.example.movieapp.utils.Credentials;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -57,7 +57,7 @@ public class FilmSliderAdapter extends RecyclerView.Adapter<FilmSliderAdapter.Sl
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, Movie_infomation.class);
+                Intent intent = new Intent(context, MovieInfomation.class);
                 intent.putExtra("loginAccount", (Parcelable) loginAccount);
                 intent.putExtra("film_id", movie.getId());
                 context.startActivity(intent);

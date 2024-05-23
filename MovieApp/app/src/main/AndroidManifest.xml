@@ -103,7 +103,7 @@
             android:supportsPictureInPicture="true"
             android:taskAffinity="" />
         <activity
-            android:name=".View.Movie_infomation"
+            android:name=".View.MovieInfomation"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"

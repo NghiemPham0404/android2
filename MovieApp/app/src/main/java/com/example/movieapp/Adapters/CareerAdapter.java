@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.CreditModel;
 import com.example.movieapp.R;
-import com.example.movieapp.View.Movie_infomation;
+import com.example.movieapp.View.MovieInfomation;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -103,7 +103,7 @@ public class CareerAdapter extends RecyclerView.Adapter<CareerAdapter.ViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent movie_intent = new Intent(context, Movie_infomation.class);
+                Intent movie_intent = new Intent(context, MovieInfomation.class);
                 movie_intent.putExtra("film_id",creditModel.getId());
                 movie_intent.putExtra("loginAccount", (Parcelable) loginAccount);
                 context.startActivity(movie_intent);

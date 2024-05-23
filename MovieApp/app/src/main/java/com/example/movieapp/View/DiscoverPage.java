@@ -9,8 +9,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.os.Parcelable;
 import android.util.Log;
@@ -29,7 +27,6 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.movieapp.Adapters.FilmAdapter;
 import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.MovieModel;
 import com.example.movieapp.Model.CountryModel;
@@ -37,7 +34,6 @@ import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
 import com.example.movieapp.Request.MyService;
 import com.example.movieapp.Response.GenreResponse;
-import com.example.movieapp.Response.MovieSearchResponse;
 import com.example.movieapp.ViewModel.MovieListViewModel;
 import com.example.movieapp.utils.Credentials;
 import com.google.android.material.chip.Chip;
@@ -419,12 +415,12 @@ public class DiscoverPage extends Fragment {
         }catch(Exception e){
             publish_date_discover.setText(movie.getRelease_date());
         }
-        time_discover.setText(movie.getMaxDurationTime());
+        time_discover.setText("");
 
         discover_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent movie_info_intent= new Intent(getContext(), Movie_infomation.class);
+                Intent movie_info_intent= new Intent(getContext(), MovieInfomation.class);
                 movie_info_intent.putExtra("loginAccount", (Parcelable) loginAccount);
                 movie_info_intent.putExtra("film_id", movie.getId());
                 getContext().startActivity(movie_info_intent);

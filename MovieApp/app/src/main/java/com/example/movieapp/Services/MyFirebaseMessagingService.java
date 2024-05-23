@@ -6,14 +6,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Parcelable;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -22,7 +19,7 @@ import com.example.movieapp.Model.AccountModel;
 import com.example.movieapp.Model.NotificationModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.LoginAccountRequest;
-import com.example.movieapp.View.Movie_infomation;
+import com.example.movieapp.View.MovieInfomation;
 import com.example.movieapp.View.UserPackage.Notification.NotificationContentView;
 import com.example.movieapp.ViewModel.NotificationViewModel;
 import com.example.movieapp.ViewModel.UserViewModel;
@@ -79,7 +76,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Intent intent ;
         if(movie_id > -1){
-            intent = new Intent(this, Movie_infomation.class);
+            intent = new Intent(this, MovieInfomation.class);
             intent.putExtra("film_id", movie_id);
             intent.putExtra("loginAccount", (Parcelable) accountModel);
         }else{

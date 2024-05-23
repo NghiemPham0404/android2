@@ -38,9 +38,6 @@ public class UserViewModel extends ViewModel {
     public LiveData<LoginModel> getAccount(){
         return userRepostitory.getAccount();
     }
-    public LiveData<LoginModel> getRegisAccount(){
-        return userRepostitory.getRegisAccount();
-    }
     public void logOut(){
         userRepostitory.logOut();
     }

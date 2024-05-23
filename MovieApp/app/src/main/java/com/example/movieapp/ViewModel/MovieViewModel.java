@@ -52,6 +52,6 @@ public class MovieViewModel extends ViewModel {
         return movieDetailRepository.getFavHisMovies();
     }
     public LiveData<List<DetailModel>> getHistoryMovies(){
-        return movieDetailRepository.getFavHisMovies();
+        return movieDetailRepository.getHistoryMovies();
     }
 }

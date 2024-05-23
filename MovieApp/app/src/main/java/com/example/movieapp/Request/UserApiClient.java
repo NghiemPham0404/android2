@@ -20,7 +20,6 @@ import retrofit2.Response;
 public class UserApiClient {
     private static UserApiClient instance;
     private MutableLiveData<LoginModel> loginAccount;
-    private MutableLiveData<LoginModel> regisAccount;
     private MutableLiveData<ForgotPassModel> forgotPassModel;
     private RetrieveAccountRunnable loginRetrieveAccountRunnable;
     private RetrieveAccountRunnable regisRetrieveAccountRunnable;
@@ -35,7 +34,6 @@ public class UserApiClient {
     }
     public UserApiClient(){
         loginAccount = new MutableLiveData<>();
-        regisAccount = new MutableLiveData<>();
         forgotPassModel = new MutableLiveData<>();
     }
     public LiveData<LoginModel> getAccount(){
@@ -54,9 +52,6 @@ public class UserApiClient {
                 null
                 );
         loginAccount.postValue(loginModel);
-    }
-    public LiveData<LoginModel> getRegisAccount(){
-        return regisAccount;
     }
     public LiveData<ForgotPassModel> getForgotPassModel(){
         return forgotPassModel;
@@ -262,7 +257,7 @@ public class UserApiClient {
                             Response response = regisDefault().execute();
                             if(response.isSuccessful()){
                                 LoginModel loginModel = ((Response<LoginModel>) response).body();
-                                regisAccount.postValue(loginModel);
+                                loginAccount.postValue(loginModel);
                             }
                              break;
                     case Credentials.functionname_updateUser:
