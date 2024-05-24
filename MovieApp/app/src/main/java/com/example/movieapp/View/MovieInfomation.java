@@ -18,7 +18,6 @@ import android.os.Parcelable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,6 +70,8 @@ public class MovieInfomation extends AppCompatActivity implements LoadingActivit
     private RatingBar rating_bar;
     private EditText review_text;
     private ConstraintLayout loading_screen, layout;
+    private TextView totalRating;
+    private ConstraintLayout loading_recommend_layout;
 
 
     @Override
@@ -401,18 +402,19 @@ public class MovieInfomation extends AppCompatActivity implements LoadingActivit
             review_session_popup = new PopupWindow(review_session_popup_view, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT, focusable);
             review_session_popup.setAnimationStyle(R.style.PopupAnimation);
 
-            ConstraintLayout loadinglayout = review_session_popup_view.findViewById(R.id.loadingLayout);
-            loadinglayout.setVisibility(View.VISIBLE);
+            loading_recommend_layout = review_session_popup_view.findViewById(R.id.loadingLayout);
+            loading_recommend_layout.setVisibility(View.VISIBLE);
 
             ConstraintLayout error_layout = review_session_popup_view.findViewById(R.id.error_loading);
 
-            TextView totalRating = review_session_popup_view.findViewById(R.id.total_rating_rv);
+            totalRating = review_session_popup_view.findViewById(R.id.total_rating_rv);
 
             ReviewApdater.DeleteInterface deleteInterface = new ReviewApdater.DeleteInterface() {
                 @Override
                 public void delete() {
                     movie_view_model.delete_review();
                     review_session_popup_view.findViewById(R.id.comment_box).setVisibility(View.VISIBLE);
+                    totalRating.setText("" +movie_reviews.size());
                 }
             };
 
@@ -444,11 +446,14 @@ public class MovieInfomation extends AppCompatActivity implements LoadingActivit
                 public void onClick(View v) {
                     float rating = rating_bar.getRating();
                     String review = review_text.getText().toString().trim();
-                    postReview(rating, review);
+                    if(rating>0)
+                        postReview(rating, review);
+                    else
+                        Toast.makeText(MovieInfomation.this, "Please rate the movie", Toast.LENGTH_SHORT).show();
                 }
             });
 
-            loadinglayout.setVisibility(View.GONE);
+            loading_recommend_layout.setVisibility(View.GONE);
             totalRating.setText("" + movie_reviews.size());
         }else{
             ReviewApdater.DeleteInterface deleteInterface = new ReviewApdater.DeleteInterface() {
@@ -456,6 +461,7 @@ public class MovieInfomation extends AppCompatActivity implements LoadingActivit
                 public void delete() {
                     movie_view_model.delete_review();
                     review_session_popup_view.findViewById(R.id.comment_box).setVisibility(View.VISIBLE);
+                    totalRating.setText("" +movie_reviews.size());
                 }
             };
 
@@ -475,6 +481,9 @@ public class MovieInfomation extends AppCompatActivity implements LoadingActivit
                 reviewApdater.notifyDataSetChanged();
                 ConstraintLayout error_layout = review_session_popup_view.findViewById(R.id.error_loading);
                 error_layout.setVisibility(View.GONE);
+
+                loading_recommend_layout.setVisibility(View.GONE);
+                totalRating.setText("" + movie_reviews.size());
             }
         }
     }
@@ -483,6 +492,7 @@ public class MovieInfomation extends AppCompatActivity implements LoadingActivit
         movie_view_model.changeFavor();
     }
     public void postReview(float rating, String review) {
+        loading_recommend_layout.setVisibility(View.VISIBLE);
         movie_view_model.post_review(movie.getId(), login_account.getUser_id(), rating+"", review);
         review_session_popup_view.findViewById(R.id.comment_box).setVisibility(View.GONE);
     }

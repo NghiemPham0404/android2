@@ -64,6 +64,7 @@ public class MovieDetailApiClient {
     public MutableLiveData<List<DetailModel>> getHisMovies() {
         return history_movies;
     }
+
     public void searchMovieApi(int id) {
         if (retrieveMovieRunnable != null) {
             retrieveMovieRunnable = null;
@@ -220,7 +221,7 @@ public class MovieDetailApiClient {
         @Override
         public void run() {
             try {
-                if (id>0) {
+                if (id > 0) {
                     Log.i("Get movie detail", "id > 0");
                     if (user_id != null) {
                         Log.i("Get movie detail", "user id > 0");
@@ -231,6 +232,12 @@ public class MovieDetailApiClient {
                             if (response.isSuccessful()) {
                                 DetailModel detailModel = ((Response<DetailModel>) response).body();
                                 movie_detail.postValue(detailModel);
+                            }
+                        } else if (function_name.equalsIgnoreCase(Credentials.functionname_delete_detail)) {
+                            // delete review
+                            Response response = deleteReview().execute();
+                            if (response.isSuccessful()) {
+                                Log.i("delete review", "success");
                             }
                         } else if (function_name.equalsIgnoreCase(Credentials.functionname_detail)) {
                             Log.i("Get movie detail", "function  = detail");
@@ -253,14 +260,14 @@ public class MovieDetailApiClient {
 //                                    movie_detail.postValue(currentDetailModel);
                                     List<DetailModel> currentFavHisList = favor_history_movies.getValue();
                                     boolean flag = false;
-                                    for(int i = 0; i<currentFavHisList.size(); i++){
-                                        if(currentFavHisList.get(i).getMovieId() == currentDetailModel.getMovieId()){
+                                    for (int i = 0; i < currentFavHisList.size(); i++) {
+                                        if (currentFavHisList.get(i).getMovieId() == currentDetailModel.getMovieId()) {
                                             currentFavHisList.remove(i);
                                             i--;
                                             flag = true;
                                         }
                                     }
-                                    if(!flag){
+                                    if (!flag) {
                                         currentFavHisList.add(currentDetailModel);
                                     }
                                     favor_history_movies.postValue(currentFavHisList);
@@ -272,7 +279,7 @@ public class MovieDetailApiClient {
                             }
                         }
                     } else {
-                        if(function_name == null) {
+                        if (function_name == null) {
                             Log.i("Get movie detail", "functionname = null");
                             // get movie info
                             Response response = getMovie().execute();
@@ -281,7 +288,7 @@ public class MovieDetailApiClient {
                                 movie.postValue(movieModel);
                                 Log.i("Get movie detail", "movie info notnull");
                             }
-                        }else if (function_name.equalsIgnoreCase(Credentials.functionname_detail)) {
+                        } else if (function_name.equalsIgnoreCase(Credentials.functionname_detail)) {
                             // get reviews
                             Log.i("Get movie detail", "get reviews");
                             Response response = getReviews().execute();
@@ -301,13 +308,7 @@ public class MovieDetailApiClient {
                                 favor_history_movies.postValue(favHisList);
                                 Log.i("Get history favor list", "sụcesses");
                             }
-                        } else if (function_name.equalsIgnoreCase(Credentials.functionname_delete_detail)) {
-                            // delete review
-                            Response response = deleteReview().execute();
-                            if (response.isSuccessful()) {
-                                Log.i("delete review", "success");
-                            }
-                        }else if(function_name.equalsIgnoreCase(Credentials.functionname_history)){
+                        } else if (function_name.equalsIgnoreCase(Credentials.functionname_history)) {
                             //get history, favor list
                             Response reponse = getHistoryList().execute();
                             if (reponse.isSuccessful()) {
@@ -358,7 +359,8 @@ public class MovieDetailApiClient {
         public Call<List<DetailModel>> getFavorHistoryList() {
             return MyService2.getApi().getFavorListByUserId(Credentials.functionname_detail, user_id);
         }
-        public Call<List<DetailModel>> getHistoryList(){
+
+        public Call<List<DetailModel>> getHistoryList() {
             return MyService2.getApi().getFavorListByUserId(Credentials.functionname_history, user_id);
         }
     }

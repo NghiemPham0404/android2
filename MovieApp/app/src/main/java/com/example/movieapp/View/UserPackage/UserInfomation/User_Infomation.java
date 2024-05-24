@@ -3,6 +3,7 @@ package com.example.movieapp.View.UserPackage.UserInfomation;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.movieapp.Model.AccountModel;
+import com.example.movieapp.Model.LoginModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
 import com.example.movieapp.Request.MyAvatarService;
@@ -52,7 +54,6 @@ public class User_Infomation extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int REQUEST_STORAGE_PERMISSION = 100;
     AccountModel loginAccount;
-    public static final String getAccount = "loginAccount";
     private Button choose_avatar_btn, apply_avatar_btn;
     private ImageButton back_btn;
     private ImageView avatar_display;
@@ -66,12 +67,28 @@ public class User_Infomation extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_infomation);
-        loginAccount = (AccountModel) getIntent().getParcelableExtra(getAccount);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        loginAccount = userViewModel.getAccount().getValue();
         initComponents();
+        ObserveAnyChange();
         initFeature();
         initInfo();
     }
+
+    public void ObserveAnyChange(){
+        if(userViewModel!=null){
+            userViewModel.getAccount().observe(this, new Observer<LoginModel>() {
+                @Override
+                public void onChanged(LoginModel loginModel) {
+                    if(loginModel!=null){
+                        loginAccount = loginModel;
+                        initInfo();
+                    }
+                }
+            });
+        }
+    }
+
     public void initComponents(){
         back_btn = findViewById(R.id.backBtn_lg_setting);
         avatar_text = findViewById(R.id.avatarText);

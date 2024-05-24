@@ -21,19 +21,6 @@ public class MovieInteraction {
         movie_info_intent.putExtra("loginAccount", (Parcelable) loginAccount);
         context.startActivity(movie_info_intent);
     }
-
-    public static void playMovie(Context context, MovieModel movie, AccountModel loginAccount, String url, String url720){
-        Intent play_movie_intent = new Intent(context, PlayingFilm.class);
-        play_movie_intent.putExtra("movie", movie);
-        play_movie_intent.putExtra("loginAccount", (Parcelable) loginAccount);
-        play_movie_intent.putExtra("videoUrl", url);
-        play_movie_intent.putExtra("videoUrl720", url720);
-        context.startActivity(play_movie_intent);
-    }
-
-
-
-
     public static void subcribeToNotification(int movie_id){
         FirebaseMessaging.getInstance().subscribeToTopic("notification"+movie_id)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
