@@ -149,7 +149,7 @@ public class SearchPage extends AppCompatActivity implements Edittext_interface 
 
     private void initSearchHistory() {
         search_history_texts = SearchRecommendRequest.getRecommendSearchTextFromFile(this);
-        Toast.makeText(this, "history texts init", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "history texts init", Toast.LENGTH_SHORT).show();
         if(searchRecommendAdapter == null){
             searchRecommendAdapter = new SearchRecommendAdapter(this,search_history_texts ,  onItemClick);
         }else{
@@ -233,7 +233,7 @@ public class SearchPage extends AppCompatActivity implements Edittext_interface 
                 if(search_box.getText().toString().equalsIgnoreCase("")){ // rỗng để trống thì hiển thị lịch sử
                     initSearchHistory();
                 }else{
-                    Toast.makeText(getApplicationContext(), "change", Toast.LENGTH_SHORT).show();;
+//                    Toast.makeText(getApplicationContext(), "change", Toast.LENGTH_SHORT).show();;
                     search(); // không rỗng thì tìm recommend
                 }
             }

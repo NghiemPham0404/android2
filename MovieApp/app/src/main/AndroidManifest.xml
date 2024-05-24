@@ -27,16 +27,20 @@
         tools:targetApi="30">
         <activity
             android:name=".View.LoginPackage.ForgetPassActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".View.UserPackage.Notification.NotificationContentView"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".View.UserPackage.Notification.NotificationsView"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".View.SearchPage"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
