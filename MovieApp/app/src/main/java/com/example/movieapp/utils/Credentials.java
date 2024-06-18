@@ -9,7 +9,7 @@ public class Credentials {
     public static final String TOP_RATED = "/3/movie/top_rated";
     public static final String UPCOMING = "/3/movie/upcoming";
     //TODO :  search movie
-    public static final String SEARCH_MOVIE_URL = "https://api.themoviedb.org/3/search/movie";
+    public static final String SEARCH_MOVIE_URL = "3/search/movie";
     public static final String BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
     public static final String BASE_MOVIE_URL = "https://api.themoviedb.org/3/movie/";
     // youtube link for embeded youtube trailer (if exist)

@@ -28,5 +28,4 @@ public class DownloadReceiver extends BroadcastReceiver {
             }
         }
     }
-
 }

@@ -34,10 +34,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-    String title, body;
-    Map<String, String> data;
     NotificationViewModel notificationViewModel;
-    UserViewModel userViewModel;
     public final static String regexPattern = ".*\\.(jpg|jpeg|png|gif|bmp|webp)$";
     public final static Pattern pattern = Pattern.compile(regexPattern, Pattern.CASE_INSENSITIVE);
 
@@ -87,14 +84,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
         // Create a notification channel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("notify", "My Notification", NotificationManager.IMPORTANCE_DEFAULT);
             channel.setDescription("My channel");
             notificationManager.createNotificationChannel(channel);
         }
-
         // Use 'this' instead of 'getBaseContext()'
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "notify")
                 .setContentTitle(title)
@@ -102,7 +97,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentIntent(pendingIntent)
                 .setContentText(body)
                 .setAutoCancel(false);
-
 
         if(large_image!=null){
             if(large_image.contains("http") && pattern.matcher(large_image).matches() || large_image.contains("http")){
@@ -118,7 +112,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         });
             }
         }
-
         int notificationId = (int) System.currentTimeMillis();
         notificationManager.notify(notificationId, builder.build());
         notificationViewModel = new NotificationViewModel(getApplication());

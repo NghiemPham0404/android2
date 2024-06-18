@@ -238,7 +238,7 @@ public class MovieInfomation extends AppCompatActivity implements LoadingActivit
         if (movie_detail.getUrl() != null || movie_detail.getUrl720() != null) {
             play_button.setText("Watch now");
             play_button.setEnabled(true);
-            Intent playMovieIntent = new Intent(MovieInfomation.this, PlayingFilm.class);
+            Intent playMovieIntent = new Intent(MovieInfomation.this, PlayMovie.class);
             playMovieIntent.putExtra("movie", movie);
             url360 = movie_detail.getUrl();
             playMovieIntent.putExtra("videoUrl", movie_detail.getUrl());
