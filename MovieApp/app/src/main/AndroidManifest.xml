@@ -26,6 +26,14 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="30">
         <activity
+            android:name=".View.PlayMovie"
+            android:theme="@style/PlayMovieTheme"
+            android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize|layoutDirection|screenLayout"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:resizeableActivity="true"
+            android:supportsPictureInPicture="true" />
+        <activity
             android:name=".View.LoginPackage.ForgetPassActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
@@ -109,7 +117,6 @@
         <activity
             android:name=".View.MovieInfomation"
             android:exported="false"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:taskAffinity="" />
         <activity
