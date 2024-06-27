@@ -71,7 +71,7 @@ public class HistoryFragment extends Fragment {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(getContext(), PlayingFilm.class);
+                        Intent intent = new Intent(getContext(), PlayMovie.class);
                         intent.putExtra("videoUrl", movie.getVideoUrl());
                         intent.putExtra("movie", movie);
                         intent.putExtra("loginAccount", (Parcelable) loginAccount);

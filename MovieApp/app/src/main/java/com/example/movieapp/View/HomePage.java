@@ -21,6 +21,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Handler;
@@ -69,14 +71,8 @@ import retrofit2.Response;
  * create an instance of this fragment.
  */
 public class HomePage extends Fragment {
-
-    private static final int REQUEST_CODE_SPEECH_INPUT = 100;
-    private static final int PERMISSION_REQUEST_RECORD_AUDIO = 99;
-
     ViewPager2 movie_slider;
-    Button searchBtn, textToSpeechBtn;
-    ;
-    EditText searchBox;
+    Button searchBtn;
 
     LinearLayout divSearch;
 
@@ -218,6 +214,23 @@ public class HomePage extends Fragment {
                 if (response.isSuccessful()) {
                     FilmSliderAdapter filmSliderAdapter = new FilmSliderAdapter(getContext(), response.body().getMovies(), loginAccount);
                     movie_slider.setAdapter(filmSliderAdapter);
+                    movie_slider.setCurrentItem(1);
+                    movie_slider.setOffscreenPageLimit(3);
+                    movie_slider.setClipChildren(false);
+                    movie_slider.setClipToPadding(false);
+                    movie_slider.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
+
+                    CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
+                    compositePageTransformer.addTransformer(new MarginPageTransformer(40));
+                    compositePageTransformer.addTransformer(new ViewPager2.PageTransformer() {
+                        @Override
+                        public void transformPage(@NonNull View page, float position) {
+                            float r = 1 - Math.abs(position);
+                            page.setScaleY(0.85f + r*0.15f);
+                        }
+                    });
+
+                    movie_slider.setPageTransformer(compositePageTransformer);
                 }
             }
 
