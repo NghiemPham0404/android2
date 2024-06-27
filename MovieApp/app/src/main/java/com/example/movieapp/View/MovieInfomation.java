@@ -284,7 +284,7 @@ public class MovieInfomation extends AppCompatActivity implements LoadingActivit
             download_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent playMovieIntent = new Intent(MovieInfomation.this, PlayingFilm.class);
+                    Intent playMovieIntent = new Intent(MovieInfomation.this, PlayMovie.class);
                     playMovieIntent.putExtra("movie", movie);
                     playMovieIntent.putExtra("videoUrl720", movie_detail.getUrl720());
                     playMovieIntent.putExtra("loginAccount", (Parcelable) login_account);
