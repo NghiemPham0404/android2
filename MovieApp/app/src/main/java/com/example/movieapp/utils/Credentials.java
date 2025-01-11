@@ -1,8 +1,10 @@
 package com.example.movieapp.utils;
 
+import com.example.movieapp.BuildConfig;
+
 public class Credentials {
-    public static final String BASE_URL = "https://api.themoviedb.org";
-    public static final String API_KEY = "cf32372af846ed46863011b283bdcba1";
+    public static final String BASE_URL = BuildConfig.BASE_URL;
+    public static final String API_KEY = BuildConfig.API_KEY;
     //TODO : movies list
     public static final String NOW_PLAYING = "/3/movie/now_playing";
     public static final String POPULAR = "/3/movie/popular";
