@@ -2,7 +2,6 @@ package com.example.movieapp.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.movieapp.Model.AccountModel;
-import com.example.movieapp.Model.MovieModel;
+import com.example.movieapp.data.Model.MovieModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
-import com.example.movieapp.View.MovieInfomation;
+import com.example.movieapp.views.movie.MovieInformation;
 import com.example.movieapp.utils.Credentials;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -27,21 +25,19 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
     public List<MovieModel> movies;
     private Context context;
     int view_type = 0;
-    public AccountModel loginAccount;
 
-    public FilmAdapter(List<MovieModel> movies, Context context, AccountModel loginAccount) {
+    public FilmAdapter(List<MovieModel> movies, Context context) {
         this.movies = movies;
         this.context = context;
-        this.loginAccount = loginAccount;
     }
 
-    public FilmAdapter(Context context, AccountModel loginAccount) {
+    public FilmAdapter(Context context) {
         this.context = context;
-        this.loginAccount = loginAccount;
     }
 
     public void setMovies(List<MovieModel> movies) {
         this.movies = movies;
+        this.notifyDataSetChanged();
     }
 
     @Override
@@ -73,9 +69,8 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, MovieInfomation.class);
+                Intent intent = new Intent(context, MovieInformation.class);
                 intent.putExtra("film_id", movies.get(pos).getId());
-                intent.putExtra("loginAccount", (Parcelable) loginAccount);
                 context.startActivity(intent);
             }
         });

@@ -38,23 +38,6 @@
             app:layout_constraintTop_toTopOf="@+id/avater_border"
             app:shapeAppearanceOverlay="@style/roundedImageRounded"></com.google.android.material.imageview.ShapeableImageView>
 
-        <TextView
-            android:id="@+id/avatarText"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:fontFamily="@font/inter"
-            android:gravity="center"
-            android:scaleType="fitCenter"
-            android:textAlignment="center"
-
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/avater_border"
-            app:layout_constraintEnd_toEndOf="@+id/avater_border"
-            app:layout_constraintStart_toStartOf="@+id/avater_border"
-            app:layout_constraintTop_toTopOf="@+id/avater_border" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout

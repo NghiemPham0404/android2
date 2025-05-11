@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/black"
     android:padding="5dp"
-    tools:context=".View.FavorPage">
+    tools:context=".views.home.homePages.favorTab.FavorPage">
 
     <include
         layout="@layout/loading_layout"

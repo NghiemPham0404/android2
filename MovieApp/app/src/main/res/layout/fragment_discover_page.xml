@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/black"
     android:padding="5dp"
-    tools:context=".View.DiscoverPage">
+    tools:context=".views.home.homePages.discoveryTab.DiscoverPage">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

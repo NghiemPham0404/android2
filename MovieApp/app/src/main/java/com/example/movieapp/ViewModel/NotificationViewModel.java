@@ -5,8 +5,8 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.movieapp.Model.NotificationModel;
-import com.example.movieapp.Repositories.NotificationRepository;
+import com.example.movieapp.data.Model.NotificationModel;
+import com.example.movieapp.data.Repositories.NotificationRepository;
 
 import java.util.List;
 

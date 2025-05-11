@@ -1,57 +1,71 @@
 package com.example.movieapp.ViewModel;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
+import android.app.Application;
 
-import com.example.movieapp.Model.DetailModel;
-import com.example.movieapp.Model.MovieModel;
-import com.example.movieapp.Repositories.MovieDetailRepository;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+
+import com.example.movieapp.data.Model.DTO.InteractionDTO.*;
+import com.example.movieapp.data.Model.DetailModel;
+import com.example.movieapp.data.Model.MovieModel;
+import com.example.movieapp.data.Repositories.MovieRepo;
+import com.example.movieapp.data.Response.ListResponse;
 
 import java.util.List;
 
-public class MovieViewModel extends ViewModel {
-    private MovieDetailRepository movieDetailRepository;
+public class MovieViewModel extends AndroidViewModel {
+    private MovieRepo movieRepo;
 
-    public MovieViewModel(){
-        movieDetailRepository = MovieDetailRepository.getInstance();
+    public MovieViewModel(Application application){
+        super(application);
+        movieRepo = MovieRepo.getInstance(application.getApplicationContext());
     }
 
-    public void searchMovie(int id){
-        movieDetailRepository.searchMovie(id);
+    public void getMovie(int id){
+        movieRepo.requestGetMovie(id);
     }
 
     public LiveData<MovieModel> getMovie(){
-        return movieDetailRepository.getMovie();
+        return movieRepo.getMovie();
     }
-    public void searchMovieDetail(int id, String user_id){
-        movieDetailRepository.searchMovieDetail(id,user_id);
+    public void getMovieInteration(int id){
+       movieRepo.requestGetInteraction(id);
     }
-    public LiveData<DetailModel> getDetailMovie(){
-        return movieDetailRepository.getMovieDetail();
+    public LiveData<InteractionDAOExtended> getDetailMovie(){
+        return movieRepo.getInteraction();
     }
-    public void changeFavor(){
-        movieDetailRepository.changeFavor();
+    public void changeFavor(int id){
+        movieRepo.requestAddToFavoriteMovies(id);
     }
     public void getReviews(int id){
-        movieDetailRepository.getReviews(id);
+        movieRepo.requestGetMovieReviews(id);
     }
-    public LiveData<List<DetailModel>> getMovieReviews(){
-       return movieDetailRepository.getMovieReviews();
+    public LiveData<ListResponse<InteractionDAOReview>> getMovieReviews(){
+       return movieRepo.getReviews();
     }
-    public void delete_review(){
-        movieDetailRepository.deleteReview();
+    public void delete_review(int id){
+        movieRepo.requestDeleteMovieReview(id);
     }
-    public void post_review(int id, String user_id, String rating, String review){movieDetailRepository.postReview(id, user_id, rating, review);}
-    public  void searchFavorMovies(String user_id){
-        movieDetailRepository.searchFavHisMovies(user_id);
+    public void post_review(int id, float rating, String review){
+        InteractionDAOReviewAdd interactionDAOReviewAdd = new InteractionDAOReviewAdd();
+        interactionDAOReviewAdd.setRating(rating);
+        interactionDAOReviewAdd.setReview(review);
     }
-    public void searchHistoryMovies(String user_id){
-        movieDetailRepository.searchHistoryMovies(user_id);
+
+    public void postPlayingProgress(int it, String playingProgress){
+        movieRepo.requestAddPlayingProgressMovies(it, playingProgress);
     }
-    public LiveData<List<DetailModel>> getFavorMovies(){
-        return movieDetailRepository.getFavHisMovies();
-    }
-    public LiveData<List<DetailModel>> getHistoryMovies(){
-        return movieDetailRepository.getHistoryMovies();
-    }
+
+//    public  void searchFavorMovies(String user_id){
+//        movieDetailRepository.searchFavHisMovies(user_id);
+//    }
+//    public void searchHistoryMovies(String user_id){
+//        movieDetailRepository.searchHistoryMovies(user_id);
+//    }
+//    public LiveData<List<DetailModel>> getFavorMovies(){
+//        return movieDetailRepository.getFavHisMovies();
+//    }
+//    public LiveData<List<DetailModel>> getHistoryMovies(){
+//        return movieDetailRepository.getHistoryMovies();
+//    }
 }

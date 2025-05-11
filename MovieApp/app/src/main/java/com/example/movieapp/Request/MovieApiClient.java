@@ -5,9 +5,8 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.movieapp.AppExecutors;
-import com.example.movieapp.Model.MovieModel;
-import com.example.movieapp.R;
-import com.example.movieapp.Response.MovieSearchResponse;
+import com.example.movieapp.data.Model.MovieModel;
+import com.example.movieapp.data.Response.MovieListResponse;
 import com.example.movieapp.utils.Credentials;
 
 import java.util.ArrayList;
@@ -16,13 +15,14 @@ import java.util.Locale;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import lombok.Getter;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MovieApiClient {
     private static MovieApiClient instance;
-    private MutableLiveData<List<MovieModel>> mMovies, popularMovies, upcommingMovies, discoverMovies;
+    @Getter
+    private final MutableLiveData<List<MovieModel>> mMovies, popularMovies, upCommingMovies, discoverMovies;
     private int totalResults;
     private RetrieveMoviesRunnable retrieveMoviesRunnable;
     private RetrieveMoviesRunnable retrievePopularMoviesRunnable;
@@ -40,22 +40,14 @@ public class MovieApiClient {
     public MovieApiClient() {
         mMovies = new MutableLiveData<>();
         popularMovies = new MutableLiveData<>();
-        upcommingMovies = new MutableLiveData<>();
+        upCommingMovies = new MutableLiveData<>();
         discoverMovies = new MutableLiveData<>();
     }
 
     public MutableLiveData<List<MovieModel>> getMovies() {
         return mMovies;
     }
-    public MutableLiveData<List<MovieModel>> getPopularMovies() {
-        return popularMovies;
-    }
-    public MutableLiveData<List<MovieModel>> getUpcommingMovies() {
-        return upcommingMovies;
-    }
-    public MutableLiveData<List<MovieModel>> getDiscoverMovies() {
-        return discoverMovies;
-    }
+
     public void searchMovieApi(String query, int page) {
         if (retrieveMoviesRunnable != null) {
             retrieveMoviesRunnable = null;
@@ -110,22 +102,6 @@ public class MovieApiClient {
         }
         retrieveDiscoverMoviesRunnable = new RetrieveMoviesRunnable(genre_str, country, year, pageNumber);
         final Future myHandler = AppExecutors.getInstance().networkIO().submit(retrieveDiscoverMoviesRunnable);
-
-        AppExecutors.getInstance().networkIO().schedule(new Runnable() {
-            @Override
-            public void run() {
-                // Hủy lời gọi Retrofit
-                myHandler.cancel(true);
-            }
-        }, 10, TimeUnit.SECONDS);
-    }
-
-    public void searchRecommendMovieApi(String search_text){
-        if(retrieveRecommendSearchMoviesRunnable!=null){
-            retrieveRecommendSearchMoviesRunnable = null;
-        }
-        retrieveRecommendSearchMoviesRunnable = new RetrieveMoviesRunnable("", 1);
-        final Future myHandler = AppExecutors.getInstance().networkIO().submit( retrieveRecommendSearchMoviesRunnable);
 
         AppExecutors.getInstance().networkIO().schedule(new Runnable() {
             @Override
@@ -198,7 +174,7 @@ public class MovieApiClient {
                                 parseDataIntoList(response, popularMovies);
                                 break;
                             case 4 :
-                                parseDataIntoList(response, upcommingMovies);
+                                parseDataIntoList(response, upCommingMovies);
                                 break;
                         }
                     }
@@ -215,7 +191,7 @@ public class MovieApiClient {
 
         private void parseDataIntoList(Response response, MutableLiveData<List<MovieModel>> Movies){
             if (response.code() == 200) {
-                List<MovieModel> list = new ArrayList<>(((MovieSearchResponse) response.body()).getMovies());
+                List<MovieModel> list = new ArrayList<>(((MovieListResponse) response.body()).getMovies());
                 if (pageNumber == 1) {
                     Movies.postValue(list);
                 } else {
@@ -224,18 +200,18 @@ public class MovieApiClient {
                     Movies.postValue(currentList);
                 }
                 Log.i("movielist","finding 7");
-                totalResults =((MovieSearchResponse) response.body()).total_results;
+                totalResults =((MovieListResponse) response.body()).total_results;
             } else {
                 Log.v("parse data", "Fail to call response" + response.errorBody());
                 Movies.postValue(null);
             }
         }
 
-        private Call<MovieSearchResponse> getMovies(String query, int pageNumber) {
+        private Call<MovieListResponse> getMovies(String query, int pageNumber) {
             return MyService.getMovieApi().searchMovie(Credentials.API_KEY, query, pageNumber, Locale.getDefault().getLanguage());
         }
 
-        private Call<MovieSearchResponse> getMovies(int list_type, int pageNumber) {
+        private Call<MovieListResponse> getMovies(int list_type, int pageNumber) {
             Log.i("movielist","finding5");
             switch (list_type) {
                 case 1:
@@ -250,7 +226,7 @@ public class MovieApiClient {
             }
             return null;
         }
-        private Call<MovieSearchResponse> getMovies(String genre_str, String country ,int year, int pageNumber) {
+        private Call<MovieListResponse> getMovies(String genre_str, String country , int year, int pageNumber) {
             return MyService.getMovieApi().discoverMovie(Credentials.API_KEY, genre_str, country, year, pageNumber, Locale.getDefault().getLanguage());
         }
 

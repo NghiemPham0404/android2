@@ -2,7 +2,6 @@ package com.example.movieapp.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.movieapp.Model.AccountModel;
-import com.example.movieapp.Model.CreditModel;
+import com.example.movieapp.data.Model.CreditModel;
 import com.example.movieapp.R;
-import com.example.movieapp.View.MovieInfomation;
+import com.example.movieapp.views.movie.MovieInformation;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -25,14 +23,12 @@ public class CareerAdapter extends RecyclerView.Adapter<CareerAdapter.ViewHolder
     Context context;
     List<CreditModel> creditModelList;
     List<Integer> yearList;
-    AccountModel loginAccount;
 
 
-    public CareerAdapter(Context context, List<CreditModel> creditModelList, AccountModel loginAccount){
+    public CareerAdapter(Context context, List<CreditModel> creditModelList){
         this.context = context;
         this.creditModelList = creditModelList;
         this.creditModelList.sort(Comparator.reverseOrder());
-        this.loginAccount = loginAccount;
         shortenList();
         decideToDisplayYear();
     }
@@ -103,9 +99,8 @@ public class CareerAdapter extends RecyclerView.Adapter<CareerAdapter.ViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent movie_intent = new Intent(context, MovieInfomation.class);
+                Intent movie_intent = new Intent(context, MovieInformation.class);
                 movie_intent.putExtra("film_id",creditModel.getId());
-                movie_intent.putExtra("loginAccount", (Parcelable) loginAccount);
                 context.startActivity(movie_intent);
             }
         });

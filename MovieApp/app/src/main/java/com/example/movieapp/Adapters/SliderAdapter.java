@@ -2,7 +2,6 @@ package com.example.movieapp.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +11,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.movieapp.Model.AccountModel;
-import com.example.movieapp.Model.MovieModel;
+import com.example.movieapp.data.Model.MovieModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
-import com.example.movieapp.View.MovieInfomation;
+import com.example.movieapp.views.movie.MovieInformation;
 import com.example.movieapp.utils.Credentials;
 
 import java.util.List;
@@ -25,11 +23,9 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.ViewHolder
 
     private List<MovieModel> movies;
     private Context context;
-    private AccountModel loginAccount;
 
-    public SliderAdapter(Context context, AccountModel loginAccount){
+    public SliderAdapter(Context context){
         this.context = context;
-        this.loginAccount = loginAccount;
     }
 
     public void setMovies(List<MovieModel> movies){
@@ -54,8 +50,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.ViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, MovieInfomation.class);
-                intent.putExtra("loginAccount", (Parcelable) loginAccount);
+                Intent intent = new Intent(context, MovieInformation.class);
                 intent.putExtra("film_id", movie.getId());
                 context.startActivity(intent);
             }

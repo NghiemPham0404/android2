@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".View.FavorFragment">
+    tools:context=".views.home.homePages.favorTab.favor.FavorFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -12,11 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
-        <include
-            layout="@layout/filter_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/favorRecycleView"

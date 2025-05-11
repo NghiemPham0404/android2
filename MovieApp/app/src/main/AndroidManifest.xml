@@ -26,7 +26,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="30">
         <activity
-            android:name=".View.PlayMovie"
+            android:name=".views.movie.moviePlaying.PlayMovie"
             android:theme="@style/PlayMovieTheme"
             android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize|layoutDirection|screenLayout"
             android:exported="true"
@@ -34,19 +34,19 @@
             android:resizeableActivity="true"
             android:supportsPictureInPicture="true" />
         <activity
-            android:name=".View.LoginPackage.ForgetPassActivity"
+            android:name=".views.login.ForgetPassActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.UserPackage.Notification.NotificationContentView"
+            android:name=".views.home.homePages.userTab.Notification.NotificationContentView"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.UserPackage.Notification.NotificationsView"
+            android:name=".views.home.homePages.userTab.Notification.NotificationsView"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.SearchPage"
+            android:name=".views.SearchPage"
             android:exported="false"
             android:screenOrientation="portrait" />
 
@@ -58,43 +58,43 @@
             android:value="@string/facebook_client_token" />
 
         <activity
-            android:name=".View.PlayingTrailer"
+            android:name=".views.movie.trailerPlaying.PlayingTrailer"
             android:configChanges="orientation|screenSize"
             android:exported="false" />
         <activity
-            android:name=".View.PersonActivity"
+            android:name=".views.PersonActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.UserPackage.Settings.LanguageSettingView"
+            android:name=".views.home.homePages.userTab.Settings.LanguageSettingView"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.LoginPackage.PreLoginView"
+            android:name=".views.login.PreLoginView"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.UserPackage.Settings.ModeSettingView"
+            android:name=".views.home.homePages.userTab.Settings.ModeSettingView"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.UserPackage.Settings.SettingsView"
+            android:name=".views.home.homePages.userTab.Settings.SettingsView"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.LoginPackage.RegisterView"
+            android:name=".views.login.RegisterView"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.UserPackage.UserInfomation.UpdateUser_Information"
+            android:name=".views.home.homePages.userTab.UserInfomation.UpdateUser_Information"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.UserPackage.UserInfomation.User_Infomation"
+            android:name=".views.home.homePages.userTab.UserInfomation.UserInfomation"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".View.LoginPackage.LoginViewActivity"
+            android:name=".views.login.LoginViewActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -103,24 +103,17 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="@string/fb_login_protocol_scheme" />
+                <data android:scheme="@string/fb_login_protocol_scheme"
+                    tools:ignore="ManifestResource" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".View.PlayingFilm"
-            android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize|layoutDirection|screenLayout"
-            android:exported="true"
-            android:launchMode="singleTask"
-            android:resizeableActivity="true"
-            android:supportsPictureInPicture="true"
-            android:taskAffinity="" />
-        <activity
-            android:name=".View.MovieInfomation"
+            android:name=".views.movie.MovieInformation"
             android:exported="false"
             android:screenOrientation="portrait"
             android:taskAffinity="" />
         <activity
-            android:name=".View.HomeActivity"
+            android:name=".views.home.HomeActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity

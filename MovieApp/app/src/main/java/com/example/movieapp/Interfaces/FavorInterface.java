@@ -2,7 +2,7 @@ package com.example.movieapp.Interfaces;
 
 import android.widget.Button;
 
-import com.example.movieapp.Model.MovieModel;
+import com.example.movieapp.data.Model.MovieModel;
 
 public interface FavorInterface {
 

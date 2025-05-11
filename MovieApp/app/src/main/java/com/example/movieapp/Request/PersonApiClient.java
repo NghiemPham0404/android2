@@ -5,8 +5,8 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.movieapp.AppExecutors;
-import com.example.movieapp.Model.PersonModel;
-import com.example.movieapp.Response.PeopleResponse;
+import com.example.movieapp.data.Model.PersonModel;
+import com.example.movieapp.data.Response.PeopleResponse;
 import com.example.movieapp.utils.Credentials;
 
 import java.util.ArrayList;

@@ -1,16 +1,10 @@
 package com.example.movieapp.Request;
 
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.util.Log;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.example.movieapp.data.Model.AccountModel;
 
-import com.example.movieapp.Model.AccountModel;
-import com.example.movieapp.Model.LoginModel;
-
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;

@@ -67,29 +67,26 @@ public class ImageLoader {
         }
     }
 
-    public void loadAvatar(Context context, String imageUrl, ImageView imageView, TextView avatarText, String username) {
+    public void loadAvatar(Context context, String imageUrl, ImageView imageView, String username) {
         if(imageUrl!=null){
             if(pattern.matcher(imageUrl).matches() || imageUrl.contains("http")){
                 Glide.with(context)
                         .load(imageUrl)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(imageView);
-                avatarText.setVisibility(View.GONE);
                 imageView.setVisibility(View.VISIBLE);
             }else{
-                loadUsernameAsImage(imageView, avatarText, username);
+                loadUsernameAsImage( context ,imageView,  username);
             }
         }else{
-            loadUsernameAsImage(imageView, avatarText, username);
+            loadUsernameAsImage(context, imageView,  username);
         }
     }
-    public void loadUsernameAsImage(ImageView imageView, TextView avatarText, String username){
-        Random rnd = new Random();
-        int color = Color.argb(255, rnd.nextInt(200), rnd.nextInt(200), rnd.nextInt(200));
-        imageView.setBackgroundColor(color);
-        char firstChar = username.charAt(0);
-        avatarText.setText(firstChar + "");
-        avatarText.setVisibility(View.VISIBLE);
+    public void loadUsernameAsImage(Context context, ImageView imageView,  String username){
+        Glide.with(context)
+                .load("https://api.dicebear.com/9.x/initials/png?seed="+username+"&backgroundType=gradientLinear")
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imageView);
         imageView.setVisibility(View.VISIBLE);
     }
 }

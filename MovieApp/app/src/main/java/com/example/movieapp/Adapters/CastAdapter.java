@@ -11,11 +11,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.movieapp.Model.AccountModel;
-import com.example.movieapp.Model.PersonModel;
+import com.example.movieapp.data.Model.PersonModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
-import com.example.movieapp.View.PersonActivity;
+import com.example.movieapp.views.PersonActivity;
+import com.example.movieapp.data.Model.user.UserDTO;
 import com.example.movieapp.utils.Credentials;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -26,19 +26,16 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder> {
 
     List<PersonModel> castModels;
     Context context;
-    AccountModel loginAccount;
 
     boolean isRoleShown = true;
-    public CastAdapter(Context context, List<PersonModel> castModels, AccountModel loginAccount) {
+    public CastAdapter(Context context, List<PersonModel> castModels) {
         this.context = context;
         this.castModels = castModels;
-        this.loginAccount = loginAccount;
         shortenRole();
     }
 
-    public CastAdapter(Context context, AccountModel loginAccount) {
+    public CastAdapter(Context context) {
         this.context = context;
-        this.loginAccount = loginAccount;
         isRoleShown = false;
     }
 
@@ -46,6 +43,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder> {
     public void setCasts(List<PersonModel> castModels){
         this.castModels = castModels;
         shortenRole();
+        notifyDataSetChanged();
     }
 
     public void shortenRole(){
@@ -88,7 +86,6 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ViewHolder> {
             public void onClick(View v) {
                 Intent castIntent = new Intent(context, PersonActivity.class);
                 castIntent.putExtra("cast_id", castModel.getId());
-                castIntent.putExtra("loginAccount", (Parcelable) loginAccount);
                 context.startActivity(castIntent);
             }
         });

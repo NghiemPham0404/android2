@@ -5,7 +5,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.example.movieapp.Model.NotificationModel;
+import com.example.movieapp.data.Model.NotificationModel;
 
 @Database(entities = {NotificationModel.class}, version = 1)
 public abstract class NotificationDatabase extends RoomDatabase {

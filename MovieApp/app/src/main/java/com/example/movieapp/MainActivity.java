@@ -2,32 +2,21 @@ package com.example.movieapp;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.accounts.Account;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.movieapp.Model.AccountModel;
-import com.example.movieapp.Model.LoginModel;
-import com.example.movieapp.Request.LoginAccountRequest;
-import com.example.movieapp.View.HomeActivity;
-import com.example.movieapp.View.LoginPackage.LoginViewActivity;
+import com.example.movieapp.data.Model.AccountModel;
+import com.example.movieapp.views.home.HomeActivity;
+import com.example.movieapp.views.login.LoginViewActivity;
 import com.example.movieapp.ViewModel.UserViewModel;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 
 public class MainActivity extends AppCompatActivity {
     Button try_again_btn;
@@ -77,9 +66,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void tryToLogin(){
         // relogin
-        AccountModel loginAccount = userViewModel.loginStored(this);
+//        AccountModel loginAccount = userViewModel.loginStored(this);
+        AccountModel loginAccount = null;
         if(loginAccount!=null){
-            Toast.makeText(this, "logined name :"+loginAccount.getUsername() + " " +loginAccount.getFacebook_id(),  Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "logined name :"+loginAccount.getName() + " " +loginAccount.getFacebook_id(),  Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(MainActivity.this, HomeActivity.class);
             intent.putExtra("loginAccount", (Parcelable) loginAccount);
             startActivity(intent);
