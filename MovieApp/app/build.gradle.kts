@@ -19,12 +19,13 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
 
-        val properties = Properties()
-        properties.load(project.rootProject.file("local.properties").inputStream())
+        val properties = gradleLocalProperties(rootDir)
         buildConfigField("String", "API_KEY", "\"${properties.getProperty("API_KEY")}\"")
         buildConfigField("String", "BASE_URL", "\"${properties.getProperty("BASE_URL")}\"")
+        buildConfigField("String", "TMDB_ACCESS_TOKEN", "\"${properties.getProperty("TMDB_ACCESS_TOKEN")}\"")
+        buildConfigField("String", "BACKEND_URL", "\"${properties.getProperty("BACKEND_URL")}\"")
 
-        val backendUrl = gradleLocalProperties(rootDir)
+        val backendUrl = properties
             .getProperty("BACKEND_URL");
         resValue(
             "string",

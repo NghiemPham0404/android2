@@ -158,21 +158,18 @@ public class DiscoverPage extends Fragment {
         displayNonFilter();
         initGenres();
         initRegion();
-        init_discover_filter_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(discoverFilterPopup==null){
-                    initPopup();
-                    displayDiscoverPopup();
-                }else{
-                    displayDiscoverPopup();
-                }
+        init_discover_filter_btn.setOnClickListener(v -> {
+            if(discoverFilterPopup==null){
+                initPopup();
+                displayDiscoverPopup();
+            }else{
+                displayDiscoverPopup();
             }
         });
     }
 
     public void initGenres(){
-        Call<GenreResponse> genreResponseCall = MyService.getMovieApi().getAllGenre(Credentials.API_KEY, Locale.getDefault().getLanguage());
+        Call<GenreResponse> genreResponseCall = MyService.getMovieApi().getAllGenre(Locale.getDefault().getLanguage());
         genreResponseCall.enqueue(new Callback<GenreResponse>() {
             @Override
             public void onResponse(Call<GenreResponse> call, Response<GenreResponse> response) {
@@ -188,7 +185,7 @@ public class DiscoverPage extends Fragment {
         });
     }
     public void initRegion(){
-        Call<List<CountryModel>> regionResponseCall = MyService.getMovieApi().getAllRegion(Credentials.API_KEY, Locale.getDefault().getLanguage());
+        Call<List<CountryModel>> regionResponseCall = MyService.getMovieApi().getAllRegion(Locale.getDefault().getLanguage());
         regionResponseCall.enqueue(new Callback<List<CountryModel>>() {
             @Override
             public void onResponse(Call<List<CountryModel>> call, Response<List<CountryModel>> response) {
@@ -216,29 +213,26 @@ public class DiscoverPage extends Fragment {
         int checkedColor = getResources().getColor(R.color.neon_pink);
         int uncheckedColor = getResources().getColor(R.color.dark_gray);
 
-    // Create a ColorStateList for chip background color
-            ColorStateList colorStateList = new ColorStateList(
-                    new int[][] {
-                            new int[] { android.R.attr.state_checked },
-                            new int[] {}
-                    },
-                    new int[] {
-                            checkedColor,
-                            uncheckedColor
-                    }
-            );
+        // Create a ColorStateList for chip background color
+        ColorStateList colorStateList = new ColorStateList(
+                new int[][] {
+                        new int[] { android.R.attr.state_checked },
+                        new int[] {}
+                },
+                new int[] {
+                        checkedColor,
+                        uncheckedColor
+                }
+        );
 
 
         genre_group = popupView.findViewById(R.id.genre_group);
         genre_group_btn = popupView.findViewById(R.id.genre_group_btn);
-        genre_group_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(genre_group.getVisibility() == View.GONE){
-                    genre_group.setVisibility(View.VISIBLE);
-                }else{
-                    genre_group.setVisibility(View.GONE);
-                }
+        genre_group_btn.setOnClickListener(v -> {
+            if(genre_group.getVisibility() == View.GONE){
+                genre_group.setVisibility(View.VISIBLE);
+            }else{
+                genre_group.setVisibility(View.GONE);
             }
         });
         for(int i = 0; i<genres.size(); i++){
@@ -311,12 +305,9 @@ public class DiscoverPage extends Fragment {
             }
         });
         filter_accept_discover = popupView.findViewById(R.id.filter_accept_discover);
-        filter_accept_discover.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                acceptFilter();
-                discoverFilterPopup.dismiss();
-            }
+        filter_accept_discover.setOnClickListener(v -> {
+            acceptFilter();
+            discoverFilterPopup.dismiss();
         });
     }
     public void displayDiscoverPopup(){

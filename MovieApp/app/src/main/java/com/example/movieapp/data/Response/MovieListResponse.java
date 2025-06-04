@@ -16,13 +16,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 public class MovieListResponse {
-    @SerializedName("total_results")
-    @Expose
-    public int total_results;
 
     @SerializedName("results")
     @Expose
     public List<MovieModel> movies;
+
+    @SerializedName("total_results")
+    @Expose
+    public int total_results;
 
     @Setter
     @SerializedName("page")

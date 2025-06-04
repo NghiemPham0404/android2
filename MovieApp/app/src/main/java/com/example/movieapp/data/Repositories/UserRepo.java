@@ -23,7 +23,7 @@ public class UserRepo {
     @Getter
     private final MutableLiveData<UserInfo> currentUser;
 
-    private static Retrofit backendAuthRetrofit;
+    private static BackendAPI authorizedBackendAPI;
 
     public static UserRepo getInstance(Context context){
         if(instance == null){
@@ -33,11 +33,11 @@ public class UserRepo {
     }
     public UserRepo(Context context){
         currentUser = new MutableLiveData<>();
-        backendAuthRetrofit = BackendService.getAuthBackendRetrofit(context);
+        authorizedBackendAPI = new BackendService().getAuthorizedBackendAPI(context);
     }
 
     public void requestCurrentUser(){
-        Call<UserInfo> accountModelCall = backendAuthRetrofit.create(BackendAPI.class).getCurrentUser();
+        Call<UserInfo> accountModelCall = authorizedBackendAPI.getCurrentUser();
         accountModelCall.enqueue(new Callback<UserInfo>() {
             @Override
             public void onResponse(Call<UserInfo> call, Response<UserInfo> response) {
@@ -56,7 +56,7 @@ public class UserRepo {
     }
 
     public void requestUpdateUser(UserUpdate userUpdate){
-        Call<UserInfo> accountModelCall = backendAuthRetrofit.create(BackendAPI.class).updateUser(getCurrentUser().getValue().getUser_id(),userUpdate);
+        Call<UserInfo> accountModelCall = authorizedBackendAPI.updateUser(getCurrentUser().getValue().getUser_id(),userUpdate);
         accountModelCall.enqueue(new Callback<UserInfo>() {
             @Override
             public void onResponse(Call<UserInfo> call, Response<UserInfo> response) {

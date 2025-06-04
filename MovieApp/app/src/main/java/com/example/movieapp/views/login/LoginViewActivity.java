@@ -71,7 +71,6 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
     private FirebaseAuth mAuth;
 
     private AuthResponse loginAccount;
-    private UserViewModel userViewModel;
     private LoginViewModel loginViewModel;
     private ConstraintLayout layout;
 
@@ -80,7 +79,6 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_view);
         mAuth = FirebaseAuth.getInstance();
-        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
 
         initComponents();
@@ -312,14 +310,9 @@ public class LoginViewActivity extends AppCompatActivity implements Form_validat
 
     public void navigateToHomeActivity() {
         turnOffLoadingScreen();
-        userViewModel.requestLoginedAccount();
-        userViewModel.getLoginedAccount().observe(this,(accountModel) -> {
-            if(accountModel!=null){
-                Intent loginSuccessIntent = new Intent(LoginViewActivity.this, HomeActivity.class);
-                subcribeToNotification();
-                startActivity(loginSuccessIntent);
-            }
-        });
+        Intent loginSuccessIntent = new Intent(LoginViewActivity.this, HomeActivity.class);
+        subcribeToNotification();
+        startActivity(loginSuccessIntent);
     }
 
     @Override

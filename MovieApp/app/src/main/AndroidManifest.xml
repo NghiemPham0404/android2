@@ -90,7 +90,7 @@
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".views.home.homePages.userTab.UserInfomation.UserInfomation"
+            android:name=".views.home.homePages.userTab.UserInfomation.UserInformation"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
@@ -110,8 +110,8 @@
         <activity
             android:name=".views.movie.MovieInformation"
             android:exported="false"
-            android:screenOrientation="portrait"
-            android:taskAffinity="" />
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".views.home.HomeActivity"
             android:exported="false"

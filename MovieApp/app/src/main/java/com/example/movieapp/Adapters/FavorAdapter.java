@@ -52,7 +52,7 @@ public class FavorAdapter extends RecyclerView.Adapter<FavorAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull FavorAdapter.ViewHolder holder, int position) {
-            Call<MovieModel> movieModelCall = MyService.getMovieApi().searchMovieDetail(favHisMovies.get(position).getMovie_id(), Credentials.API_KEY);
+            Call<MovieModel> movieModelCall = MyService.getMovieApi().searchMovieDetail(favHisMovies.get(position).getMovie_id());
             movieModelCall.enqueue(new Callback<MovieModel>() {
                 @Override
                 public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {

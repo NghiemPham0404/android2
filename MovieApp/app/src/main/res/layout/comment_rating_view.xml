@@ -81,7 +81,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:numStars="10"
             android:progressBackgroundTint="@color/bright_gray"
             android:progressTint="@color/yellow" />
 

@@ -71,7 +71,7 @@ public class HistoryFragment extends Fragment {
             historyAdapter.setMovies(favHisMovies);
             Log.i("HISTORY TASK", "history list size : " + favHisMovies.size());
         });
-        userViewModel.getLoginedAccount().observe(getViewLifecycleOwner(), userInfo -> {
+        userViewModel.getLoginAccount().observe(getViewLifecycleOwner(), userInfo -> {
             loginAccount = userInfo;
         });
     }

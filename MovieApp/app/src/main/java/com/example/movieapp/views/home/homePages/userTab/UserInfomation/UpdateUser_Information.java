@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.example.movieapp.Interfaces.Edittext_interface;
 import com.example.movieapp.Interfaces.Form_validate;
-import com.example.movieapp.data.Model.AccountModel;
 import com.example.movieapp.R;
 import com.example.movieapp.ViewModel.UserViewModel;
 import com.example.movieapp.data.Model.user.UserDTO;
@@ -32,7 +31,7 @@ public class UpdateUser_Information extends AppCompatActivity implements Form_va
         setContentView(R.layout.activity_update_user_information);
         updateInfo = getIntent().getStringExtra("updateInfo");
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        userViewModel.getLoginedAccount().observe(this, userInfo ->{
+        userViewModel.getLoginAccount().observe(this, userInfo ->{
             if(userInfo!=null)
                 this.userInfo = userInfo;
         });

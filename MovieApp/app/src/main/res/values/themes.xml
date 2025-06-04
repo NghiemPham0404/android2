@@ -1,18 +1,22 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.MovieApp" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+    <style name="Base.Theme.MovieApp" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
         <!-- Customize your theme here. -->
+        <item name="android:fontFamily">@font/font_sf_pro_display_regular</item>
+    </style>
+
+    <style name="Widget.MyApp.Chip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipStrokeColor">?attr/colorPrimary</item>
+        <item name="chipStrokeWidth">1dp</item>
     </style>
 
     <style name="PlayMovieTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowLayoutInDisplayCutoutMode">
-            shortEdges <!-- default, shortEdges, or never -->
-        </item>
     </style>
 
     <style name="Theme.MovieApp" parent="Base.Theme.MovieApp" >
+        <item name="android:fontFamily">@font/font_sf_pro_display_regular</item>
     </style>
 
     <style name="roundedImageRounded">
@@ -47,7 +51,4 @@
         <item name="android:textSize">14sp</item>
         <item name="android:fontFamily">@font/inter</item>
     </style>
-
-
-
 </resources>

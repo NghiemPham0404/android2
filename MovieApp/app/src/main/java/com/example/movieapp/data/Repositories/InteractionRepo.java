@@ -41,7 +41,7 @@ public class InteractionRepo {
         return instance;
     }
     public InteractionRepo(Context context){
-        backendAPI = BackendService.getAuthBackendRetrofit(context).create(BackendAPI.class);
+        backendAPI = new BackendService().getAuthorizedBackendAPI(context);
     }
 
     public void requestGetHistoryMovies(int page){

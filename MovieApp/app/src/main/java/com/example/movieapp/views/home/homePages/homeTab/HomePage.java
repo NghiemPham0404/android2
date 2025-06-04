@@ -9,13 +9,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Handler;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +21,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
 import com.example.movieapp.Adapters.FilmAdapter;
 import com.example.movieapp.Adapters.FilmSliderAdapter;
@@ -32,15 +29,10 @@ import com.example.movieapp.data.Model.user.UserDTO.*;
 import com.example.movieapp.views.SearchPage;
 import com.example.movieapp.data.Model.MovieModel;
 import com.example.movieapp.R;
-import com.example.movieapp.data.Response.MovieListResponse;
 import com.example.movieapp.ViewModel.MovieListViewModel;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class HomePage extends Fragment {
     ViewPager2 movie_slider;
@@ -131,7 +123,7 @@ public class HomePage extends Fragment {
         }
 
         if(userViewModel!=null){
-            userViewModel.getLoginedAccount().observe(getViewLifecycleOwner(), currentAccount ->{
+            userViewModel.getLoginAccount().observe(getViewLifecycleOwner(), currentAccount ->{
                 if(currentAccount != null){
                     loginAccount = currentAccount;
                 }
@@ -181,7 +173,6 @@ public class HomePage extends Fragment {
 
     public void goToSearchIntent(){
         Intent intent = new Intent(getContext(), SearchPage.class);
-        intent.putExtra("loginAccount", (Parcelable) loginAccount);
         getContext().startActivity(intent);
         getActivity().overridePendingTransition(0, 0);
     }

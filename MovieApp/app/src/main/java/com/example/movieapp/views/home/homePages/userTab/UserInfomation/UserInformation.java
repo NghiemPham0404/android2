@@ -40,7 +40,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class UserInfomation extends AppCompatActivity {
+public class UserInformation extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int REQUEST_STORAGE_PERMISSION = 100;
@@ -49,8 +49,8 @@ public class UserInfomation extends AppCompatActivity {
     private ImageButton back_btn;
     private ImageView avatar_display;
     private Uri selectedImageUri;
-    private LinearLayout username_btn, email_btn, password_btn,sms_btn, facebook_btn, google_btn;
-    private TextView username_txt, email_txt, password_txt, sms_txt, facebook_txt, google_txt;
+    private LinearLayout username_btn, email_btn, password_btn,sms_btn;
+    private TextView username_txt, email_txt, password_txt, sms_txt;
     private UserViewModel userViewModel;
 
     @Override
@@ -62,14 +62,14 @@ public class UserInfomation extends AppCompatActivity {
         initComponents();
         ObserveAnyChange();
         initFeature();
-        initInfo();
     }
 
     public void ObserveAnyChange(){
         if(userViewModel!=null){
-            userViewModel.getLoginedAccount().observe(this, (loginedAccount) -> {
+            userViewModel.getLoginAccount().observe(this, (loginedAccount) -> {
                 if(loginedAccount!=null){
                     loginAccount = loginedAccount;
+                    initInfo();
                 }
             });
         }
@@ -85,15 +85,11 @@ public class UserInfomation extends AppCompatActivity {
         email_btn = findViewById(R.id.email_btn);
         password_btn = findViewById(R.id.password_btn);
         sms_btn = findViewById(R.id.sms_btn);
-        google_btn = findViewById(R.id.google_btn);
-        facebook_btn = findViewById(R.id.facebook_btn);
 
         username_txt = findViewById(R.id.user_txt);
         email_txt = findViewById(R.id.email_txt);
         password_txt = findViewById(R.id.password_txt);
         sms_txt = findViewById(R.id.sms_txt);
-        google_txt = findViewById(R.id.google_txt);
-        facebook_txt = findViewById(R.id.facebook_txt);
     }
     public void initInfo(){
         loadAvatar();
@@ -169,7 +165,7 @@ public class UserInfomation extends AppCompatActivity {
     }
 
     public void chooseAvatar(){
-        if(ContextCompat.checkSelfPermission(UserInfomation.this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+        if(ContextCompat.checkSelfPermission(UserInformation.this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED){
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, PICK_IMAGE_REQUEST);
@@ -219,7 +215,7 @@ public class UserInfomation extends AppCompatActivity {
             @Override
             public void onFailure(Call<AvatarResponse> call, Throwable t) {
                 Log.e("Upload", "Failed to upload image", t);
-                Toast.makeText(UserInfomation.this, t.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(UserInformation.this, t.toString(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -238,6 +234,6 @@ public class UserInfomation extends AppCompatActivity {
     }
 
     public void loadAvatar(){
-        new ImageLoader().loadAvatar(UserInfomation.this, loginAccount.getAvatar(), avatar_display, loginAccount.getName());
+        ImageLoader.loadAvatar(UserInformation.this, loginAccount.getAvatar(), avatar_display, loginAccount.getName());
     }
 }

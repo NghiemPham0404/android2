@@ -39,7 +39,7 @@ public class UserViewModel extends AndroidViewModel {
         userRepo.requestUpdateUser(userUpdate);
     }
 
-    public LiveData<UserInfo> getLoginedAccount(){
+    public LiveData<UserInfo> getLoginAccount(){
         return userRepo.getCurrentUser();
     }
 

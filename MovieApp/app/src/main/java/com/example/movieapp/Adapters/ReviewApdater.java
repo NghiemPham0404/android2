@@ -44,6 +44,7 @@ public class ReviewApdater extends RecyclerView.Adapter<ReviewApdater.ViewHolder
             InteractionDAOReview detailModel = detailModels.get(i);
             if (detailModel.getReview() == null){
                 detailModels.remove(i);
+                i--;
             }
         }
     }
@@ -67,18 +68,14 @@ public class ReviewApdater extends RecyclerView.Adapter<ReviewApdater.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ReviewApdater.ViewHolder holder, int position) {
         int i = position;
-        try {
-            InteractionDAOReview detailModel = detailModels.get(position);
-            holder.rating.setRating(detailModel.getRating());
-            holder.username.setText("" + detailModel.getName());
-            holder.review.setText("" + detailModel.getReview());
-            holder.date.setText("" + detailModel.getTime());
-            new ImageLoader().loadAvatar(context, detailModel.getAvatar(), holder.avatar, detailModel.getName());
-        }catch (Exception e){
+        InteractionDAOReview detailModel = detailModels.get(i);
+        holder.rating.setRating(detailModel.getRating());
+        holder.username.setText("" + detailModel.getName());
+        holder.review.setText("" + detailModel.getReview());
+        holder.date.setText("" + detailModel.getTime());
 
-        }
-
-
+        new ImageLoader().loadAvatar(context, detailModel.getAvatar(), holder.avatar, detailModel.getName());
+        
         if (detailModels.get(position).getUser_id() == this.userId) {
             Button cancelBtn = holder.itemView.findViewById(R.id.cancel_btn);
             cancelBtn.setOnClickListener(new View.OnClickListener() {
@@ -120,6 +117,7 @@ public class ReviewApdater extends RecyclerView.Adapter<ReviewApdater.ViewHolder
             this.date = viewItem.findViewById(R.id.date_comment_view);
             this.review = viewItem.findViewById(R.id.user_comment_view);
             this.rating = viewItem.findViewById(R.id.movie_rating);
+            this.avatar = viewItem.findViewById(R.id.imageAvatar);
         }
     }
 }

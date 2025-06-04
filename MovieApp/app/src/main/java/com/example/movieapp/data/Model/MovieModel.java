@@ -191,7 +191,7 @@ public class MovieModel implements Parcelable, Comparable<MovieModel> {
     }
 
     public String getRating(){
-        float rating = Math.round(getVote_average()*10)*1.0f/10;
+        float rating = Math.round(getVote_average()*10)*1.0f/10/2;
         return rating+"";
     }
 

@@ -88,7 +88,7 @@ public class FavorFragment extends Fragment {
             });
         }
         if(userViewModel!=null){
-            userViewModel.getLoginedAccount().observe(this, userInfo -> {
+            userViewModel.getLoginAccount().observe(this, userInfo -> {
                 Log.i("User is NULL  2 ?",(userInfo == null)+" ??");
                 loginAccount = userInfo;
             });

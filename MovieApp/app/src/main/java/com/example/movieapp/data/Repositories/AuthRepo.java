@@ -27,7 +27,7 @@ public class AuthRepo {
     private MutableLiveData<AuthResponse> authResponseMutable;
 
     public AuthRepo(Context context){
-        backendAPI = BackendService.getBackendRetrofit(context).create(BackendAPI.class);
+        backendAPI = BackendService.getAuthAPI(context);
         authResponseMutable = new MutableLiveData<>();
         this.context = context;
     }

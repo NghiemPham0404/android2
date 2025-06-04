@@ -55,7 +55,7 @@ public class MovieRepository {
             searchMovies.setValue(null);
             this.query = query;
         }
-        Call<MovieListResponse> call = movieApi.searchMovie(Credentials.API_KEY, query, page, Locale.getDefault().getLanguage());
+        Call<MovieListResponse> call = movieApi.searchMovie(query, page, Locale.getDefault().getLanguage());
         callToMutableMovieList(call, searchMovies, "SEARCH MOVIE PAGE : " + page);
     }
 
@@ -68,7 +68,7 @@ public class MovieRepository {
     }
 
     public void requestNowPlayingMovie(int page) {
-        Call<MovieListResponse> call = movieApi.getNowPlayingMovie(Credentials.API_KEY, page);
+        Call<MovieListResponse> call = movieApi.getNowPlayingMovie(page);
         callToMutableMovieList(call, nowPlayingMovies, "GET NOW PLAYING MOVIE PAGE : " + page);
     }
 
@@ -84,7 +84,7 @@ public class MovieRepository {
     }
 
     public void requestPopularMovie(int pageNumber) {
-        Call<MovieListResponse> call = movieApi.getPopularMovie(Credentials.API_KEY, pageNumber);
+        Call<MovieListResponse> call = movieApi.getPopularMovie( pageNumber);
         callToMutableMovieList(call, popularMovies, "GET POPULAR MOVIE PAGE : " + pageNumber);
     }
 
@@ -100,7 +100,7 @@ public class MovieRepository {
     }
 
     public void requestUpComingMovie(int pageNumber) {
-        Call<MovieListResponse> call = movieApi.getUpComingMovie(Credentials.API_KEY, pageNumber);
+        Call<MovieListResponse> call = movieApi.getUpComingMovie(pageNumber);
         callToMutableMovieList(call, UpcomingMovies, "GET UPCOMING MOVIE PAGE : " + pageNumber);
     }
 
@@ -124,7 +124,7 @@ public class MovieRepository {
             this.origin_country = with_origin_country;
             this.year = year;
         }
-        Call<MovieListResponse> call = movieApi.discoverMovie(Credentials.API_KEY,
+        Call<MovieListResponse> call = movieApi.discoverMovie(
                 with_genres,
                 with_origin_country,
                 year,
@@ -153,7 +153,7 @@ public class MovieRepository {
                         mutableLiveData.postValue(response.body());
                     }
                 } else {
-                    Log.e(debugTAG, Objects.requireNonNull(response.errorBody().toString()));
+                    Log.e(debugTAG, Objects.requireNonNull(response.raw().toString()));
                 }
             }
 

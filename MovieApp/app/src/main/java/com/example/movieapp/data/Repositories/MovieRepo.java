@@ -44,7 +44,7 @@ public class MovieRepo{
     }
 
     public MovieRepo(Context context){
-        backendAPI = BackendService.getAuthBackendRetrofit(context).create(BackendAPI.class);
+        backendAPI = new BackendService().getAuthorizedBackendAPI(context);
         movie = new MutableLiveData<>();
         interaction = new MutableLiveData<>();
         userReview = new MutableLiveData<>();
@@ -54,7 +54,6 @@ public class MovieRepo{
     public void requestGetMovie(int id){
         Call<MovieModel> movieModelCall = MyService.getMovieApi()
                 .searchMovieDetail(id,
-                        Credentials.API_KEY,
                         "credits,videos,external_ids",
                         Locale.getDefault().getLanguage());
         movieModelCall.enqueue(new Callback<MovieModel>() {
@@ -62,7 +61,7 @@ public class MovieRepo{
             public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
                 if(response.isSuccessful()){
                     movie.postValue(response.body());
-                    Log.e("GET MOVIE", "SUCCESS"+response.body().getId());
+                    Log.i("GET MOVIE", "SUCCESS - movie id : "+response.body().getId());
                 }else{
                     Log.e("GET MOVIE", Objects.requireNonNull(response.errorBody().toString()));
                 }
@@ -84,9 +83,12 @@ public class MovieRepo{
                 if(response.isSuccessful()){
                     interaction.postValue(response.body());
                     Log.i("GET MOVIE INTERACTION", response.body().isFavor()+"");
-                }else{
+                }else if (response.code() == 404) {
+                    interaction.postValue(null);
+                    Log.i("GET MOVIE INTERACTION", "movie not exist yet");
+                } else{
                     Log.e("GET MOVIE INTERACTION 1",
-                            Objects.requireNonNull(response.errorBody().toString()));
+                            Objects.requireNonNull(response.raw().toString()));
                     interaction.postValue(null);
                 }
             }

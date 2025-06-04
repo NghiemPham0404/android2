@@ -49,15 +49,13 @@
         <RatingBar
             android:id="@+id/ratingBar_comment_box"
             style="@android:style/Widget.Material.Light.RatingBar.Indicator"
-            android:layout_width="356dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:isIndicator="false"
-            android:numStars="10"
+            android:numStars="5"
             android:progressBackgroundTint="@color/light_gray"
             android:progressTint="@color/yellow"
-            android:scaleX="0.9"
-            android:scaleY="1"
-            android:stepSize="1" />
+            android:stepSize="0.5" />
 
         <LinearLayout
             android:layout_width="match_parent"

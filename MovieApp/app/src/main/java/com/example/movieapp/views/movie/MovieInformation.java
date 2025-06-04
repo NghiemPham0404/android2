@@ -10,6 +10,7 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -45,6 +46,7 @@ import com.example.movieapp.views.MovieInteraction;
 import com.example.movieapp.views.movie.moviePlaying.PlayMovie;
 import com.example.movieapp.views.movie.trailerPlaying.PlayingTrailer;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 
 import java.io.File;
 import java.util.List;
@@ -62,7 +64,7 @@ public class MovieInformation extends AppCompatActivity implements LoadingActivi
 
     private String url360, url720;
     private DownloadReceiver download_receiver;
-    private TextView film_title, film_overview, rating, genres_info, time_info, date_info, country_info;
+    private TextView film_title, film_overview, rating, time_info, date_info, country_info;
     private ImageView poster_image;
     private ImageButton back_btn,facebook_btn, twitter_btn, youtube_btn, instagram_btn, tiktok_btn, send_btn;
     private Button play_button, play_trailer_btn,download_btn, review_btn;
@@ -79,6 +81,7 @@ public class MovieInformation extends AppCompatActivity implements LoadingActivi
     private ConstraintLayout loading_screen, layout;
     private TextView totalRating;
     private ConstraintLayout loading_recommend_layout;
+    private ChipGroup genres_group;
 
 
     @Override
@@ -86,26 +89,33 @@ public class MovieInformation extends AppCompatActivity implements LoadingActivi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_film_infomation);
         initComponent();
+        initViewModels();
+
         movie_id = getIntent().getIntExtra("film_id", -1);
-        movie_view_model = new ViewModelProvider(this).get(MovieViewModel.class);
-        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        initFeatures();
-        ObserveAnyChange();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart(){
+        super.onStart();
+        requestMovieData();
+        ObserveAnyChange();
     }
+
+    private void initViewModels() {
+        movie_view_model = new ViewModelProvider(this).get(MovieViewModel.class);
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+    }
+
 
     public void ObserveAnyChange() {
         if(userViewModel != null){
-            userViewModel.getLoginedAccount().observe(
+            userViewModel.getLoginAccount().observe(
                     this, userInfo -> {
                         loginAccount = userInfo;
                     }
             );
         }
+
         if (movie_view_model != null) {
             movie_view_model.getMovie().observe(this, movieModel -> {
                 movie = movieModel;
@@ -113,10 +123,10 @@ public class MovieInformation extends AppCompatActivity implements LoadingActivi
                 movie_view_model.getDetailMovie().observe(this, detailModel -> {
                     if(detailModel != null){
                         movie_detail = detailModel;
-                        initVideo();
+                        initInteractions();
                     }else {
-                        download_btn.setVisibility(View.GONE);
                         play_button.setText("Coming soon");
+                        hideInteractionButtons();
                     }
                 });
 
@@ -146,7 +156,7 @@ public class MovieInformation extends AppCompatActivity implements LoadingActivi
         rating = findViewById(R.id.movie_rating);
         date_info = findViewById(R.id.publish_date_info);
         time_info = findViewById(R.id.time_info);
-        genres_info = findViewById(R.id.genre_info);
+        genres_group = findViewById(R.id.genres_group);
         country_info = findViewById(R.id.country_info);
         background_image = findViewById(R.id.imageView2);
         play_button = findViewById(R.id.playBtn_info);
@@ -160,7 +170,7 @@ public class MovieInformation extends AppCompatActivity implements LoadingActivi
         instagram_btn = findViewById(R.id.instagram_info);
         tiktok_btn = findViewById(R.id.tiktok_info);
     }
-    public void initFeatures() {
+    public void requestMovieData() {
         movie_view_model.getMovie(movie_id);
         movie_view_model.getMovieInteration(movie_id);
         movie_view_model.getReviews(movie_id);
@@ -184,25 +194,14 @@ public class MovieInformation extends AppCompatActivity implements LoadingActivi
         date_info.setText("(" + movie.getPublishDate() + ")");
         time_info.setText(movie.getMaxDurationTime());
         country_info.setText(movie.getProductionCountry());
-        genres_info.setText(movie.getGenresString());
+        initGenres();
         new ImageLoader().loadImageIntoImageView(MovieInformation.this, Credentials.BASE_IMAGE_URL + movie.getPoster_path(), poster_image, findViewById(R.id.shimmerLayout_info));
         new ImageLoader().loadImageIntoImageView(MovieInformation.this, Credentials.BASE_IMAGE_URL + movie.getPoster_path(), background_image);
 
         film_title.setText(movie.getTitle());
         film_overview.setText(movie.getOverview());
-        back_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        back_btn.setOnClickListener(v -> onBackPressed());
 
-        review_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showReviewPopup();
-            }
-        });
         if (movie.getTrailer() != null) {
             Log.i("MOVIE TRAILER", movie.getTrailer());
             play_trailer_btn.setOnClickListener(new View.OnClickListener() {
@@ -218,14 +217,25 @@ public class MovieInformation extends AppCompatActivity implements LoadingActivi
         }
     }
 
+    private void initGenres() {
+        List<MovieModel.Genre> genres = movie.getGenres();
+        genres_group.removeAllViews();
+        for(int i = 0; i<genres.size(); i++){
+            Chip chip = new Chip(this);
+            chip.setCheckable(false);
+            chip.setTextColor(getResources().getColor(R.color.white));
+            chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.black)));
+            chip.setChipStrokeColor(ColorStateList.valueOf(getResources().getColor(R.color.white)));
+            chip.setChipStrokeWidth(1.0f);
+            chip.setText(genres.get(i).getName());
+            chip.setId(genres.get(i).getId());
+            genres_group.addView(chip);
+        }
+    }
+
     private void showReviewPopup() {
         if(review_session_popup !=null){
-            layout.post(new Runnable() {
-                @Override
-                public void run() {
-                    review_session_popup.showAtLocation(layout, Gravity.BOTTOM, 0, 0);
-                }
-            });
+            layout.post(() -> review_session_popup.showAtLocation(layout, Gravity.BOTTOM, 0, 0));
         }
     }
 
@@ -234,12 +244,9 @@ public class MovieInformation extends AppCompatActivity implements LoadingActivi
         initCrew();
         cast_crew_recycler_view.setAdapter(cast_adapter);
         cast_crew_recycler_view.setLayoutManager(new LinearLayoutManager(MovieInformation.this, LinearLayoutManager.HORIZONTAL, false));
-        cast_chip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                crew_chip.setChecked(false);
-                cast_crew_recycler_view.setAdapter(cast_adapter);
-            }
+        cast_chip.setOnClickListener(v -> {
+            crew_chip.setChecked(false);
+            cast_crew_recycler_view.setAdapter(cast_adapter);
         });
 
         crew_chip.setOnClickListener(new View.OnClickListener() {
@@ -251,7 +258,7 @@ public class MovieInformation extends AppCompatActivity implements LoadingActivi
         });
     }
 
-    private void initVideo() {
+    private void initInteractions() {
         Log.i("INIT VIDEO", ""+(movie_detail==null));
         //favor button
         if (movie_detail != null) {
@@ -270,9 +277,12 @@ public class MovieInformation extends AppCompatActivity implements LoadingActivi
                     startActivity(playMovieIntent);
                 }
             });
-
+            review_btn.setOnClickListener(v -> showReviewPopup());
             initDownloadButton();
             movie.setDuration(movie_detail.getPlay_progress());
+            showInteractionButtons();
+        }else{
+            hideInteractionButtons();
         }
         turnOffLoadingScreen();
     }
@@ -294,7 +304,6 @@ public class MovieInformation extends AppCompatActivity implements LoadingActivi
                     startActivity(playMovieIntent);
                 }
             });
-            return;
         }else if (url720 != null) {
             download_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -313,66 +322,51 @@ public class MovieInformation extends AppCompatActivity implements LoadingActivi
     }
 
     public void initSocialNetwork() {
-        if (movie.getExternal_ids().getTiktok_id() == null && movie.getExternal_ids().getTwitter_id() == null && movie.getExternal_ids().getFacebook_id() == null
-                && movie.getExternal_ids().getYoutube_id() == null && movie.getExternal_ids().getInstagram_id() == null) {
+        if (movie.getExternal_ids() == null) {
             findViewById(R.id.social_link).setVisibility(View.GONE);
+            return;
         }
 
         if (movie.getExternal_ids().getTwitter_id() != null) {
-            twitter_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent twitter_intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.twitter.com/" + movie.getExternal_ids().getTwitter_id()));
-                    startActivity(twitter_intent);
-                }
+            twitter_btn.setOnClickListener(v -> {
+                Intent twitter_intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.twitter.com/" + movie.getExternal_ids().getTwitter_id()));
+                startActivity(twitter_intent);
             });
         } else {
             twitter_btn.setVisibility(View.GONE);
         }
 
         if (movie.getExternal_ids().getFacebook_id() != null) {
-            facebook_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent fb_intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/" + movie.getExternal_ids().getFacebook_id()));
-                    startActivity(fb_intent);
-                }
+            facebook_btn.setOnClickListener(v -> {
+                Intent fb_intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/" + movie.getExternal_ids().getFacebook_id()));
+                startActivity(fb_intent);
             });
         } else {
             facebook_btn.setVisibility(View.GONE);
         }
 
         if (movie.getExternal_ids().getInstagram_id() != null) {
-            instagram_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent ins_intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/" + movie.getExternal_ids().getInstagram_id()));
-                    startActivity(ins_intent);
-                }
+            instagram_btn.setOnClickListener(v -> {
+                Intent ins_intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/" + movie.getExternal_ids().getInstagram_id()));
+                startActivity(ins_intent);
             });
         } else {
             instagram_btn.setVisibility(View.GONE);
         }
 
         if (movie.getExternal_ids().getYoutube_id() != null) {
-            youtube_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent youtube_intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/" + movie.getExternal_ids().getYoutube_id()));
-                    startActivity(youtube_intent);
-                }
+            youtube_btn.setOnClickListener(v -> {
+                Intent youtube_intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/" + movie.getExternal_ids().getYoutube_id()));
+                startActivity(youtube_intent);
             });
         } else {
             youtube_btn.setVisibility(View.GONE);
         }
 
         if (movie.getExternal_ids().getTiktok_id() != null) {
-            tiktok_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent tiktok_intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tiktok.com/@" + movie.getExternal_ids().getTiktok_id()));
-                    startActivity(tiktok_intent);
-                }
+            tiktok_btn.setOnClickListener(v -> {
+                Intent tiktok_intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tiktok.com/@" + movie.getExternal_ids().getTiktok_id()));
+                startActivity(tiktok_intent);
             });
         } else {
             tiktok_btn.setVisibility(View.GONE);
@@ -424,7 +418,6 @@ public class MovieInformation extends AppCompatActivity implements LoadingActivi
             if (movie_reviews != null) {
                 reviewApdater = new ReviewApdater(MovieInformation.this, movie_reviews, loginAccount.getUser_id(), deleteInterface);
                 reviewApdater.removeEmpty();
-                reviewApdater.notifyDataSetChanged();
                 for (int i = 0; i < movie_reviews.size(); i++) {
                     if (movie_reviews.get(i).getUser_id() == loginAccount.getUser_id()) {
                         review_session_popup_view.findViewById(R.id.comment_box).setVisibility(View.GONE);
@@ -434,7 +427,6 @@ public class MovieInformation extends AppCompatActivity implements LoadingActivi
                 reviewsRecyclerView = review_session_popup_view.findViewById(R.id.recyclerView);
                 reviewsRecyclerView.setLayoutManager(linearLayoutManager);
                 reviewsRecyclerView.setAdapter(reviewApdater);
-                reviewApdater.notifyDataSetChanged();
                 error_layout.setVisibility(View.GONE);
             }
             rating_bar = review_session_popup_view.findViewById(R.id.comment_box).findViewById(R.id.ratingBar_comment_box);
@@ -458,13 +450,10 @@ public class MovieInformation extends AppCompatActivity implements LoadingActivi
             loading_recommend_layout.setVisibility(View.GONE);
             totalRating.setText("" + movie_reviews.size());
         }else{
-            ReviewApdater.DeleteInterface deleteInterface = new ReviewApdater.DeleteInterface() {
-                @Override
-                public void delete() {
-                    movie_view_model.delete_review(movie_id);
-                    review_session_popup_view.findViewById(R.id.comment_box).setVisibility(View.VISIBLE);
-                    totalRating.setText("" +movie_reviews.size());
-                }
+            ReviewApdater.DeleteInterface deleteInterface = () -> {
+                movie_view_model.delete_review(movie_id);
+                review_session_popup_view.findViewById(R.id.comment_box).setVisibility(View.VISIBLE);
+                totalRating.setText("" +movie_reviews.size());
             };
 
             if (movie_reviews != null) {
@@ -520,5 +509,19 @@ public class MovieInformation extends AppCompatActivity implements LoadingActivi
     public void turnOffLoadingScreen(){
         loading_screen.setVisibility(View.GONE);
         setViewAndChildrenEnabled(layout, true);
+    }
+    public void hideInteractionButtons(){
+       displayInteractionButtons(false);
+    }
+
+    public void showInteractionButtons(){
+        displayInteractionButtons(true);
+    }
+
+    public void displayInteractionButtons(boolean isVisible){
+        int visibility = isVisible ? View.VISIBLE : View.GONE;
+        download_btn.setVisibility(visibility);
+        review_btn.setVisibility(visibility);
+        favor_btn.setVisibility(visibility);
     }
 }

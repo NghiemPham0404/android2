@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.movieapp.ViewModel.LoginViewModel;
-import com.example.movieapp.data.Model.AccountModel;
 import com.example.movieapp.data.Model.auth.AuthResponse;
 import com.example.movieapp.R;
 import com.example.movieapp.data.Model.user.UserDTO;
@@ -72,7 +70,7 @@ public class PreLoginView extends AppCompatActivity {
         loginViewModel.getAuthResponse().observe(this, (authResponse) -> {
             if(authResponse != null){
                 userViewModel.requestLoginedAccount();
-                userViewModel.getLoginedAccount().observe(this, (accountModel) -> {
+                userViewModel.getLoginAccount().observe(this, (accountModel) -> {
                     if(accountModel != null){
                         regisAccount = accountModel;
                         loadingScreen.setVisibility(View.GONE);

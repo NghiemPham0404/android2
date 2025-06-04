@@ -5,12 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.os.Process;
 import android.widget.Toast;
 
+import com.example.movieapp.ViewModel.UserViewModel;
 import com.example.movieapp.views.home.homePages.discoveryTab.DiscoverPage;
 import com.example.movieapp.views.home.homePages.favorTab.FavorPage;
 import com.example.movieapp.views.home.homePages.homeTab.HomePage;
@@ -29,12 +31,15 @@ public class HomeActivity extends AppCompatActivity {
     public UserPage userPage;
 
     private int alert_out = 1;
+    private UserViewModel userViewModel;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_window);
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        userViewModel.requestLoginedAccount();
 
         viewPager = findViewById(R.id.viewPager);
         viewPager.setOffscreenPageLimit(2);
