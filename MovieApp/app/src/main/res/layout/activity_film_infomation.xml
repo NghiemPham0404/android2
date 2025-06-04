@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:background="@color/black"
     android:visibility="visible"
-    tools:context=".View.MovieInfomation">
+    tools:context=".views.movie.MovieInformation">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/info_layout"
@@ -107,7 +107,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:drawableLeft="@drawable/star_icon"
-                    android:gravity="center_vertical"
+                    android:gravity="center"
                     android:text="TextView"
                     android:textAlignment="center"
                     android:textColor="@color/light_gray" />
@@ -245,18 +245,9 @@
                 android:id="@+id/social_link"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
+                android:gravity="center|center_vertical"
                 android:orientation="horizontal"
                 android:padding="5dp">
-
-                <TextView
-                    android:id="@+id/textView10"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/social_media"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
 
                 <ImageButton
                     android:id="@+id/twitter_x_info"
@@ -307,59 +298,44 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="vertical"
                 android:padding="5dp">
-
-                <TextView
-                    android:id="@+id/film_overview2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/inter"
-                    android:text="@string/overview"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/film_overview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter"
+                    android:textAlignment="center"
                     android:textColor="@color/light_gray"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/textView6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/inter"
-                    android:text="@string/genres"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/genre_info"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/genres_group"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textColor="@color/light_gray"
-                    android:textSize="14sp" />
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp">
+
+                </com.google.android.material.chip.ChipGroup>
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/cast_crew_chipgroup"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:textAlignment="center">
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/cast_chip"
-                        android:layout_width="wrap_content"
+                        android:layout_width="75dp"
                         android:layout_height="wrap_content"
                         android:checkable="true"
                         android:checked="true"
                         android:text="@string/cast"
+                        android:textAlignment="center"
                         android:textColor="@color/white"
                         android:textSize="14sp"
                         app:checkedIcon="@null"
@@ -367,20 +343,16 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/crew_chip"
-                        android:layout_width="wrap_content"
+                        android:layout_width="75dp"
                         android:layout_height="wrap_content"
                         android:checkable="true"
                         android:text="@string/crew"
+                        android:textAlignment="center"
                         android:textColor="@color/white"
                         android:textSize="14sp"
                         app:checkedIcon="@null"
                         app:chipBackgroundColor="@drawable/chip_bg" />
                 </com.google.android.material.chip.ChipGroup>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/castRecyclerView"

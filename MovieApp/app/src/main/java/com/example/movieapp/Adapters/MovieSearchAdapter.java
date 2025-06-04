@@ -10,11 +10,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.movieapp.Model.AccountModel;
-import com.example.movieapp.Model.MovieModel;
+import com.example.movieapp.data.Model.AccountModel;
+import com.example.movieapp.data.Model.MovieModel;
 import com.example.movieapp.R;
 import com.example.movieapp.Request.ImageLoader;
-import com.example.movieapp.View.MovieInteraction;
+import com.example.movieapp.data.Model.user.UserDTO;
+import com.example.movieapp.views.MovieInteraction;
 import com.example.movieapp.utils.Credentials;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
@@ -24,9 +25,9 @@ public class MovieSearchAdapter extends RecyclerView.Adapter<MovieSearchAdapter.
 
     Context context;
     List<MovieModel> movies;
-    AccountModel loginAccount;
+    UserDTO.UserInfo loginAccount;
 
-    public MovieSearchAdapter(Context context, List<MovieModel> movies, AccountModel loginAccount){
+    public MovieSearchAdapter(Context context, List<MovieModel> movies,  UserDTO.UserInfo loginAccount){
         this.context = context;
         this.movies = movies;
         this.loginAccount = loginAccount;
@@ -34,6 +35,7 @@ public class MovieSearchAdapter extends RecyclerView.Adapter<MovieSearchAdapter.
 
     public void setMovies(List<MovieModel> movies){
         this.movies = movies;
+        notifyDataSetChanged();
     }
 
     @NonNull

@@ -3,8 +3,8 @@ package com.example.movieapp.ViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.movieapp.Model.PersonModel;
-import com.example.movieapp.Repositories.PersonRepository;
+import com.example.movieapp.data.Model.PersonModel;
+import com.example.movieapp.data.Repositories.PersonRepository;
 
 import java.util.List;
 

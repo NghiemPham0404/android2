@@ -7,7 +7,7 @@
     android:background="@color/black"
     android:orientation="vertical"
     android:padding="5dp"
-    tools:context=".View.UserPackage.UserInfomation.User_Infomation"
+    tools:context=".views.home.homePages.userTab.UserInfomation.UserInformation"
     tools:layout_editor_absoluteX="-1dp"
     tools:layout_editor_absoluteY="-73dp">
 
@@ -59,23 +59,6 @@
             app:layout_constraintStart_toStartOf="@id/avater_border3"
             app:layout_constraintTop_toTopOf="@id/avater_border3"
             app:shapeAppearanceOverlay="@style/roundedImageRounded"></com.google.android.material.imageview.ShapeableImageView>
-
-        <TextView
-            android:id="@+id/avatarText"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:fontFamily="@font/inter"
-            android:gravity="center"
-            android:scaleType="fitCenter"
-            android:textAlignment="center"
-
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/avater_border3"
-            app:layout_constraintEnd_toEndOf="@+id/avater_border3"
-            app:layout_constraintStart_toStartOf="@+id/avater_border3"
-            app:layout_constraintTop_toTopOf="@+id/avater_border3" />
 
         <ImageView
             android:id="@+id/avater_border3"

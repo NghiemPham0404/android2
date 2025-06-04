@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/black"
     android:keepScreenOn="true"
-    tools:context=".View.PlayMovie">
+    tools:context=".views.movie.moviePlaying.PlayMovie">
 
     <RelativeLayout
         android:id="@+id/zoom_layout"

@@ -6,52 +6,49 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.movieapp.Interfaces.FavorInterface;
-import com.example.movieapp.Model.AccountModel;
-import com.example.movieapp.Model.MovieModel;
+import com.example.movieapp.data.Model.DTO.InteractionDTO.InteractionDAOExtended;
+import com.example.movieapp.data.Model.MovieModel;
 import com.example.movieapp.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import lombok.Setter;
+
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder>{
     Context context;
-    public List<MovieModel> movies;
+    public List<InteractionDAOExtended> movies;
     FavorInterface favor_click;
-    public List<List<MovieModel>> movies_lists;
+    public List<List<InteractionDAOExtended>> moviesLists;
     public List<String> history_list;
 
-    public HistoryAdapter(Context context, List<MovieModel> movies, FavorInterface favor_click){
+    public void setMovies(List<InteractionDAOExtended> movies){
+        this.movies = movies;
+        initMoviesHistory();
+        notifyDataSetChanged();
+    }
+
+    public HistoryAdapter(Context context, List<InteractionDAOExtended> movies, FavorInterface favor_click){
         this.context = context;
         this.favor_click = favor_click;
         this.movies = movies;
         history_list = new ArrayList<String>();
-        movies_lists = new ArrayList<List<MovieModel>>();
-        filterNonHistory();
+        moviesLists = new ArrayList<List<InteractionDAOExtended>>();
         Collections.sort(movies, (o1,o2) -> o2.getHistoryDate().compareTo(o1.getHistoryDate()));
         initMoviesHistory();
     }
 
-    public void setHistoryMovies(List<MovieModel> movies){
-        this.movies = movies;
-        history_list = new ArrayList<String>();
-        movies_lists = new ArrayList<List<MovieModel>>();
-        filterNonHistory();
-        Collections.sort(movies, (o1,o2) -> o2.getHistoryDate().compareTo(o1.getHistoryDate()));
-        initMoviesHistory();
-        notifyDataSetChanged();
-    }
     public void initMoviesHistory(){
-        if(movies.size()>0){
+        if(!movies.isEmpty()){
             Log.i("HISTORY TASK", "movie > 1");
-            List<MovieModel> movies_l = new ArrayList<MovieModel>();
+            List<InteractionDAOExtended> movies_l = new ArrayList<InteractionDAOExtended>();
             history_list.add(movies.get(0).getHistory());
             movies_l.add(movies.get(0));
             for(int i = 1; i<this.movies.size(); i++){
@@ -59,25 +56,17 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
                 if(!history_list.contains(movies.get(i).getHistory())){
                     history_list.add(movies.get(i).getHistory());
                     Log.i("HISTORY TASK", "history list size 2 : "+history_list.size());
-                    movies_lists.add(movies_l);
-                    movies_l = new ArrayList<MovieModel>();
+                    moviesLists.add(movies_l);
+                    movies_l = new ArrayList<InteractionDAOExtended>();
                     movies_l.add(movies.get(i));
                 }else{
                     movies_l.add(movies.get(i));
                 }
             }
-            movies_lists.add(movies_l);
+            moviesLists.add(movies_l);
         }
     }
 
-    public void filterNonHistory(){
-        for(int i = 0; i<movies.size(); i++){
-            if(movies.get(i).getHistoryDate() == null){
-                Log.i("HISTORY TASK", "REMOVE");
-                movies.remove(i);
-            }
-        }
-    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -89,7 +78,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.history_title.setText(history_list.get(position));
-        FavorAdapter favorAdapter = new FavorAdapter(context, movies_lists.get(position), favor_click);
+        FavorAdapter favorAdapter = new FavorAdapter(context, moviesLists.get(position), favor_click);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         holder.recyclerView.setLayoutManager( linearLayoutManager);
         holder.recyclerView.setAdapter(favorAdapter);

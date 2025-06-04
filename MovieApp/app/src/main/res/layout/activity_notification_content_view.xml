@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.UserPackage.Notification.NotificationContentView">
+    tools:context=".views.home.homePages.userTab.Notification.NotificationContentView">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:context=".View.UserPackage.Notification.NotificationsView">
+        tools:context=".views.home.homePages.userTab.Notification.NotificationsView">
 
         <LinearLayout
             android:id="@+id/header"

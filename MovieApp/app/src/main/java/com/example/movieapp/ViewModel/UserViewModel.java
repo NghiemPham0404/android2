@@ -1,53 +1,49 @@
 package com.example.movieapp.ViewModel;
 
-import android.accounts.Account;
-import android.content.Context;
+import android.app.Application;
 
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.example.movieapp.Model.AccountModel;
-import com.example.movieapp.Model.LoginModel;
-import com.example.movieapp.Repositories.UserRepostitory;
-import com.example.movieapp.Request.UserApiClient;
+import com.example.movieapp.data.Model.user.UserDTO.*;
+import com.example.movieapp.data.Repositories.UserRepo;
 
-public class UserViewModel extends ViewModel {
-    private static UserRepostitory userRepostitory;
+public class UserViewModel extends AndroidViewModel {
+    private static UserRepo userRepo;
 
-    public UserViewModel(){
-        userRepostitory = UserRepostitory.getInstance();
+    public UserViewModel(Application application){
+        super(application);
+        userRepo = UserRepo.getInstance(application.getApplicationContext());
     }
-    public AccountModel loginStored(Context context){
-        return userRepostitory.getStoredAccount(context);
+
+    public void requestLoginedAccount(){
+        userRepo.requestCurrentUser();
     }
-    public void storeAccount(Context context, AccountModel loginAccount){
-        userRepostitory.storeAccount(context, loginAccount);
+
+    public void requestUpdateUser(String name, String email, String password, String sms, String avatar){
+        UserUpdate userUpdate = new UserUpdate();
+        userUpdate.setName(name);
+        userUpdate.setEmail(email);
+        userUpdate.setPassword(password);
+        userUpdate.setAvatar(avatar);
+        userUpdate.setSms(sms);
+        userRepo.requestUpdateUser(userUpdate);
     }
-    public void regisWithInfo(String username, String email, String password){
-        userRepostitory.regisWithInfo(email, username, password);
+
+    public void requestUpdateUser(UserInfo userInfo){
+        UserUpdate userUpdate = new UserUpdate();
+        userUpdate.setName(userInfo.getName());
+        userUpdate.setEmail(userInfo.getEmail());
+        userUpdate.setAvatar(userInfo.getAvatar());
+        userUpdate.setSms(userInfo.getSms());
+        userRepo.requestUpdateUser(userUpdate);
     }
-    public void login(String email, String password){
-        userRepostitory.loginWithInfo(email, password);
+
+    public LiveData<UserInfo> getLoginAccount(){
+        return userRepo.getCurrentUser();
     }
-    public void loginWithGoogle(String email, String username, String google_id, String avatar){
-        userRepostitory.loginWithGoogle(email, username, google_id, avatar);
-    }
-    public void loginWithFacebook(String username, String facebook_id, String avatar){
-        userRepostitory.loginWithFacebook(username, facebook_id, avatar);
-    }
-    public LiveData<LoginModel> getAccount(){
-        return userRepostitory.getAccount();
-    }
-    public void logOut(){
-        userRepostitory.logOut();
-    }
-    public void update(AccountModel updatedAccount){
-        userRepostitory.updateAccount(updatedAccount);
-    }
-    public void sendForgotLink(String email){
-        userRepostitory.sendForgotLink(email);
-    }
-    public LiveData<UserApiClient.ForgotPassModel> getForgotPassModel(){
-        return userRepostitory.getForgotPassModel();
+
+    public void requestLogOut(){
+        userRepo.logOut();
     }
 }

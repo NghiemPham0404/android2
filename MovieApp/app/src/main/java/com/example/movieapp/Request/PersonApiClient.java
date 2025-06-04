@@ -5,8 +5,8 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.movieapp.AppExecutors;
-import com.example.movieapp.Model.PersonModel;
-import com.example.movieapp.Response.PeopleResponse;
+import com.example.movieapp.data.Model.PersonModel;
+import com.example.movieapp.data.Response.PeopleResponse;
 import com.example.movieapp.utils.Credentials;
 
 import java.util.ArrayList;
@@ -119,11 +119,11 @@ public class PersonApiClient {
             }
         }
         public Call<PeopleResponse>  getPeople() {
-            return MyService.getMovieApi().searchPerson(Credentials.API_KEY,query, page, Locale.getDefault().getLanguage());
+            return MyService.getMovieApi().searchPerson(query, page, Locale.getDefault().getLanguage());
         }
 
         public Call<PersonModel> getPerson(){
-            return MyService.getMovieApi().searchPersonByID(person_id, Credentials.append_person,Credentials.API_KEY, Locale.getDefault().getLanguage());
+            return MyService.getMovieApi().searchPersonByID(person_id, Credentials.append_person, Locale.getDefault().getLanguage());
         }
         private void cancelRequest() {
             Log.v("QUERY TASK", "Canceled request");

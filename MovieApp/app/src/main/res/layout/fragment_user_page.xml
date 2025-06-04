@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.UserPackage.UserPage">
+    tools:context=".views.home.homePages.userTab.UserPage">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -56,22 +56,6 @@
                 app:layout_constraintTop_toTopOf="@+id/avater_border2"
                 app:shapeAppearanceOverlay="@style/roundedImageRounded"></com.google.android.material.imageview.ShapeableImageView>
 
-            <TextView
-                android:id="@+id/avatarText"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:fontFamily="@font/inter"
-                android:gravity="center"
-                android:scaleType="centerCrop"
-                android:textAlignment="center"
-
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/avater_border2"
-                app:layout_constraintEnd_toEndOf="@+id/avater_border2"
-                app:layout_constraintStart_toStartOf="@+id/avater_border2"
-                app:layout_constraintTop_toTopOf="@+id/avater_border2" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button

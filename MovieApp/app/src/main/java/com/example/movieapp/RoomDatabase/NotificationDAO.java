@@ -7,7 +7,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.movieapp.Model.NotificationModel;
+import com.example.movieapp.data.Model.NotificationModel;
 
 import java.util.List;
 

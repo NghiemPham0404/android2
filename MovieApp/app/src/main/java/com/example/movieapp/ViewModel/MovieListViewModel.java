@@ -1,71 +1,65 @@
 package com.example.movieapp.ViewModel;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.movieapp.Model.MovieModel;
-import com.example.movieapp.Repositories.MovieRepository;
+import com.example.movieapp.data.Model.MovieModel;
+import com.example.movieapp.data.Repositories.MovieRepository;
+import com.example.movieapp.data.Response.MovieListResponse;
 
 import java.util.List;
 
+// TODO : this class is ViewModel class for MovieListResponse
 public class MovieListViewModel extends ViewModel {
 
-    // this class is used for Movie List with ViewModel
-    // View Model làm cho app không bị rối loạn dữ liệu khi tiến hành công việc như đổi phong chữ, xoay màn hình
-
-    private MovieRepository movieRepository;
+    private static MovieRepository movieRepository;
     // Constructor
     public MovieListViewModel() {
         movieRepository = MovieRepository.getInstance();
     }
 
-    public LiveData<List<MovieModel>> getMovies(){
-        return movieRepository.getMovies();
-    }
-    public LiveData<List<MovieModel>> getFavorMovies(){return movieRepository.getFavorMovies();}
-    public LiveData<List<MovieModel>> getUpcommingMovies(){return movieRepository.getUpcommingMovies();}
+    public LiveData<MovieListResponse> getSearchMovies(){return movieRepository.getSearchMovies();}
+    public LiveData<MovieListResponse> getNowPlayingMovies(){return movieRepository.getNowPlayingMovies();}
+    public LiveData<MovieListResponse> getPopularMovies(){return movieRepository.getPopularMovies();}
+    public LiveData<MovieListResponse> getUpComingMovies(){return movieRepository.getUpcomingMovies();}
+    public LiveData<MovieListResponse> getDiscoverMovies(){return  movieRepository.getDiscoverMovies();}
 
-    public LiveData<List<MovieModel>> getDiscoverMovies(){return  movieRepository.getDicorverMovies();}
-    public int getTotalResults(){
-        return movieRepository.getTotalResults();
-    }
-
-    public void searchMovieApi(String query, int pageNumber){
-        movieRepository.searchMovieApi(query, pageNumber);
+    public void requestSearchMovie(String query, int pageNumber){
+        movieRepository.requestSearchMovie(query, pageNumber);
     }
 
-    // Tìm kiếm tiếp theo
-    public void searchMovieApiNextPage(){
-        movieRepository.searchMovieApiNextPage();
+    public void requestSearchMovieNextPage(){
+        movieRepository.requestSearchMoviesNext();
     }
 
-    public void searchFavorMovieApi(int pageNumber){
-        Log.i("movielist","finding");
-        movieRepository.searchMovieApi(2, pageNumber);
+    public void requestNowPlayingMovie(int pageNumber) {
+        movieRepository.requestNowPlayingMovie(pageNumber);
+    }
+    public void requestNowPlayingMovieNextPage(){
+        movieRepository.requestNowPlayingMovieNext();
     }
 
-    public void searchFavorMovieApiNextPage(){
-        Log.i("movielist","finding");
-        movieRepository.searchPopularMovieApiNextPage();
+    public void requestPopularMovies(int pageNumber){
+        movieRepository.requestPopularMovie(pageNumber);
     }
 
-    public void searchUpcommingMovieApi(int pageNumber){
-        Log.i("movielist","finding");
-        movieRepository.searchMovieApi(4, pageNumber);
+    public void requestPopularMoviesNextPage(){
+        movieRepository.requestPopularMovieNext();
     }
 
-    public void searchUpcommingMovieApiNextPage(){
-        Log.i("movielist","finding");
-        movieRepository.searchUpcommingMovieApiNextPage();
+    public void requestUpComingMovies(int pageNumber){
+        movieRepository.requestUpComingMovie(pageNumber);
     }
 
-    public void discoverMovieApi(String with_genres, String with_origin_country ,int year, int pageNumber){
-        movieRepository.discoverMovieApi(with_genres, with_origin_country, year, pageNumber);
+    public void requestUpcomingMoviesNextPage(){
+        movieRepository.requestUpcomingMoviesNext();
     }
 
-    public void discoverMovieApiNext() {
-        movieRepository.discoverMovieApiNext();
+    public void requestDiscoverMovies(String with_genres, String with_origin_country , int year, int pageNumber){
+        movieRepository.discoverMovies(with_genres, with_origin_country, year, pageNumber);
+    }
+
+    public void discoverMoviesNext() {
+        movieRepository.discoverMoviesNext();
     }
 }

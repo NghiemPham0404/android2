@@ -13,4 +13,10 @@
     <color name="dark_green">#11998e</color>
     <color name="neon_blue">#3F5EFB</color>
     <color name="blue">#0652CC</color>
+
+    <color name="colorPrimary">#FC466B</color>
+    <color name="colorPrimaryVariant">#3F5EFB</color>
+    <color name="colorSecondary">#3F5EFB</color>
+    <color name="background">#FDFDFD</color>
+    <color name="textColorPrimary">#131313</color>
 </resources>

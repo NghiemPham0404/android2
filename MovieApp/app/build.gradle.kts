@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import java.util.Properties
 plugins {
     id("com.android.application")
@@ -17,10 +18,20 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        val properties = Properties()
-        properties.load(project.rootProject.file("local.properties").inputStream())
+
+        val properties = gradleLocalProperties(rootDir)
         buildConfigField("String", "API_KEY", "\"${properties.getProperty("API_KEY")}\"")
         buildConfigField("String", "BASE_URL", "\"${properties.getProperty("BASE_URL")}\"")
+        buildConfigField("String", "TMDB_ACCESS_TOKEN", "\"${properties.getProperty("TMDB_ACCESS_TOKEN")}\"")
+        buildConfigField("String", "BACKEND_URL", "\"${properties.getProperty("BACKEND_URL")}\"")
+
+        val backendUrl = properties
+            .getProperty("BACKEND_URL");
+        resValue(
+            "string",
+            "backendUrl",
+            "\""+backendUrl+"\""
+        )
     }
 
     buildTypes {
@@ -88,4 +99,7 @@ dependencies {
     // fb sdk
     implementation("com.facebook.android:facebook-login:latest.release")
     implementation ("com.facebook.android:facebook-android-sdk:latest.release")
+
+    compileOnly("org.projectlombok:lombok:1.18.38")
+    annotationProcessor("org.projectlombok:lombok:1.18.38")
 }

@@ -2,12 +2,9 @@ package com.example.movieapp.Services;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
-import android.os.Parcelable;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
@@ -15,14 +12,9 @@ import androidx.core.app.NotificationCompat;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.example.movieapp.Model.AccountModel;
-import com.example.movieapp.Model.NotificationModel;
+import com.example.movieapp.data.Model.NotificationModel;
 import com.example.movieapp.R;
-import com.example.movieapp.Request.LoginAccountRequest;
-import com.example.movieapp.View.MovieInfomation;
-import com.example.movieapp.View.UserPackage.Notification.NotificationContentView;
 import com.example.movieapp.ViewModel.NotificationViewModel;
-import com.example.movieapp.ViewModel.UserViewModel;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -51,10 +43,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void getFirebaseMessage(String title, String body, Map<String, String> data) {
-        AccountModel accountModel = LoginAccountRequest.readUserFromFile(this);
-        if(accountModel == null){
-            return ;
-        }
 
         String large_image = data.get("large_image");
         int movie_id = Integer.parseInt(data.get("movie_id"));
@@ -66,23 +54,22 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notification.setBody(body);
         notification.setContent(content);
         notification.setMovieId(movie_id);
-        notification.setUserId(accountModel.getUser_id());
         notification.setLargeImage(large_image);
         SimpleDateFormat df = new SimpleDateFormat("dd-MM-YYYY HH:mm:ss");
         notification.setTime(df.format(new Date(System.currentTimeMillis())));
 
-        Intent intent ;
-        if(movie_id > -1){
-            intent = new Intent(this, MovieInfomation.class);
-            intent.putExtra("film_id", movie_id);
-            intent.putExtra("loginAccount", (Parcelable) accountModel);
-        }else{
-            intent = new Intent(this, NotificationContentView.class);
-            intent.putExtra("loginAccount", (Parcelable) accountModel);
-            intent.putExtra("notification", notification);
-        }
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        Intent intent ;
+//        if(movie_id > -1){
+//            intent = new Intent(this, MovieInfomation.class);
+//            intent.putExtra("film_id", movie_id);
+//            intent.putExtra("loginAccount", (Parcelable) accountModel);
+//        }else{
+//            intent = new Intent(this, NotificationContentView.class);
+//            intent.putExtra("loginAccount", (Parcelable) accountModel);
+//            intent.putExtra("notification", notification);
+//        }
+//
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // Create a notification channel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -94,7 +81,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "notify")
                 .setContentTitle(title)
                 .setSmallIcon(R.drawable.movie_app)
-                .setContentIntent(pendingIntent)
+//                .setContentIntent(pendingIntent)
                 .setContentText(body)
                 .setAutoCancel(false);
 
